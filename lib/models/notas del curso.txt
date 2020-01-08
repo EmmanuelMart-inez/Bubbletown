@@ -1,0 +1,275 @@
+ctl + } //
+ctl + . Bell    
+
+    Los Widgets viven dentro del metodo build de la Clase StatelessWidget o State en Stateful
+
+Container: Toma todo el espacio posible, con la prop margin se recorta este espacio,
+            hasta que recibe un hijo y se ajusta al tamaño de este
+            Un container es invisible
+    Row Colum : MaxSize recorta el espacio usado por container,
+                No necesitan wrapearse en un Center Widget, ya que possen esta propiedad en cross y main crossAxisAligment
+                crossAxisAligment.stretch toma todo el espacio posible == withd: double.infinity
+
+¿Qué haces cuando un widg no contiene las propiedades que quieres?
+- Lo envuelves en un hijo de otro widg, (PERMUTACIONES EN LOS ANIDAMIENTOS
+    PREMITEN OBTENER DIFERENTES O AÑADIR NUEVAS PROPIEDADES)
+
+    Tip: SizedBox -> child Divider() 
+
+Expanded() -> Wrap a widget y lo ajusta al tamaño de la pantalla,
+              con la prop padding se reduce este espacio,
+            Varios Expanded() Expanded() se ajustan entre ellos inteligentemente 
+            (tratan de tomar el mayor espacio posible entre los dos)
+                en Row de forma horizontal y en Column...
+
+                -> prop: flex modifica el expanded
+                    flex: 1 == Expanded normal default
+
+Para crear un widg podemos usar el nombre y la clase y construir el widget en crudo
+o buscar un contructor, ie;
+    Image(
+        image: AssetImage('path.png'),
+    ),
+
+    --->
+
+    Image.AssetImage('path.png'),
+
+49. voidCalback function es en flutter lo que en otros lenguajes sería una función anónima
+    onPreset: (){
+        print('prueba ...')
+    }
+    Le dicen a la PC haz algo,  sin tener que especificar la creacion de la funcion
+    () { //doSomething }
+
+
+50. Dart Functions
+    DarPad es un interprete de Dart online
+    Con GitGist puedes compartir el skeleto de un codigo y con el http..../9656546
+    en http..darpat/9656546 abrir la plantilla
+    Dart es un lenguaje statically typed
+     -> var 
+       Option dynamic typing -> dynamic
+
+
+    void func({param_type: param_name})
+     
+     -> void func({String: 'Emmanuel'})
+     -> func(nombre: 'Emmanuel')
+
+    print('$var')
+
+    Se puede pasar Widget como parametros de funciones
+
+82. Lists 
+
+    -> myList[0];
+    -> myList.indexOf('Katie');
+    -> myList.add('Ben');
+    -> myList.insert(1, ')
+
+92. Polymorphism
+
+    class SelfDrivingCar extends Car {
+        String destination;
+
+        SelfDrivingCar(String userSetDestination){
+            destination = userSetDestination;
+        }
+
+        //Simple
+        @override
+        void drive(){
+            print('glide forwards');
+        }
+
+        /Advanced
+        @override
+        void drive(){
+            super.drive(); 
+
+            print('Manejando hacia $destination');
+        }
+    }
+
+staless  ->Parametros de funcion
+    WidgetType({this.name, @requiered this.name})
+
+    final Type name;
+
+    Widget..
+    ..  ..
+        ..
+        name,
+    
+Gesture detector en lugar de botones, es util porque no tiene un estilo por default
+
+Enum Gender {
+    Male, //1
+    Female //2
+}
+
+    --> Const: se crea en tiempo de compilación
+    --> final: Se crea en tiempo de ejecución
+
+Las variables del tipo que sean se pueden crear al inicio de la clase y ocupar
+en toda esta, ya sea dentro de funciones anidadas o en widgets anidados, o estados
+
+Esta bien usar variables globales cuando el widget está aislado en un archivo individual
+aunque no estoy seguro si se importa globalmente también en otros archivos que lo importan
+
+El operador ternario simplifica ifs complejos
+
+Se puede extraer widgets intermedios y crearles hijos,
+ solo se necesita añadir la propiedad childName como atributo de la case de tipo final
+ y en child poner 
+    --> child: chilName,
+
+A la hora de utilizar 
+    WidgetNuevo..
+    .. 
+        childName: child   <-- Widget
+
+120. Dart functions are fisrt citizen Objects
+    -pasar como parametro sin parentesis
+    -Invocar con parentesis
+    -marcar como final dentro de una clase widget
+
+122. Customing values
+    Puedes alterar variables sin importar la ubicacion, por medio de OnPress,
+    onTap, en SetState! Cool!
+    -> Widget... class
+        int height;
+        ...
+        Slider(
+            value: height.toDouble(),
+            min:
+            max: ..
+            onChanged: (double newValue)   <-- no se declaró, no es necesario :)
+            {
+                SetState((){
+                    height: newValue.round();
+                })
+            } 
+        )
+
+    --> Para customizar un Widget, ir al "ThemeData", donde Theme=Widget deseado. wrap arriba  de el widget sobre el widget tree
+            <WidgetName>Theme{
+                data: <WidgetName>Data(
+                    ..
+                    ...
+                    ..original properties customization..
+                    ...),
+                child: <WidgetName>  <-- Aqui empieza el Widget, arriba es todo el estilo de este
+            }
+
+    --> Para curstomizar themes tambien se puede usar  copyWith o <WidgetName>.of(context).copyWith
+    context: es el estado actual de nuestra app, es como luce nuestra app 
+        Nota: Es conveniente tener toda la customizacion de UN widget en una sola seccion de codigo
+
+123. Customisation vs Inheritance
+        In flutter is Composition OVER Inheritance (keep it simple)
+
+        Hasta ahora llevamos: 
+            1. Composicion
+            2. Personalización del estilo
+            3. Personalizacion del ThemeData
+            4. Open Source Power: Raw<MaterialWidget> No es necesario heredar jaja!
+            4.5. Ir al widgetRaw y copiar las propiedades que queramos re implementar, por ejemplo
+            tamaño, elevacion, sombreado, etc
+
+127. Enviar parametros en Rutas de navegacion
+
+    1. Envio
+      ..1 Declarar
+
+        double _bmi;
+
+        String calculateBMI() {
+            _bmi = weight / pow(height / 100, 2);
+            return _bmi.toStringAsFixed(1);
+        }    
+      
+      ..2 Envio
+
+        onTap: () {
+                CalculatorBrain calc =
+                    CalculatorBrain(height: height, weight: weight);
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => ResultsPage(
+                            bmiResult: calc.calculateBMI(),
+                            resultText: calc.getResult(),
+                            interpretation: calc.getInterpretation(),
+                        ),
+                    ),
+                );
+                },
+
+    2. Widget destination
+        class ResultsPage extends StatelessWidget {
+        ResultsPage(
+            {@required this.interpretation,
+            @required this.bmiResult,
+            @required this.resultText});
+
+        final String bmiResult;
+        final String resultText;
+        final String interpretation;
+
+140. Un clase widget y su respectivo estado estan ligados, de echo uno "hereda" del otro
+    con la propiedad widget.<variable final> podemos acceder a la clase superior y todos sus atributos y metodos
+
+    No se requiere el tipo de dato para los atributos final o en general, ya sea como para recibir y
+    enviar a una clase. <--checar -->  {Dart automagicamente reconoce el tipo de dato al inicializar por primera y de echo
+    única vez la varible, es la ventaja de el modificador de alcance final en Dart}
+    es decir, solo basta: 
+        final <nombre>;
+
+    Es util tener diferentes atributos en la clase superior y en el estado, semanticamente
+    puden separarse y tener diferentes responabilidades e incluso estar relacionadoos para
+    colaborar en una tarea o relevarse información. Ejemplo, tener las "constantes o propiedades"
+    en el estado y en la clase superior tener los argumentos que son recibidos como entrada en el
+    widget
+
+
+    ->Las varibles tienen alcance afuera de las Clases!! Tip!  
+    -> Varibles dentro de texto '$<var>NoImporta que no haya espacio después de la variable'
+        -> Cuando hay muchas variables, encierra cada una en llaves, de otra forma solo reconoce la primera
+            '{$hola.julio} que tengas {$buen.dia}'
+
+150. For loop de widgets
+
+    ->Puede no necesitar parametros por el alcance tan largo de lass variables
+    --> Puedes ser mas especifico poniendo el tipo de widget y el tipo del widget del widget anidado..
+        ej, List<Text<String>>
+
+    List<Widget> functionName() {
+        List<Widget> items = [];
+
+        for (String current in currents){
+            items.add(Widget(current));
+        }
+        return items;
+    }
+
+151. Imports 
+    --> import as http: da semantica al usar los metodos en lugar de solo get(), http.get() 
+    es mass entendible
+
+    --> import show <ClassName> expone la clase que se desea importar
+        also hide 
+
+158. Static 
+    -->al añadirlo como modificador permite invocar atributos de otra clase sin crear nuevos objetos
+        WelcomeScreen().id  ---> WelcomeScreen.id
+
+    -> Son modificadores constantes o variables asociadas a una clase 
+
+Yo_1 Controllers
+Yo_2 Tasks 
+
+179. Flexible Widget
+    si el espacio es menor este se adapta sin romper la app

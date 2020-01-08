@@ -1,0 +1,7 @@
+Widget getSello(int numeroSellos) {
+  if (numeroSellos >= 0) {
+    return new SelloStarOn();
+  } else {
+    return new SelloStarOff();
+  }
+}
