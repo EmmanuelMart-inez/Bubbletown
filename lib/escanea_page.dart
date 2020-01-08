@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'catalogo_page.dart';
 import 'home_page.dart';
 import 'premios_page.dart';
+import 'package:bubbletown_v1/services/welcome_service.dart';
+import 'package:bubbletown_v1/models/welcome_model.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screen/screen.dart';
+
+Future<Welcome> requestTarjeta;
 
 class Pago extends StatefulWidget {
   @override
@@ -10,7 +16,15 @@ class Pago extends StatefulWidget {
 }
 
 class _PagoState extends State<Pago> {
-   @override
+  
+  @override
+  void initState() {
+    super.initState();
+    requestTarjeta = fetchWelcome();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -47,17 +61,33 @@ class _PagoState extends State<Pago> {
             child: Column(
               children: <Widget>[
                 Divider(color: Colors.black),
+                /*new Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Text("Screen is kept on ? "),
+                      new Checkbox(value: _isKeptOn, onChanged: (bool b){
+                        Screen.keepOn(b);
+                        setState((){_isKeptOn = b; });
+                      })
+                    ]
+                  ),
+                  new Text("Brightness :"),
+                  new Slider(value : _brightness, onChanged : (double b){
+                    setState((){_brightness = b;});
+                    Screen.setBrightness(b);
+                  }),
+                  */
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0, top: 10),
                       child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios, size: 35),
-                          onPressed: (){
-                            Navigator.pop(context);
-                          },
-                        ),
+                        icon: Icon(Icons.arrow_back_ios, size: 35),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -65,7 +95,7 @@ class _PagoState extends State<Pago> {
                   height: 1,
                 ),
                 Text(
-                  'Escanea ahora',
+                  'Escanea ahora!',
                   style: TextStyle(
                     fontSize: 30,
                   ),
@@ -90,7 +120,7 @@ class _PagoState extends State<Pago> {
                         ),
                       ),
                     ),
-                     Container(
+                    Container(
                       height: 70,
                       width: 300,
                       decoration: BoxDecoration(
@@ -100,23 +130,45 @@ class _PagoState extends State<Pago> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            '668879-998657-22647',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
+                          FutureBuilder<Welcome>(
+                            future: requestTarjeta,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  '${snapshot.data.participante.id.toUpperCase()}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                  ),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text("${snapshot.error}");
+                              }
+                              return CircularProgressIndicator();
+                            },
                           ),
                         ],
                       ),
                     ),
-                   Positioned(
-                     bottom: 25,
-                     child: Image.asset(
-                          'assets/qr-code.png',
-                          scale: 5,
-                        ),
-                   ),
+                    Positioned(
+                      bottom: 25,
+                      child: FutureBuilder<Welcome>(
+                        future: requestWelcome,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return QrImage(
+                              data: '${snapshot.data.participante.id}',
+                              version: QrVersions.auto,
+                              size: 120,
+                              gapless: true,
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return CircularProgressIndicator();
+                        },
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -156,61 +208,77 @@ class _PagoState extends State<Pago> {
             ),
           ),
         ),
-        bottomNavigationBar:  Container(
+        bottomNavigationBar: Container(
           height: 105,
           decoration: BoxDecoration(
-            border: Border(
-            top: BorderSide(width: 0.7, color: Colors.black),)
-          ),
+              border: Border(
+            top: BorderSide(width: 0.7, color: Colors.black),
+          )),
           child: BottomNavigationBar(
             iconSize: 40,
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/inicio.png', scale: 2,),
-                title: Text('Inicio', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/inicio.png',
+                  scale: 2,
+                ),
+                title: Text('Inicio',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/bar.png', scale: 2,),
-                title: Text('Tarjeta', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/bar.png',
+                  scale: 2,
+                ),
+                title: Text('Tarjeta',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/catalogo.png', scale: 2,),
-                title: Text('Catálogo', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/catalogo.png',
+                  scale: 2,
+                ),
+                title: Text('Catálogo',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/premios.png', scale: 2,),
-                title: Text('Premios', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/premios.png',
+                  scale: 2,
+                ),
+                title: Text('Premios',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
             ],
-            onTap: (int index){
-              setState((){
-                if(index == 0){
+            onTap: (int index) {
+              setState(() {
+                if (index == 0) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 }
-                if(index == 1){
+                if (index == 1) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Pago()),
                   );
                 }
-                if(index == 2){
+                if (index == 2) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Catalogo()),
                   );
                 }
-                if(index == 3){
+                if (index == 3) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Premios()),
                   );
                 }
               });
-            }, 
+            },
           ),
         ),
       ),
