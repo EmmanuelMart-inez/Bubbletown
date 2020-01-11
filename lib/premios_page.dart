@@ -1,28 +1,35 @@
+import 'package:bubbletown_v1/models/premios_model.dart';
+import 'package:bubbletown_v1/services/premios_service.dart';
 import 'package:flutter/material.dart';
+import 'package:barcode_flutter/barcode_flutter.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
 
+Future<PremiosModel> requestPremios;
+
 class Premios extends StatefulWidget {
   @override
-  const Premios({ Key key }) : super(key: key);
+  const Premios({Key key}) : super(key: key);
   _PremiosState createState() => _PremiosState();
 }
 
-class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin{
+class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     Tab(text: '1'),
     Tab(text: '2'),
     Tab(text: '3'),
   ];
-  
+
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: myTabs.length);
+    //_tabController = TabController(vsync: this, length: myTabs.length);
+    requestPremios = fetchPremios();
   }
 
   @override
@@ -31,30 +38,63 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin{
     super.dispose();
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
+          preferredSize: Size.fromHeight(160.0),
           child: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
               width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18, top: 10),
-                    child: Text('Bubble\nTown', style: TextStyle(fontSize: 13)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18, top: 10),
+                        child: Text('Bubble\nTown',
+                            style: TextStyle(fontSize: 13)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10, top: 10),
+                        child: IconButton(
+                          icon:
+                              Icon(Icons.menu, color: Colors.black, size: 30.0),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10, top: 10),
-                    child: IconButton(
-                      icon: Icon(Icons.menu, color: Colors.black, size: 30.0),
-                      onPressed: () {},
+                  Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: <Widget>[
+                        Divider(color: Colors.black),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 8.0, top: 10),
+                              child: Icon(Icons.arrow_back_ios, size: 35),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1,
+                        ),
+                        Text(
+                          'Premios',
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -62,315 +102,288 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin{
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              children: <Widget>[
-                Divider(color: Colors.black),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, top: 10),
-                      child: Icon(Icons.arrow_back_ios, size: 35),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 1,
-                ),
-                Text(
-                  'Premios',
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-                SizedBox(height: 25),
-                Container(
-                  //margin: EdgeInsets.symmetric(horizontal: 130),
-                  width: 200,
-                  height: 40,
-
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 2),
-                    margin: EdgeInsets.symmetric(horizontal: 25),
-                    child: TabBar(
-                      controller: _tabController,
-                      tabs: [
-                        CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
-                        CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
-                        CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
-                      ]),
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 800,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  //color: Colors.red[100],
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                            Image.asset('assets/premiosimagen.png', scale: 1.45),
-                                            Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                            SizedBox(height: 11),
-                                            Image.asset('assets/premios_codbarras.png', scale: 1.3),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: <Widget>[
-                                        Image.asset('assets/premiosbackground.png', scale: 1.4),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 10),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: Column(
-                        ),
-                      ),
-                      Container(
-                        child: Column(
-                        ),
-                      ),
-                    ],
-                  ),
-                ),                 
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar:  Container(
+        body: PremiosScrollView(),
+        bottomNavigationBar: Container(
           height: 105,
           decoration: BoxDecoration(
-            border: Border(
-            top: BorderSide(width: 0.7, color: Colors.black),)
-          ),
+              border: Border(
+            top: BorderSide(width: 0.7, color: Colors.black),
+          )),
           child: BottomNavigationBar(
             iconSize: 40,
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/inicio.png', scale: 2,),
-                title: Text('Inicio', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/inicio.png',
+                  scale: 2,
+                ),
+                title: Text('Inicio',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/bar.png', scale: 2,),
-                title: Text('Tarjeta', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/bar.png',
+                  scale: 2,
+                ),
+                title: Text('Tarjeta',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/catalogo.png', scale: 2,),
-                title: Text('Catálogo', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/catalogo.png',
+                  scale: 2,
+                ),
+                title: Text('Catálogo',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/premios.png', scale: 2,),
-                title: Text('Premios', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/premios.png',
+                  scale: 2,
+                ),
+                title: Text('Premios',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
             ],
-            onTap: (int index){
-              setState((){
-                if(index == 0){
+            onTap: (int index) {
+              setState(() {
+                if (index == 0) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 }
-                if(index == 1){
+                if (index == 1) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Pago()),
                   );
                 }
-                if(index == 2){
+                if (index == 2) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Catalogo()),
                   );
                 }
-                if(index == 3){
+                if (index == 3) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Premios()),
                   );
                 }
               });
-            }, 
+            },
           ),
         ),
       ),
     );
+  }
+}
+
+class TabRoundedBodyContent extends StatelessWidget {
+  const TabRoundedBodyContent({
+    Key key,
+    @required TabController tabController,
+  })  : _tabController = tabController,
+        super(key: key);
+
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 800,
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      //color: Colors.red[100],
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          Text('hola'),
+          Text('hola'),
+          Text('hola'),
+        ],
+      ),
+    );
+  }
+}
+
+class TabRoundedTopBar extends StatelessWidget {
+  const TabRoundedTopBar({
+    Key key,
+    @required TabController tabController,
+  })  : _tabController = tabController,
+        super(key: key);
+
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //margin: EdgeInsets.symmetric(horizontal: 130),
+      width: 200,
+      height: 40,
+
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 2),
+        margin: EdgeInsets.symmetric(horizontal: 25),
+        child: TabBar(controller: _tabController, tabs: [
+          CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
+          CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
+          CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
+        ]),
+      ),
+    );
+  }
+}
+
+class PremiosScrollView extends StatefulWidget {
+  // PremiosScrollView({this.st});
+  // final String st;
+
+  @override
+  _PremiosScrollViewState createState() => _PremiosScrollViewState();
+}
+
+class _PremiosScrollViewState extends State<PremiosScrollView> {
+  _PremiosScrollViewState({this.st});
+  final String st;
+
+  Future<void> _neverSatisfied(String st) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Código listo para ser escaneado!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                BarCodeImage(
+                  params: EAN8BarCodeParams(
+                    '${st.toUpperCase()}',
+                    //'1235',
+                    lineWidth:
+                        3.5, // width for a single black/white bar (default: 2.0)
+                    barHeight:
+                        100.0, // height for the entire widget (default: 100.0)
+                    withText:
+                        false, // Render with text label or not (default: false)
+                  ),
+                  onError: (error) {
+                    // Error handler
+                    print('error = $error');
+                  },
+                ),
+                SizedBox(height: 30,),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PremiosModel>(
+      future: requestPremios,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 0.95,
+            children: List.generate(snapshot.data.premios.length, (index) {
+              return Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        _neverSatisfied(snapshot
+                            .data.premios[index].codigoBarras
+                            .toString());
+                      },
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          Stack(
+                            alignment: Alignment.topCenter,
+                            children: <Widget>[
+                              Image.asset('assets/premiosbackground.png',
+                                  scale: 1.4),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SizedBox(height: 10),
+                                  Image.network(
+                                      '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}',
+                                      scale: 1.2),
+                                  Text('${snapshot.data.premios[index].nombre}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  SizedBox(height: 11),
+                                  BarCodeImage(
+                                    params: Code39BarCodeParams(
+                                      '${snapshot.data.premios[index].codigoBarras.toString()}',
+                                      // '1235',
+                                      lineWidth:
+                                          0.30, // width for a single black/white bar (default: 2.0)
+                                      barHeight:
+                                          15.0, // height for the entire widget (default: 100.0)
+                                      withText:
+                                          false, // Render with text label or not (default: false)
+                                    ),
+                                    onError: (error) {
+                                      // Error handler
+                                      print('error = $error');
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
+  String changeImageFormatToUpper(String st) {
+    String start;
+    String format;
+    String newString;
+    if (st.substring(st.length - 3).compareTo('PNG') > 0) {
+      format = "PNG";
+      start = st.substring(0, st.length - 3);
+      newString = '$start$format';
+      // print(newString);
+      return newString;
+    } else
+      return st;
   }
 }
