@@ -1,10 +1,14 @@
 import 'package:bubbletown_v1/encuesta.dart';
+import 'package:bubbletown_v1/services/notificaciones_service.dart';
 import 'package:flutter/material.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
+import 'models/notificaciones_model.dart';
 import 'premios_page.dart';
+
+Future<NotificacionesModel> requestNotif;
 
 class Notificaciones extends StatefulWidget {
   @override
@@ -13,6 +17,12 @@ class Notificaciones extends StatefulWidget {
 }
 
 class _NotificacionesState extends State<Notificaciones> {
+
+  @override
+  void initState() {
+    super.initState();
+    requestNotif = fetchNotificaciones('5e141e35bca2e7cee96804e7');
+  }
   
    @override
   Widget build(BuildContext context) {
@@ -59,164 +69,7 @@ class _NotificacionesState extends State<Notificaciones> {
                   ),
                 ),
                 SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-                  child: Container(
-                     decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Image.asset('assets/notif/like.png', scale: 4),
-                            Text(
-                              'Cómo estuvo tu bebida?', 
-                              style: TextStyle(
-                                fontSize: 17, 
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            ButtonTheme(
-                              minWidth: 4,
-                              child: FlatButton(
-                              
-                              padding: EdgeInsets.all(0),
-                                onPressed: () => {},
-                                child: Icon(Icons.close, size: 20,),
-                              ),
-                            ),
-                            
-                            ],
-                          ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                          child:Text(
-                            "Queremos brindarte un mejor servicio por lo cual tu satisfacción es nuestro objetivo",
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                        SizedBox(height: 35),
-                        Divider(height: 3, color: Colors.black),
-                        Container(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text('Responder', style: TextStyle(fontWeight: FontWeight.bold),),
-                              FlatButton(
-                                onPressed: () => {
-                                   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => Encuesta()),
-                                  )
-                                },
-                                child: Image.asset('assets/notif/check.png', scale: 4)
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),  
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-                  child: Container(
-                     decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Image.asset('assets/notif/question.png', scale: 4),
-                            Text(
-                              'Cómo estuvo tu bebida?', 
-                              style: TextStyle(
-                                fontSize: 17, 
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            Icon(Icons.close, size: 23),
-                            ],
-                          ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                          child:Text(
-                            "Queremos brindarte un mejor servicio por lo cual tu satisfacción es nuestro objetivo",
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                        SizedBox(height: 35),
-                        Divider(height: 3, color: Colors.black),
-                        Container(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text('Recordar más tarde', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Image.asset('assets/notif/check.png', scale: 4),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-                  child: Container(
-                     decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Image.asset('assets/notif/like.png', scale: 4),
-                            Text(
-                              'Cómo estuvo tu bebida?', 
-                              style: TextStyle(
-                                fontSize: 17, 
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            Icon(Icons.close, size: 23),
-                            ],
-                          ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                          child:Text(
-                            "Queremos brindarte un mejor servicio por lo cual tu satisfacción es nuestro objetivo",
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                        SizedBox(height: 35),
-                        Divider(height: 3, color: Colors.black),
-                        Container(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text('Recordar más tarde', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Image.asset('assets/notif/check.png', scale: 4),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                NotificacionesScrollList(),
               ],
             ),
           ),
@@ -280,5 +133,103 @@ class _NotificacionesState extends State<Notificaciones> {
         ),
       ),
     );
+  }
+}
+
+class NotificacionesScrollList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<NotificacionesModel>(
+      future: requestNotif,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Column(
+            children: List.generate(snapshot.data.notificaciones.length, (index) {
+              return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
+                  child: Container(
+                     decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: Colors.black, width: 1),
+                          ),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Image.network('${changeImageFormatToUpper(snapshot.data.notificaciones[index].imagenIcon)}', scale: 1),
+                            Text(
+                              '${snapshot.data.notificaciones[index].titulo}', 
+                              style: TextStyle(
+                                fontSize: 17, 
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            ButtonTheme(
+                              minWidth: 4,
+                              child: FlatButton(
+                              
+                              padding: EdgeInsets.all(0),
+                                onPressed: () => {},
+                                child: Icon(Icons.close, size: 20,),
+                              ),
+                            ),
+                            
+                            ],
+                          ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          child:Text(
+                            "${snapshot.data.notificaciones[index].mensaje}",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        SizedBox(height: 35),
+                        Divider(height: 3, color: Colors.black),
+                        Container(
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Text('Responder', style: TextStyle(fontWeight: FontWeight.bold),),
+                              FlatButton(
+                                onPressed: () => {
+                                   Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => Encuesta()),
+                                  )
+                                },
+                                child: Image.asset('assets/notif/check.png', scale: 4)
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+            }),);
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
+  String changeImageFormatToUpper(String st) {
+    String start;
+    String format;
+    String newString;
+    if (st.substring(st.length - 3).compareTo('PNG') > 0) {
+      format = "PNG";
+      start = st.substring(0, st.length - 3);
+      newString = '$start$format';
+      // print(newString);
+      return newString;
+    } else
+      return st;
   }
 }
