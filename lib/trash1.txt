@@ -1,0 +1,223 @@
+Container(
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(height: 17),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Smooth, refreshing and great source of antioxidants',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Smooth, refreshing and great source of antioxidants',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 17),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Smooth, refreshing and great source of antioxidants',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 17),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bebida.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Smooth, refreshing and great source of antioxidants',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+
+
+                      Container(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.network(
+                                          '${changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                                          scale: 1),
+                                      SizedBox(height: 10),
+                                      Text('Tea',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15)),
+                                      SizedBox(height: 3),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                                        child: Container(
+                                          child: Text(
+                                            '${snapshot.data.catalogo[index].descripcion}',
+                                            style: TextStyle(fontSize: 12),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                      
+                                    ],
+                                  ),
+                                );
+
+
+                                FutureBuilder<Catalogomodel>(
+                        future: requestCatalogo,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return GridView.count(
+                              primary: false,
+                              padding: const EdgeInsets.all(10),
+                              childAspectRatio: 0.85,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              crossAxisCount: 2,
+                              children: List.generate(100, (index) {
+                                return Center(
+                                  child: Text(
+                                    'Item $index',
+                                    style: Theme.of(context).textTheme.headline,
+                                  ),
+                                );
+                              }),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return CircularProgressIndicator();
+                        },
+                      ),

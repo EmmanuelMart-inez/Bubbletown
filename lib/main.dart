@@ -24,7 +24,7 @@ import 'encuestaopen_page.dart';
 import 'home_page.dart';
 
 void main() {
-  debugPaintSizeEnabled = false;
+  debugPaintSizeEnabled = true;
   runApp(MyApp());
  } 
 

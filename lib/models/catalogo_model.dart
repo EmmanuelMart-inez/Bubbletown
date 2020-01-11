@@ -1,22 +1,22 @@
 // To parse this JSON data, do
 //
-//     final catalogo = catalogoFromJson(jsonString);
+//     final catalogomodel = catalogomodelFromJson(jsonString);
 
 import 'dart:convert';
 
-Catalogo catalogoFromJson(String str) => Catalogo.fromJson(json.decode(str));
+Catalogomodel catalogomodelFromJson(String str) => Catalogomodel.fromJson(json.decode(str));
 
-String catalogoToJson(Catalogo data) => json.encode(data.toJson());
+String catalogomodelToJson(Catalogomodel data) => json.encode(data.toJson());
 
-class Catalogo {
-    List<CatalogoElement> catalogo;
+class Catalogomodel {
+    List<Catalogo> catalogo;
 
-    Catalogo({
+    Catalogomodel({
         this.catalogo,
     });
 
-    factory Catalogo.fromJson(Map<String, dynamic> json) => Catalogo(
-        catalogo: List<CatalogoElement>.from(json["Catalogo"].map((x) => CatalogoElement.fromJson(x))),
+    factory Catalogomodel.fromJson(Map<String, dynamic> json) => Catalogomodel(
+        catalogo: List<Catalogo>.from(json["Catalogo"].map((x) => Catalogo.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -24,7 +24,7 @@ class Catalogo {
     };
 }
 
-class CatalogoElement {
+class Catalogo {
     String imagen;
     String descripcion;
     DateTime fechaVigencia;
@@ -32,7 +32,7 @@ class CatalogoElement {
     String titulo;
     String tipo;
 
-    CatalogoElement({
+    Catalogo({
         this.imagen,
         this.descripcion,
         this.fechaVigencia,
@@ -41,7 +41,7 @@ class CatalogoElement {
         this.tipo,
     });
 
-    factory CatalogoElement.fromJson(Map<String, dynamic> json) => CatalogoElement(
+    factory Catalogo.fromJson(Map<String, dynamic> json) => Catalogo(
         imagen: json["imagen"],
         descripcion: json["descripcion"],
         fechaVigencia: DateTime.parse(json["fecha_vigencia"]),

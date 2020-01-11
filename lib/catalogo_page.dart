@@ -1,26 +1,33 @@
+import 'package:bubbletown_v1/services/catalogo_service.dart';
 import 'package:flutter/material.dart';
 
 import 'escanea_page.dart';
 import 'home_page.dart';
+import 'models/catalogo_model.dart';
 import 'premios_page.dart';
+
+Future<Catalogomodel> requestCatalogoBebidas;
+Future<Catalogomodel> requestCatalogoAlimentos;
 
 class Catalogo extends StatefulWidget {
   @override
-  const Catalogo({ Key key }) : super(key: key);
+  const Catalogo({Key key}) : super(key: key);
   _CatalogoState createState() => _CatalogoState();
 }
 
-class _CatalogoState extends State<Catalogo> with SingleTickerProviderStateMixin{
+class _CatalogoState extends State<Catalogo>
+    with SingleTickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'ALIMENTOS'),
     Tab(text: 'BEBIDAS'),
   ];
-  
-  TabController _tabController;
 
+  TabController _tabController;
   @override
   void initState() {
     super.initState();
+    requestCatalogoBebidas = fetchCatalogo('Bebidas');
+    requestCatalogoAlimentos = fetchCatalogo('Alimentos');
     _tabController = TabController(vsync: this, length: myTabs.length);
   }
 
@@ -30,7 +37,7 @@ class _CatalogoState extends State<Catalogo> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -61,7 +68,7 @@ class _CatalogoState extends State<Catalogo> with SingleTickerProviderStateMixin
             ),
           ),
         ),
-        body: SingleChildScrollView(
+        body: Container(
           child: Container(
             width: double.infinity,
             child: Column(
@@ -89,333 +96,309 @@ class _CatalogoState extends State<Catalogo> with SingleTickerProviderStateMixin
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 1.2)
-                        ),
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.black, width: 1.2)),
                   child: Container(
-                  margin: EdgeInsets.only(right: 4),
+                    margin: EdgeInsets.only(right: 4),
                     child: TabBar(
-                      controller: _tabController,
-                      indicatorColor: Colors.red,
-                      indicator: BoxDecoration(
+                        controller: _tabController,
+                        indicatorColor: Colors.red,
+                        indicator: BoxDecoration(
                           color: Colors.grey[400],
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.black, width: 1),
-                      ),
-                      tabs: [
-                        Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                            //border: Border.all(color: Colors.black, width: 1)
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Bebidas'),
-                            ],
-                          ),
                         ),
-                        Container(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Alimentos'),
-                            ],
+                        tabs: [
+                          Container(
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(20),
+                              //border: Border.all(color: Colors.black, width: 1)
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text('Bebidas'),
+                              ],
+                            ),
                           ),
-                        ),
-                      ]),
+                          Container(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text('Alimentos'),
+                              ],
+                            ),
+                          ),
+                        ]),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 800,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  //color: Colors.red[100],
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Smooth, refreshing and great source of antioxidants',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Smooth, refreshing and great source of antioxidants',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Smooth, refreshing and great source of antioxidants',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Tea', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bebida.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Acai Smoothie', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Smooth, refreshing and great source of antioxidants',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bolipan.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('Bolipán', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset('assets/bolipanes.png', scale: 3),
-                                    SizedBox(height: 10),
-                                    Text('2Pack Bolipán', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: 120,
-                                      child: Text(
-                                        'Smooth, refreshing and great source of antioxidants',
-                                        style: TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                SizedBox(
+                  height: 15,
+                ),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    //height: 900,
+                    //padding: EdgeInsets.symmetric(horizontal: 20),
+                    //color: Colors.red[100],
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        BebidasScrollCatalogo(),
+                        AlimentosScrollCatalogo(),
+                        
+
+                        // GridView.count(
+                        //   primary: false,
+                        //   padding: const EdgeInsets.all(10),
+                        //   childAspectRatio: 0.85,
+                        //   crossAxisSpacing: 10,
+                        //   mainAxisSpacing: 10,
+                        //   crossAxisCount: 2,
+                        //   children: <Widget>[
+
+                        //   ],
+                        // )
+                      ],
+                    ),
                   ),
-                ),                 
+                ),
               ],
             ),
           ),
         ),
-        bottomNavigationBar:  Container(
+        bottomNavigationBar: Container(
           height: 105,
           decoration: BoxDecoration(
-            border: Border(
-            top: BorderSide(width: 0.7, color: Colors.black),)
-          ),
+              border: Border(
+            top: BorderSide(width: 0.7, color: Colors.black),
+          )),
           child: BottomNavigationBar(
             iconSize: 40,
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/inicio.png', scale: 2,),
-                title: Text('Inicio', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/inicio.png',
+                  scale: 2,
+                ),
+                title: Text('Inicio',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/bar.png', scale: 2,),
-                title: Text('Tarjeta', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/bar.png',
+                  scale: 2,
+                ),
+                title: Text('Tarjeta',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/catalogo.png', scale: 2,),
-                title: Text('Catálogo', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/catalogo.png',
+                  scale: 2,
+                ),
+                title: Text('Catálogo',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
               BottomNavigationBarItem(
-                icon: Image.asset('assets/bottombar/premios.png', scale: 2,),
-                title: Text('Premios', style: TextStyle(color: Colors.black, fontSize: 14)),
+                icon: Image.asset(
+                  'assets/bottombar/premios.png',
+                  scale: 2,
+                ),
+                title: Text('Premios',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
               ),
             ],
-            onTap: (int index){
-              setState((){
-                if(index == 0){
+            onTap: (int index) {
+              setState(() {
+                if (index == 0) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 }
-                if(index == 1){
+                if (index == 1) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Pago()),
                   );
                 }
-                if(index == 2){
+                if (index == 2) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Catalogo()),
                   );
                 }
-                if(index == 3){
+                if (index == 3) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Premios()),
                   );
                 }
               });
-            }, 
+            },
           ),
         ),
       ),
     );
+  }
+
+  ListTile _tile(String title, String subtitle, IconData icon) => ListTile(
+        title: Text(title,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            )),
+        subtitle: Text(subtitle),
+        leading: Icon(
+          icon,
+          color: Colors.blue[500],
+        ),
+      );
+
+  
+}
+
+class BebidasScrollCatalogo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Catalogomodel>(
+      future: requestCatalogoBebidas,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            children: List.generate(snapshot.data.catalogo.length, (index) {
+              return Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[ 
+                    Image.network('${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}', scale: 1 ),
+                    SizedBox(height: 10),
+                    Text('${snapshot.data.catalogo[index].titulo}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15)),
+                    SizedBox(height: 3),
+                    Container(
+                      width: 120,
+                      child: Text(
+                        '${snapshot.data.catalogo[index].descripcion}',
+                        style: TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
+  String changeImageFormatToUpper(String st) {
+    String start;
+    String format;
+    String newString;
+    if (st.substring(st.length - 3).compareTo('PNG') > 0) {
+      format = "PNG";
+      start = st.substring(0, st.length - 3);
+      newString = '$start$format';
+      // print(newString);
+      return newString;
+    } else
+      return st;
+  }
+
+  Catalogomodel getCategoriaByTipo(Catalogomodel cat){
+    Catalogomodel newcat;
+    for (var item in cat.catalogo){
+      if(item.tipo == 'Alimentos'){
+        newcat.catalogo.add(item);
+      }else if(item.tipo == 'Bebidas'){
+        newcat.catalogo.add(item);
+      }
+    }
+    return newcat;
+  }
+}
+
+class AlimentosScrollCatalogo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Catalogomodel>(
+      future: requestCatalogoAlimentos,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            children: List.generate(snapshot.data.catalogo.length, (index) {
+              return Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[ 
+                    Image.network('${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}', scale: 1 ),
+                    SizedBox(height: 10),
+                    Text('${snapshot.data.catalogo[index].titulo}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15)),
+                    SizedBox(height: 3),
+                    Container(
+                      width: 120,
+                      child: Text(
+                        '${snapshot.data.catalogo[index].descripcion}',
+                        style: TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
+  String changeImageFormatToUpper(String st) {
+    String start;
+    String format;
+    String newString;
+    if (st.substring(st.length - 3).compareTo('PNG') > 0) {
+      format = "PNG";
+      start = st.substring(0, st.length - 3);
+      newString = '$start$format';
+      // print(newString);
+      return newString;
+    } else
+      return st;
+  }
+
+  Catalogomodel getCategoriaByTipo(Catalogomodel cat){
+    Catalogomodel newcat;
+    for (var item in cat.catalogo){
+      if(item.tipo == 'Alimentos'){
+        newcat.catalogo.add(item);
+      }else if(item.tipo == 'Bebidas'){
+        newcat.catalogo.add(item);
+      }
+    }
+    return newcat;
   }
 }

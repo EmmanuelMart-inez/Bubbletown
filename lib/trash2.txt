@@ -1,0 +1,47 @@
+Container(
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(height: 17),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bolipan.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('Bolipán', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Sweet chocolate macadamia nut syrup, rich expreso and steamed half and half',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/bolipanes.png', scale: 3),
+                                    SizedBox(height: 10),
+                                    Text('2Pack Bolipán', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    SizedBox(height: 3),
+                                    Container(
+                                      width: 120,
+                                      child: Text(
+                                        'Smooth, refreshing and great source of antioxidants',
+                                        style: TextStyle(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
