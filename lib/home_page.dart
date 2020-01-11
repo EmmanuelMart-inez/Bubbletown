@@ -192,14 +192,18 @@ class WelcomeWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Bienvenid@ ', style: TextStyle(fontSize: 32)),
         FutureBuilder<Welcome>(
           future: requestWelcome,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Text(
-                '${snapshot.data.participante.nombre}',
-                style: TextStyle(fontSize: 32, color: Colors.blueGrey),
+              return Row(
+                children: <Widget>[
+                  Text(snapshot.data.participante.sexo == 'Masculino' ? 'Bienvenido ' : 'Bienvenida ', style: TextStyle(fontSize: 32)),
+                  Text(
+                    '${snapshot.data.participante.nombre}',
+                    style: TextStyle(fontSize: 32, color: Colors.blueGrey),
+                  ),
+                ],
               );
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}");

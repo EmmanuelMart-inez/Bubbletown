@@ -33,12 +33,14 @@ class Participante {
     TarjetaSellos tarjetaSellos;
     String nombre="";
     TarjetaPuntos tarjetaPuntos;
+    String sexo="";
 
     Participante({
         this.id,
         this.tarjetaSellos,
         this.nombre,
         this.tarjetaPuntos,
+        this.sexo,
     });
 
     factory Participante.fromJson(Map<String, dynamic> json) => Participante(
@@ -46,6 +48,7 @@ class Participante {
         tarjetaSellos: TarjetaSellos.fromJson(json["tarjeta_sellos"]),
         nombre: json["nombre"],
         tarjetaPuntos: TarjetaPuntos.fromJson(json["tarjeta_puntos"]),
+        sexo: json["sexo"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -53,6 +56,7 @@ class Participante {
         "tarjeta_sellos": tarjetaSellos.toJson(),
         "nombre": nombre,
         "tarjeta_puntos": tarjetaPuntos.toJson(),
+        "sexo": sexo,
     };
 }
 
