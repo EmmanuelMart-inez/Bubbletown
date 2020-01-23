@@ -1,11 +1,15 @@
 //import 'package:bubbletown_v1/my_flutter_app_icons.dart';
 import 'package:bubbletown_v1/my_flutter_app_icons.dart';
+import 'package:bubbletown_v1/services/movimientos_service.dart';
 import 'package:flutter/material.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
+import 'models/movimientos_model.dart';
 import 'premios_page.dart';
+
+Future<MovimientosModel> requestMovimientos;
 
 class Movimientos extends StatefulWidget {
   @override
@@ -13,6 +17,12 @@ class Movimientos extends StatefulWidget {
 }
 
 class _MovimientosState extends State<Movimientos> {
+  @override
+  void initState() {
+    super.initState();
+    requestMovimientos = fetchMovimientos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

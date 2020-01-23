@@ -189,29 +189,40 @@ class DefaultHeaderWidget extends StatelessWidget {
 class WelcomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FutureBuilder<Welcome>(
-          future: requestWelcome,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Row(
-                children: <Widget>[
-                  Text(snapshot.data.participante.sexo == 'Masculino' ? 'Bienvenido ' : 'Bienvenida ', style: TextStyle(fontSize: 32)),
-                  Text(
-                    '${snapshot.data.participante.nombre}',
-                    style: TextStyle(fontSize: 32, color: Colors.blueGrey),
-                  ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return CircularProgressIndicator();
-          },
-        ),
-      ],
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          FutureBuilder<Welcome>(
+            future: requestWelcome,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: <Widget>[
+                    Text(
+                        snapshot.data.participante.sexo == 'Masculino'
+                            ? 'Bienvenido '
+                            : 'Bienvenida ',
+                        style: TextStyle(fontSize: 32)),
+                    Container(
+                      width: 180,
+                      child: Text(
+                        '${snapshot.data.participante.nombre}',
+                        overflow: TextOverflow.clip,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 32, color: Colors.blueGrey),
+                      ),
+                    ),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return CircularProgressIndicator();
+            },
+          ),
+        ],
+      ),
     );
   }
 }
