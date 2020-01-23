@@ -16,18 +16,18 @@ class MovimientosModel {
     });
 
     factory MovimientosModel.fromJson(Map<String, dynamic> json) => MovimientosModel(
-        movimientos: json["Movimientos"] == null ? null : List<Movimiento>.from(json["Movimientos"].map((x) => Movimiento.fromJson(x))),
+        movimientos: List<Movimiento>.from(json["Movimientos"].map((x) => Movimiento.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "Movimientos": movimientos == null ? null : List<dynamic>.from(movimientos.map((x) => x.toJson())),
+        "Movimientos": List<dynamic>.from(movimientos.map((x) => x.toJson())),
     };
 }
 
 class Movimiento {
     String nombre;
     String idParticipante;
-    int total;
+    double total;
     String imagenIcon;
     DateTime fecha;
     String tipo;
@@ -44,22 +44,22 @@ class Movimiento {
     });
 
     factory Movimiento.fromJson(Map<String, dynamic> json) => Movimiento(
-        nombre: json["nombre"] == null ? null : json["nombre"],
-        idParticipante: json["id_participante"] == null ? null : json["id_participante"],
-        total: json["total"] == null ? null : json["total"],
-        imagenIcon: json["imagen_icon"] == null ? null : json["imagen_icon"],
-        fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
-        tipo: json["tipo"] == null ? null : json["tipo"],
-        id: json["_id"] == null ? null : json["_id"],
+        nombre: json["nombre"],
+        idParticipante: json["id_participante"],
+        total: json["total"],
+        imagenIcon: json["imagen_icon"],
+        fecha: DateTime.parse(json["fecha"]),
+        tipo: json["tipo"],
+        id: json["_id"],
     );
 
     Map<String, dynamic> toJson() => {
-        "nombre": nombre == null ? null : nombre,
-        "id_participante": idParticipante == null ? null : idParticipante,
-        "total": total == null ? null : total,
-        "imagen_icon": imagenIcon == null ? null : imagenIcon,
-        "fecha": fecha == null ? null : fecha.toIso8601String(),
-        "tipo": tipo == null ? null : tipo,
-        "_id": id == null ? null : id,
+        "nombre": nombre,
+        "id_participante": idParticipante,
+        "total": total,
+        "imagen_icon": imagenIcon,
+        "fecha": fecha.toIso8601String(),
+        "tipo": tipo,
+        "_id": id,
     };
 }
