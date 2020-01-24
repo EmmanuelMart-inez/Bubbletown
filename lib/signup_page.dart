@@ -1,5 +1,8 @@
 import 'package:bubbletown_v1/loginform_page.dart';
+import 'package:bubbletown_v1/models/signup_model.dart';
+import 'package:bubbletown_v1/services/signup_service.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'home_page.dart';
 
@@ -9,6 +12,44 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+// Create a text controller and use it to retrieve the current value
+  // of the TextField.
+  SignUpFormModel form;
+  final nombreController = TextEditingController();
+  final apelliController = TextEditingController();
+  final correoController = TextEditingController();
+  final contra1Controller = TextEditingController();
+  final contra2Controller = TextEditingController();
+  var mostrarcontra = false;
+  bool terminosycond = false;
+  DateTime _selectedDateTime;
+  int _value = 2;
+  bool _isfull;
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    nombreController.dispose();
+    apelliController.dispose();
+    correoController.dispose();
+    contra1Controller.dispose();
+    contra2Controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    form = SignUpFormModel();
+    // form.nombre = nombreController.text;
+    // form.paterno = apelliController.text;
+    // form.email = correoController.text;
+    // form.password = contra1Controller.text;
+    // form.nombre = nombreController.text;
+    _isfull = false;
+    form.fechaNacimiento = _selectedDateTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool check = true;
@@ -35,14 +76,15 @@ class _SignupState extends State<Signup> {
                   'Sign up',
                   style: TextStyle(fontSize: 18),
                 ),
-                SizedBox(height: 14),
+                SizedBox(height: 24),
                 Container(
-                  height: 320.0,
+                  height: 380.0,
                   padding: EdgeInsets.only(left: 35, right: 35),
                   child: Column(
                     children: <Widget>[
                       Expanded(
                         child: TextField(
+                          controller: nombreController,
                           obscureText: false,
                           decoration: InputDecoration(
                             suffixIcon:
@@ -51,11 +93,16 @@ class _SignupState extends State<Signup> {
                             labelText: 'Nombre',
                           ),
                           style: TextStyle(fontSize: 16),
+                          maxLength: 10,
+                          onChanged: (nombre) {
+                            form.nombre = nombreController.text;
+                          },
                         ),
                       ),
-                      SizedBox(height: 14),
+                      SizedBox(height: 24),
                       Expanded(
                         child: TextField(
+                          controller: apelliController,
                           obscureText: false,
                           decoration: InputDecoration(
                             suffixIcon:
@@ -64,11 +111,16 @@ class _SignupState extends State<Signup> {
                             labelText: 'Apellido',
                           ),
                           style: TextStyle(fontSize: 16),
+                          maxLength: 12,
+                          onChanged: (pat) {
+                            form.paterno = apelliController.text;
+                          },
                         ),
                       ),
-                      SizedBox(height: 14),
+                      SizedBox(height: 24),
                       Expanded(
                         child: TextField(
+                          controller: correoController,
                           obscureText: false,
                           decoration: InputDecoration(
                             suffixIcon:
@@ -77,29 +129,119 @@ class _SignupState extends State<Signup> {
                             labelText: 'Correo',
                           ),
                           style: TextStyle(fontSize: 16),
+                          maxLength: 12,
+                          onChanged: (email) {
+                            form.email = correoController.text;
+                          },
                         ),
                       ),
-                      SizedBox(height: 14),
+                      SizedBox(height: 24),
                       Expanded(
                         child: TextField(
-                          obscureText: true,
+                          controller: contra1Controller,
+                          obscureText: mostrarcontra,
                           decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.remove_red_eye,
-                                color: Colors.lightBlue),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.remove_red_eye,
+                                color: Colors.lightBlue,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  mostrarcontra = !mostrarcontra;
+                                });
+                              },
+                            ),
                             filled: false,
                             labelText: 'Contraseña',
                           ),
                           style: TextStyle(fontSize: 16),
+                          onChanged: (contra) {
+                            form.password = contra1Controller.text;
+                          },
                         ),
                       ),
-                      SizedBox(height: 14),
+                      SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(
+                            'Sexo:',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          Wrap(
+                            children: <Widget>[
+                              ChoiceChip(
+                                disabledColor: Colors.white,
+                                selectedColor: Colors.blue[100],
+                                avatar: Image.asset('assets/registro/man.png',
+                                    scale: 20),
+                                label: Text('Masculino'),
+                                selected: _value == 1,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    print('Masculino');
+                                    form.sexo = "Masculino";
+                                    _value = selected ? 1 : null;
+                                  });
+                                },
+                              ),
+                              ChoiceChip(
+                                label: Text(
+                                  'Femenino',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                selectedColor: Colors.pink[100],
+                                shadowColor: Colors.pink[100],
+                                avatar: Image.asset('assets/registro/woman.png',
+                                    scale: 20),
+                                selected: _value == 0,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    print('femenino');
+                                    form.sexo = "Femenino";
+                                    _value = selected ? 0 : null;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(
+                            'Fecha de nacimiento: ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: _buildCalendar,
+                          ),
+                          Text(
+                            '$_selectedDateTime',
+                            style: TextStyle(
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Checkbox(
-                            value: check,
+                            value: terminosycond,
                             onChanged: (bool value) {
-                              setState(() {});
+                              setState(() {
+                                terminosycond = value;
+                              });
                             },
                           ),
                           Text('Acepto'),
@@ -119,93 +261,104 @@ class _SignupState extends State<Signup> {
                   ),
                 ),
                 SizedBox(height: 15.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                child: MaterialButton(
-                  minWidth: 300.0,
-                  height: 50.0,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginForm()),
-                    );
-                  },
-                  child: Text(
-                    'LOG IN',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+                // Text(
+                //     '${form.nombre} ${form.paterno} ${form.email} ${form.password} ${form.sexo}  ${form.fechaNacimiento}  ${terminosycond}'),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  ),
+                  child: MaterialButton(
+                    minWidth: 300.0,
+                    height: 50.0,
+                    onPressed: () async {
+                      bool r = _validarCampos(form);
+                      if (r) {
+                        form.foto =
+                            "https://estaticos.muyinteresante.es/media/cache/760x570_thumb/uploads/images/article/5536592a70a1ae8d775df846/dia-del-mono.jpg";
+                        SignUpFormResponseModel a =
+                            await postParticipante(form);
+                        print(a.objectId.id);
+                        buildShowDialogSuccess(
+                            context, "Registro completado", "", "Continuar");
+                      } else {
+                        buildShowDialogFail(
+                            context,
+                            "Formulario incompleto",
+                            "Debes llenar todos los campos y aceptar los terminos y condiciones para continuar",
+                            "OK");
+                      }
+                    },
+                    child: Text(
+                      'LOG IN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 35, right: 35),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 15),
-                    Text(
-                      'OR',
-                      style: TextStyle(
-                        fontSize: 14,
+                Container(
+                  padding: EdgeInsets.only(left: 35, right: 35),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 15),
+                      Text(
+                        'OR',
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 15),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF415DAE),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: MaterialButton(
-                        minWidth: 300.0,
-                        height: 50.0,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
-                        child: Text(
-                          'CONTINUE WITH FACEBOOK',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                      SizedBox(height: 15),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF415DAE),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: MaterialButton(
+                          minWidth: 300.0,
+                          height: 50.0,
+                          onPressed: () =>_launchURL('https://bubbletown.me/login/facebook'),
+                          child: Text(
+                            'CONTINUE WITH FACEBOOK',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF4184F3),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: MaterialButton(
-                        minWidth: 300.0,
-                        height: 50.0,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
-                        child: Text(
-                          'CONTINUE WITH GOOGLE',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                      SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF4184F3),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: MaterialButton(
+                          minWidth: 300.0,
+                          height: 50.0,
+                          onPressed: () =>_launchURL('https://bubbletown.me/login/google'),
+                          // () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePage()),
+                          //   );
+                          // },
+                          child: Text(
+                            'CONTINUE WITH GOOGLE',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 25),
-                  ],
+                      SizedBox(height: 25),
+                    ],
+                  ),
                 ),
-              ),
               ],
             ),
           ),
@@ -213,4 +366,148 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
+
+  _buildCalendar() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime(1990),
+      firstDate: DateTime(1960),
+      lastDate: DateTime(2030),
+      locale: Locale('es', 'MX'),
+      // builder: (BuildContext context, Widget child) {
+      //   return Theme(
+      //     data: ThemeData.light(),
+      //     child: child,
+      //   );
+      // },
+    ).then(_onDateSelected);
+  }
+
+  _onDateSelected(DateTime selected) {
+    setState(() {
+      _selectedDateTime = selected;
+      form.fechaNacimiento = selected;
+    });
+  }
+
+  bool _validarCampos(SignUpFormModel form) {
+    if (form.nombre != null &&
+        form.paterno != null &&
+        form.email != null &&
+        form.password != null &&
+        form.sexo != null &&
+        form.fechaNacimiento != null &&
+        terminosycond)
+      return true;
+    else
+      return false;
+    // return '${form.nombre}${form.paterno}${form.email}${form.password}${form.sexo}${form.fechaNacimiento}';
+  }
+
+  Future buildShowDialogFail(BuildContext context, String titulo,
+      String contenido, String textButton) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("$titulo"),
+          content: new Text("$contenido"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("$textButton"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future buildShowDialogSuccess(BuildContext context, String titulo,
+      String contenido, String textButton) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("$titulo"),
+          content: new Text("$contenido"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("$textButton"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginForm()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }
+
+// class GenderOptions extends StatefulWidget {
+//   GenderOptions({this.sexo});
+//   String sexo;
+//   @override
+//   _GenderOptionsState createState() => _GenderOptionsState();
+// }
+
+// class _GenderOptionsState extends State<GenderOptions> {
+//   int _value = 2;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Wrap(
+//       children: <Widget>[
+//         ChoiceChip(
+//           disabledColor: Colors.white,
+//           selectedColor: Colors.blue[100],
+//           avatar: Image.asset('assets/registro/man.png', scale: 20),
+//           label: Text('Masculino'),
+//           selected: _value == 1,
+//           onSelected: (bool selected) {
+//             setState(() {
+//               print('Masculino');
+//               widget.sexo = "Masculino";
+//               _value = selected ? 1 : null;
+//             });
+//           },
+//         ),
+//         ChoiceChip(
+//           label: Text(
+//             'Femenino',
+//             style: TextStyle(color: Colors.red),
+//           ),
+//           selectedColor: Colors.pink[100],
+//           shadowColor: Colors.pink[100],
+//           avatar: Image.asset('assets/registro/woman.png', scale: 20),
+//           selected: _value == 0,
+//           onSelected: (bool selected) {
+//             setState(() {
+//               print('femenino');
+//               widget.sexo = "Femenino";
+//               _value = selected ? 0 : null;
+//             });
+//           },
+//         ),
+//       ],
+//     );
+//   }
+// }

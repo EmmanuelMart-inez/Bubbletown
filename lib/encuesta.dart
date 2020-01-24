@@ -102,7 +102,7 @@ class _EncuestaState extends State<Encuesta> {
                             });
                           } else {
                             int resp;
-                            // setState(() async {
+                            // setState(() async {  
                             respuestas.add(snapshot.data.paginas[actualpage]
                                 .opciones[actualresp].calificacion);
                             RespuestaEncuestaModel r = RespuestaEncuestaModel(

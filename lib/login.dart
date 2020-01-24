@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 },
                 child: Text(
-                  'Sign up',
+                  'Registrarse',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 },
                 child: Text(
-                  'I have an account',
+                  'Ya tengo una cuenta',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
