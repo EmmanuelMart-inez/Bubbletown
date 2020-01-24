@@ -1,48 +1,137 @@
+import 'package:bubbletown_v1/models/encuesta_model.dart';
+import 'package:bubbletown_v1/services/encuesta_service.dart';
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+
+import 'notificaciones_page.dart';
+
+Future<EncuestaModel> requestEncuesta;
 
 class Encuesta extends StatefulWidget {
   @override
-  const Encuesta({ Key key }) : super(key: key);
+  const Encuesta({Key key}) : super(key: key);
   _EncuestaState createState() => _EncuestaState();
 }
 
 class _EncuestaState extends State<Encuesta> {
-  
-   @override
+  int actualpage;
+  int actualresp;
+  List<String> respuestas = [];
+  final colorOn = '0xFF424242';
+  final colorOff = '0xFF9E9E9E';
+  var coloractual = '0xFF424242';
+
+  @override
+  void initState() {
+    super.initState();
+    coloractual = '0xFF424242';
+    actualpage = 0;
+    actualresp = -1;
+    requestEncuesta = fetchEncuesta('id_encuesta');
+    respuestas = [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              width: double.infinity,
+        child: FutureBuilder<EncuestaModel>(
+      future: requestEncuesta,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(80.0),
               child: Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                ),
-                child: Stack(
+                color: Color(0xFFDADADA),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '1 de 4', style: TextStyle(fontSize: 17)
+                    FlatButton(
+                      color: Color(0xFFAAAAAA),
+                      padding: EdgeInsets.all(0),
+                      onPressed: () {
+                        if (actualpage == 0)
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Notificaciones()),
+                          );
+                        else
+                          setState(() {
+                            actualpage--;
+                            respuestas.removeLast();
+                          });
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'anterior',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white, //FFDADADA
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    
-                    Align(
-                      alignment: Alignment.centerRight,
-                        child: Container(
-                        alignment: Alignment.center,
-                        color: Colors.grey[600],
-                        width: 100,
+                    Container(
+                      child: Expanded(
                         child: Text(
-                          'next', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                          '${actualpage + 1} de ${snapshot.data.paginas.length}',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      color: Color(0xFFAAAAAA),
+                      padding: EdgeInsets.all(0),
+                      onPressed: () async{
+                        if (actualresp >= 0) {
+                          if (actualpage + 1 < snapshot.data.paginas.length) {
+                            setState(() {
+                              actualpage++;
+                              respuestas.add(snapshot.data.paginas[actualpage]
+                                  .opciones[actualresp].calificacion);
+                              actualresp = -1;
+                            });
+                          } else {
+                            int resp;
+                            // setState(() async {
+                            respuestas.add(snapshot.data.paginas[actualpage]
+                                .opciones[actualresp].calificacion);
+                            RespuestaEncuestaModel r = RespuestaEncuestaModel(
+                                estado: "respondida", respuestas: respuestas);
+                            String datajson = respuestaEncuestaModelToJson(r);
+
+                            resp = await patchEncuesta(
+                                datajson, '5e2940a502ffbe39077087e0');
+                                           
+                            // });
+                            if (resp == 200)
+                              buildShowDialog(context, "Encuesta enviada",
+                                  "Muchas gracias!", "Cerrar");
+                            else
+                               buildShowDialog(context, "Ocurrio un error al procesar su solicitud", "Intente más tarde", "Ok");
+
+                          }
+                          ;
+                        }
+                        ;
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'siguiente',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white, //FFDADADA
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -50,128 +139,153 @@ class _EncuestaState extends State<Encuesta> {
                 ),
               ),
             ),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              //mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                SizedBox(height: 45),
-                Text(
-                  '¿Cuán satisfecho se encuenta con nuestro servicio?',
-                  style: TextStyle(
-                    fontSize: 22,
-                  ),
-                  textAlign: TextAlign.center,
+            body: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  //mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text('$respuestas'),
+                    SizedBox(height: 45),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        '${snapshot.data.paginas[actualpage].titulo}',
+                        style: TextStyle(
+                          fontSize: 22,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(height: 45),
+                    Column(
+                      children: List.generate(
+                        snapshot.data.paginas[actualpage].opciones.length,
+                        (index) {
+                          return FlatButton(
+                            color: index == actualresp
+                                ? Color(int.parse('$colorOn'))
+                                : Color(int.parse('$colorOff')),
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                              setState(() {
+                                actualresp = index;
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              alignment: Alignment.centerLeft,
+                              height: 60,
+                              child: Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 35.0, right: 5),
+                                    child: buildIconCheck(index),
+                                  ),
+                                  Text(
+                                    '${snapshot.data.paginas[actualpage].opciones[index].calificacion}',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 45),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  height: 60,
-                  color: Colors.grey[800],
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35.0),
-                        child: Icon(Icons.check, color: Colors.white, size: 30),
-                      ),
-                      FlatButton(
-                        onPressed: (){},
-                        child: Text('Excelente', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  height: 60,
-                  color: Colors.grey[500],
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35.0),
-                        child: Icon(Icons.check, color: Colors.grey[500], size: 30),
-                      ),
-                      FlatButton(
-                        onPressed: (){},
-                        child: Text('Bueno', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  height: 60,
-                  color: Colors.grey[500],
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35.0),
-                        child: Icon(Icons.check, color:  Colors.grey[500], size: 30),
-                      ),
-                      FlatButton(
-                        onPressed: (){},
-                        child: Text('Está bien', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  height: 60,
-                  color: Colors.grey[500],
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35.0),
-                        child: Icon(Icons.check, color: Colors.grey[500], size: 30),
-                      ),
-                      FlatButton(
-                        onPressed: (){},
-                        child: Text('Malo', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  height: 60,
-                  color: Colors.grey[500],
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35.0),
-                        child: Icon(Icons.check, color: Colors.grey[500], size: 30),
-                      ),
-                      FlatButton(
-                        onPressed: (){},
-                        child: Text('Terrible', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-        bottomNavigationBar:  Container(
-          height: 105,
-           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/notif/background_encuesta.png'),
-              fit: BoxFit.scaleDown,
+            bottomNavigationBar: Container(
+              height: 105,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/notif/background_encuesta.png'),
+                  fit: BoxFit.scaleDown,
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return Center(
+            // heightFactor: 50,
+            child: CircularProgressIndicator());
+      },
+    ));
+  }
+
+  Future buildShowDialog(BuildContext context, String titulo, String contenido,
+      String textButton) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("$titulo"),
+          content: new Text("$contenido"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("$textButton"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
+
+  Icon buildIconCheck(index) {
+    if (index == actualresp)
+      return Icon(Icons.check, color: Colors.white, size: 30);
+  }
 }
+
+// PreferredSize(
+//           preferredSize: Size.fromHeight(180.0),
+//           child: AppBar(
+//             elevation: 0,
+//             backgroundColor: Colors.transparent,
+//             flexibleSpace: Container(
+//               width: double.infinity,
+//               child: Container(
+//                 height: 200,
+//                 width: double.infinity,
+//                 decoration: BoxDecoration(
+//                   color: Colors.grey[300],
+//                 ),
+//                 child: Stack(
+//                   children: <Widget>[
+//                     Container(
+//                       alignment: Alignment.center,
+//                       child: Text(
+//                         '1 de 4', style: TextStyle(fontSize: 17)
+//                       ),
+//                     ),
+
+//                     Align(
+//                       alignment: Alignment.centerRight,
+//                         child: Container(
+//                         alignment: Alignment.center,
+//                         color: Colors.grey[600],
+//                         width: 100,
+//                         child: Text(
+//                           'next', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
