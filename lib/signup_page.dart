@@ -455,7 +455,8 @@ class _SignupState extends State<Signup> {
 
   void _launchURL(String url) async {
     if (await canLaunch(url)) {
-      await launch(url);
+      await launch(url, forceWebView: true, forceSafariVC: true);
+      await closeWebView();
     } else {
       throw 'Could not launch $url';
     }

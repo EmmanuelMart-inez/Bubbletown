@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 import 'home_page.dart';
 
@@ -8,6 +12,56 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  bool isLoggedIn = false;
+
+  Future<void> initiateFacebookLogin() async {
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+
+        // TODO: Checar en la documentación si se devuelve un valor diferente cuando el usuario se registra por primera vez o cuando no se ha registrado,
+        // en caso de que no, el API podría implementarlo y entonces dibujar las pantallas con los formularios correspondientes antes de realizar el registro
+
+        onLoginStatusChange(true);
+        // _sendTokenToServer(result.accessToken.token);
+        final token = result.accessToken.token;
+        final graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+        final profile = json.decode(graphResponse.body);
+        print(profile);
+            // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
+        // _showLoggedInUI();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        // _showCancelledMessage();
+        print("Cancelado por el usuario");
+        break;
+      case FacebookLoginStatus.error:
+        // _showErrorOnUI(result.errorMessage);
+        print("Ocurrio un error");
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isLoggedIn = false;
+  }
+
+  void onLoginStatusChange(bool isLoggedinn) {
+    setState(() {
+      this.isLoggedIn = isLoggedinn;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -130,12 +184,7 @@ class _LoginFormState extends State<LoginForm> {
                       child: MaterialButton(
                         minWidth: 300.0,
                         height: 50.0,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
+                        onPressed: () => initiateFacebookLogin(),
                         child: Text(
                           'CONTINUE WITH FACEBOOK',
                           style: TextStyle(
