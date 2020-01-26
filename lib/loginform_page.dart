@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'home_page.dart';
 
@@ -13,6 +14,32 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool isLoggedIn = false;
+  GoogleSignInAccount _currentUser;
+  String _contactText;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: <String>[
+      'email',
+    ],
+  );
+  // Future<void> initiateGoogleSignIn() async{
+  //   _googleSignIn = GoogleSignIn(
+  //       scopes: [
+  //         'profile',
+  //         'email'
+  //       ]
+  //   );
+    
+  //   try{ 
+  //     await _googleSignIn.signIn();
+  //   }
+  //   catch(e){
+  //     print(e);
+  //   }
+  // }
+
+  // Future<void> _handleSignOut() async{
+  //   _googleSignIn.disconnect();
+  // }
 
   Future<void> initiateFacebookLogin() async {
     final facebookLogin = FacebookLogin();
@@ -54,6 +81,109 @@ class _LoginFormState extends State<LoginForm> {
     // TODO: implement initState
     super.initState();
     isLoggedIn = false;
+     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
+      });
+      if (_currentUser != null) {
+        _handleGetContact();
+      }
+    });
+    _googleSignIn.signInSilently();
+  }
+
+  Future<void> _handleGetContact() async {
+    setState(() {
+      _contactText = "Loading contact info...";
+    });
+    final http.Response response = await http.get(
+      'https://people.googleapis.com/v1/people/me/connections'
+      '?requestMask.includeField=person.names',
+      headers: await _currentUser.authHeaders,
+    );
+    if (response.statusCode != 200) {
+      setState(() {
+        _contactText = "People API gave a ${response.statusCode} "
+            "response. Check logs for details.";
+      });
+      print('People API ${response.statusCode} response: ${response.body}');
+      return;
+    }
+    final Map<String, dynamic> data = json.decode(response.body);
+    final String namedContact = _pickFirstNamedContact(data);
+    setState(() {
+      if (namedContact != null) {
+        _contactText = "I see you know $namedContact!";
+      } else {
+        _contactText = "No contacts to display.";
+      }
+    });
+  }
+
+  String _pickFirstNamedContact(Map<String, dynamic> data) {
+    final List<dynamic> connections = data['connections'];
+    final Map<String, dynamic> contact = connections?.firstWhere(
+      (dynamic contact) => contact['names'] != null,
+      orElse: () => null,
+    );
+    if (contact != null) {
+      final Map<String, dynamic> name = contact['names'].firstWhere(
+        (dynamic name) => name['displayName'] != null,
+        orElse: () => null,
+      );
+      if (name != null) {
+        return name['displayName'];
+      }
+    }
+    return null;
+  }
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+
+  Widget _buildBody() {
+    if (_currentUser != null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          ListTile(
+            leading: GoogleUserCircleAvatar(
+              identity: _currentUser,
+            ),
+            title: Text(_currentUser.displayName ?? ''),
+            subtitle: Text(_currentUser.email ?? ''),
+          ),
+          const Text("Signed in successfully."),
+          Text(_contactText ?? ''),
+          RaisedButton(
+            child: const Text('SIGN OUT'),
+            onPressed: _handleSignOut,
+          ),
+          RaisedButton(
+            child: const Text('REFRESH'),
+            onPressed: _handleGetContact,
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          const Text("You are not currently signed in."),
+          RaisedButton(
+            child: const Text('SIGN IN'),
+            onPressed: _handleSignIn,
+          ),
+        ],
+      );
+    }
   }
 
   void onLoginStatusChange(bool isLoggedinn) {
@@ -195,6 +325,7 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
                     SizedBox(height: 5),
+                    _buildBody(),
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFF4184F3),
@@ -203,12 +334,7 @@ class _LoginFormState extends State<LoginForm> {
                       child: MaterialButton(
                         minWidth: 300.0,
                         height: 50.0,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
+                        onPressed: () => _handleSignIn(),
                         child: Text(
                           'CONTINUE WITH GOOGLE',
                           style: TextStyle(
@@ -218,55 +344,75 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )),
-        bottomSheet: Container(
-          height: 80.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                //crossAxisAlignment: crosAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    //Icon(Icons.my_location, color: Colors.grey[500]),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.my_location, color: Colors.grey[500]),
-                      Text(' Calle Marsella 14, Juárez, \n'
-                          '06600 Col Juárez, CDMX')
-                    ],
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    //Icon(Icons.my_location, color: Colors.grey[500]),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.timer, color: Colors.grey[500]),
-                      Text('Abierto')
-                    ],
-                  ),
-                  Row(
-                    //Icon(Icons.my_location, color: Colors.grey[500]),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [Text('10:00am - 11:00 pm')],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: Color(0xFF4184F3),
+                    //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    //   ),
+                    //   child: MaterialButton(
+                    //     minWidth: 300.0,
+                    //     height: 50.0,
+                    //     onPressed: _handleSignOut,
+                    //                             child: Text(
+                    //                               'loggout',
+                    //                               style: TextStyle(
+                    //                                 color: Colors.white,
+                    //                                 fontSize: 16,
+                    //                               ),
+                    //                             ),
+                    //                           ),
+                    //                         ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )),
+                                bottomSheet: Container(
+                                  height: 80.0,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        //crossAxisAlignment: crosAxisAlignment.start,
+                                        children: <Widget>[
+                                          Row(
+                                            //Icon(Icons.my_location, color: Colors.grey[500]),
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.my_location, color: Colors.grey[500]),
+                                              Text(' Calle Marsella 14, Juárez, \n'
+                                                  '06600 Col Juárez, CDMX')
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Row(
+                                            //Icon(Icons.my_location, color: Colors.grey[500]),
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.timer, color: Colors.grey[500]),
+                                              Text('Abierto')
+                                            ],
+                                          ),
+                                          Row(
+                                            //Icon(Icons.my_location, color: Colors.grey[500]),
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [Text('10:00am - 11:00 pm')],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        
+                          
 }

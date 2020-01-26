@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "353415518087",
+    "firebase_url": "https://bubbletownandroid-266315.firebaseio.com",
+    "project_id": "bubbletownandroid-266315",
+    "storage_bucket": "bubbletownandroid-266315.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353415518087:android:8523802cdf7f58ad532522",
+        "android_client_info": {
+          "package_name": "com.example.bubbletown_v1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353415518087-qvi9hid8mp9mfp6j5878cse6hljb66n9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bubbletown_v1",
+            "certificate_hash": "945c264b99a150f40e1fa08d9a7c7ff083af30a9"
+          }
+        },
+        {
+          "client_id": "353415518087-ie6b9dr8j8u819unrd5e5gckbk4h1u0c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkpO64_QoGCZPqKFXu_rapixFo-wA8YrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353415518087-ie6b9dr8j8u819unrd5e5gckbk4h1u0c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

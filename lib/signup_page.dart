@@ -2,7 +2,6 @@ import 'package:bubbletown_v1/loginform_page.dart';
 import 'package:bubbletown_v1/models/signup_model.dart';
 import 'package:bubbletown_v1/services/signup_service.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'home_page.dart';
 
@@ -319,7 +318,7 @@ class _SignupState extends State<Signup> {
                         child: MaterialButton(
                           minWidth: 300.0,
                           height: 50.0,
-                          onPressed: () =>_launchURL('https://bubbletown.me/login/facebook'),
+                          onPressed: () {},
                           child: Text(
                             'CONTINUE WITH FACEBOOK',
                             style: TextStyle(
@@ -338,7 +337,7 @@ class _SignupState extends State<Signup> {
                         child: MaterialButton(
                           minWidth: 300.0,
                           height: 50.0,
-                          onPressed: () =>_launchURL('https://bubbletown.me/login/google'),
+                          onPressed: () {},
                           // () {
                           //   Navigator.push(
                           //     context,
@@ -451,15 +450,6 @@ class _SignupState extends State<Signup> {
         );
       },
     );
-  }
-
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url, forceWebView: true, forceSafariVC: true);
-      await closeWebView();
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
 
