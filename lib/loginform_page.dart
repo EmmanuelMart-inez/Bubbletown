@@ -7,6 +7,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'home_page.dart';
 
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: <String>[
+    // 'profile',
+    'email',
+    // 'https://www.googleapis.com/auth/user.birthday.read',
+    // 'https://www.googleapis.com/auth/userinfo.profile',
+  ],
+);
+
 class LoginForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -14,82 +23,27 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool isLoggedIn = false;
-  GoogleSignInAccount _currentUser;
   String _contactText;
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: <String>[
-      'email',
-    ],
-  );
-  // Future<void> initiateGoogleSignIn() async{
-  //   _googleSignIn = GoogleSignIn(
-  //       scopes: [
-  //         'profile',
-  //         'email'
-  //       ]
-  //   );
-    
-  //   try{ 
-  //     await _googleSignIn.signIn();
-  //   }
-  //   catch(e){
-  //     print(e);
-  //   }
-  // }
 
-  // Future<void> _handleSignOut() async{
-  //   _googleSignIn.disconnect();
-  // }
-
-  Future<void> initiateFacebookLogin() async {
-    final facebookLogin = FacebookLogin();
-    final result = await facebookLogin.logIn(['email']);
-
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-
-        // TODO: Checar en la documentación si se devuelve un valor diferente cuando el usuario se registra por primera vez o cuando no se ha registrado,
-        // en caso de que no, el API podría implementarlo y entonces dibujar las pantallas con los formularios correspondientes antes de realizar el registro
-
-        onLoginStatusChange(true);
-        // _sendTokenToServer(result.accessToken.token);
-        final token = result.accessToken.token;
-        final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
-        final profile = json.decode(graphResponse.body);
-        print(profile);
-            // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
-        // _showLoggedInUI();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        // _showCancelledMessage();
-        print("Cancelado por el usuario");
-        break;
-      case FacebookLoginStatus.error:
-        // _showErrorOnUI(result.errorMessage);
-        print("Ocurrio un error");
-        break;
-    }
-  }
+  //////////////////////         Login Google              //////////////////////////////////
+  GoogleSignInAccount _currentUser;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    isLoggedIn = false;
-     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
       });
       if (_currentUser != null) {
-        _handleGetContact();
+        // _handleGetContact();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
       }
     });
-    _googleSignIn.signInSilently();
+    // _googleSignIn.signInSilently();
   }
 
   Future<void> _handleGetContact() async {
@@ -109,33 +63,6 @@ class _LoginFormState extends State<LoginForm> {
       print('People API ${response.statusCode} response: ${response.body}');
       return;
     }
-    final Map<String, dynamic> data = json.decode(response.body);
-    final String namedContact = _pickFirstNamedContact(data);
-    setState(() {
-      if (namedContact != null) {
-        _contactText = "I see you know $namedContact!";
-      } else {
-        _contactText = "No contacts to display.";
-      }
-    });
-  }
-
-  String _pickFirstNamedContact(Map<String, dynamic> data) {
-    final List<dynamic> connections = data['connections'];
-    final Map<String, dynamic> contact = connections?.firstWhere(
-      (dynamic contact) => contact['names'] != null,
-      orElse: () => null,
-    );
-    if (contact != null) {
-      final Map<String, dynamic> name = contact['names'].firstWhere(
-        (dynamic name) => name['displayName'] != null,
-        orElse: () => null,
-      );
-      if (name != null) {
-        return name['displayName'];
-      }
-    }
-    return null;
   }
 
   Future<void> _handleSignIn() async {
@@ -148,41 +75,78 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
-  Widget _buildBody() {
-    if (_currentUser != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          ListTile(
-            leading: GoogleUserCircleAvatar(
-              identity: _currentUser,
-            ),
-            title: Text(_currentUser.displayName ?? ''),
-            subtitle: Text(_currentUser.email ?? ''),
-          ),
-          const Text("Signed in successfully."),
-          Text(_contactText ?? ''),
-          RaisedButton(
-            child: const Text('SIGN OUT'),
-            onPressed: _handleSignOut,
-          ),
-          RaisedButton(
-            child: const Text('REFRESH'),
-            onPressed: _handleGetContact,
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          const Text("You are not currently signed in."),
-          RaisedButton(
-            child: const Text('SIGN IN'),
-            onPressed: _handleSignIn,
-          ),
-        ],
-      );
+  // Widget _buildBody() {
+  //   if (_currentUser != null) {
+  //     return Column(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       children: <Widget>[
+  //         ListTile(
+  //           leading: GoogleUserCircleAvatar(
+  //             identity: _currentUser,
+  //           ),
+  //           title: Text(_currentUser.displayName ?? ''),
+  //           subtitle: Text(_currentUser.email ?? ''),
+  //         ),
+  //         const Text("Signed in successfully."),
+  //         Text(_contactText ?? ''),
+  //         RaisedButton(
+  //           child: const Text('SIGN OUT'),
+  //           onPressed: _handleSignOut,
+  //         ),
+  //         RaisedButton(
+  //           child: const Text('REFRESH'),
+  //           onPressed: _handleGetContact,
+  //         ),
+  //       ],
+  //     );
+  //   } else {
+  //     return Column(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       children: <Widget>[
+  //         const Text("You are not currently signed in."),
+  //         RaisedButton(
+  //           child: const Text('SIGN IN'),
+  //           onPressed: _handleSignIn,
+  //         ),
+  //       ],
+  //     );
+  //   }
+  // }
+
+  //////////////////////          Login con Facebook           ///////////////////////////////
+
+  Future<void> initiateFacebookLogin() async {
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+
+        // TO DO: Checar en la documentación si se devuelve un valor diferente cuando el usuario se registra por primera vez o cuando no se ha registrado,
+        // en caso de que no, el API podría implementarlo y entonces dibujar las pantallas con los formularios correspondientes antes de realizar el registro
+
+        onLoginStatusChange(true);
+        // _sendTokenToServer(result.accessToken.token);
+        final token = result.accessToken.token;
+        final graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+        final profile = json.decode(graphResponse.body);
+        print(profile);
+        // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
+        // _showLoggedInUI();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        // _showCancelledMessage();
+        print("Cancelado por el usuario");
+        break;
+      case FacebookLoginStatus.error:
+        // _showErrorOnUI(result.errorMessage);
+        print("Ocurrio un error");
+        break;
     }
   }
 
@@ -191,6 +155,8 @@ class _LoginFormState extends State<LoginForm> {
       this.isLoggedIn = isLoggedinn;
     });
   }
+
+  //////////////////////          Login con Facebook      end     ///////////////////////////////
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +180,7 @@ class _LoginFormState extends State<LoginForm> {
           child: Column(
             children: <Widget>[
               SizedBox(height: 25.0),
-              Text('Welcome back',
+              Text('Bienvenido de regreso',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: 22.0,
                       )),
@@ -260,12 +226,14 @@ class _LoginFormState extends State<LoginForm> {
                     FlatButton(
                         //padding: EdgeInsets.only(right: 200),
                         child: Text(
-                          'Forgot password?',
+                          'Olvidaste tu contraseña?',
                           //textAlign: TextAlign.start,
                           style:
                               TextStyle(fontSize: 16, color: Colors.blueAccent),
                         ),
-                        onPressed: () {}),
+                        onPressed: () {
+                          buildShowDialog(context, "Recuperación de contraseña", "Acuda con un empleado para que pueda recuperar su contraseña. Gracias.", "Entendido");
+                        }),
                   ],
                 ),
               ),
@@ -285,7 +253,7 @@ class _LoginFormState extends State<LoginForm> {
                     );
                   },
                   child: Text(
-                    'LOG IN',
+                    'INICIAR SESIÓN',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -299,7 +267,7 @@ class _LoginFormState extends State<LoginForm> {
                   children: <Widget>[
                     SizedBox(height: 15),
                     Text(
-                      'OR',
+                      'O',
                       style: TextStyle(
                         fontSize: 14,
                       ),
@@ -316,7 +284,7 @@ class _LoginFormState extends State<LoginForm> {
                         height: 50.0,
                         onPressed: () => initiateFacebookLogin(),
                         child: Text(
-                          'CONTINUE WITH FACEBOOK',
+                          'CONTINUAR CON FACEBOOK',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -325,7 +293,7 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
                     SizedBox(height: 5),
-                    _buildBody(),
+                    // _buildBody(),
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFF4184F3),
@@ -334,9 +302,9 @@ class _LoginFormState extends State<LoginForm> {
                       child: MaterialButton(
                         minWidth: 300.0,
                         height: 50.0,
-                        onPressed: () => _handleSignIn(),
+                        onPressed: () => {_handleSignIn()},
                         child: Text(
-                          'CONTINUE WITH GOOGLE',
+                          'CONTINUAR CON GOOGLE',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -362,57 +330,78 @@ class _LoginFormState extends State<LoginForm> {
                     //                             ),
                     //                           ),
                     //                         ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                                bottomSheet: Container(
-                                  height: 80.0,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        //crossAxisAlignment: crosAxisAlignment.start,
-                                        children: <Widget>[
-                                          Row(
-                                            //Icon(Icons.my_location, color: Colors.grey[500]),
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(Icons.my_location, color: Colors.grey[500]),
-                                              Text(' Calle Marsella 14, Juárez, \n'
-                                                  '06600 Col Juárez, CDMX')
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Row(
-                                            //Icon(Icons.my_location, color: Colors.grey[500]),
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(Icons.timer, color: Colors.grey[500]),
-                                              Text('Abierto')
-                                            ],
-                                          ),
-                                          Row(
-                                            //Icon(Icons.my_location, color: Colors.grey[500]),
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [Text('10:00am - 11:00 pm')],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        
-                          
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )),
+        bottomSheet: Container(
+          height: 80.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                //crossAxisAlignment: crosAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    //Icon(Icons.my_location, color: Colors.grey[500]),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.my_location, color: Colors.grey[500]),
+                      Text(' Calle Marsella 14, Juárez, \n'
+                          '06600 Col Juárez, CDMX')
+                    ],
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    //Icon(Icons.my_location, color: Colors.grey[500]),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.timer, color: Colors.grey[500]),
+                      Text('Abierto')
+                    ],
+                  ),
+                  Row(
+                    //Icon(Icons.my_location, color: Colors.grey[500]),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [Text('10:00am - 11:00 pm')],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future buildShowDialog(BuildContext context, String titulo, String contenido,
+      String textButton) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("$titulo"),
+          content: new Text("$contenido"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("$textButton"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

@@ -78,13 +78,16 @@ class _CatalogoState extends State<Catalogo>
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, top: 10),
-                      child: Icon(Icons.arrow_back_ios, size: 35),
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: IconButton(
+                        padding: EdgeInsets.all(0),
+                        icon: Icon(Icons.arrow_back_ios, size: 35),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 1,
                 ),
                 Text(
                   'Catálogo',
@@ -126,6 +129,7 @@ class _CatalogoState extends State<Catalogo>
                             ),
                           ),
                           Container(
+                            height: 30,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +155,6 @@ class _CatalogoState extends State<Catalogo>
                       children: [
                         BebidasScrollCatalogo(),
                         AlimentosScrollCatalogo(),
-                        
 
                         // GridView.count(
                         //   primary: false,
@@ -261,8 +264,6 @@ class _CatalogoState extends State<Catalogo>
           color: Colors.blue[500],
         ),
       );
-
-  
 }
 
 class BebidasScrollCatalogo extends StatelessWidget {
@@ -279,8 +280,10 @@ class BebidasScrollCatalogo extends StatelessWidget {
               return Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[ 
-                    Image.network('${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}', scale: 1 ),
+                  children: <Widget>[
+                    Image.network(
+                        '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                        scale: 1),
                     SizedBox(height: 10),
                     Text('${snapshot.data.catalogo[index].titulo}',
                         style: TextStyle(
@@ -321,12 +324,12 @@ class BebidasScrollCatalogo extends StatelessWidget {
       return st;
   }
 
-  Catalogomodel getCategoriaByTipo(Catalogomodel cat){
+  Catalogomodel getCategoriaByTipo(Catalogomodel cat) {
     Catalogomodel newcat;
-    for (var item in cat.catalogo){
-      if(item.tipo == 'Alimentos'){
+    for (var item in cat.catalogo) {
+      if (item.tipo == 'Alimentos') {
         newcat.catalogo.add(item);
-      }else if(item.tipo == 'Bebidas'){
+      } else if (item.tipo == 'Bebidas') {
         newcat.catalogo.add(item);
       }
     }
@@ -348,8 +351,10 @@ class AlimentosScrollCatalogo extends StatelessWidget {
               return Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[ 
-                    Image.network('${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}', scale: 1 ),
+                  children: <Widget>[
+                    Image.network(
+                        '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                        scale: 1),
                     SizedBox(height: 10),
                     Text('${snapshot.data.catalogo[index].titulo}',
                         style: TextStyle(
@@ -390,12 +395,12 @@ class AlimentosScrollCatalogo extends StatelessWidget {
       return st;
   }
 
-  Catalogomodel getCategoriaByTipo(Catalogomodel cat){
+  Catalogomodel getCategoriaByTipo(Catalogomodel cat) {
     Catalogomodel newcat;
-    for (var item in cat.catalogo){
-      if(item.tipo == 'Alimentos'){
+    for (var item in cat.catalogo) {
+      if (item.tipo == 'Alimentos') {
         newcat.catalogo.add(item);
-      }else if(item.tipo == 'Bebidas'){
+      } else if (item.tipo == 'Bebidas') {
         newcat.catalogo.add(item);
       }
     }

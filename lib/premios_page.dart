@@ -80,18 +80,22 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
                           children: <Widget>[
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 8.0, top: 10),
-                              child: Icon(Icons.arrow_back_ios, size: 35),
+                                  const EdgeInsets.only(left: 8.0),
+                              child: Container(
+                                height: 35,
+                                child: IconButton(icon: Icon(Icons.arrow_back_ios, size: 35),
+                                onPressed: () => Navigator.of(context).pop()),
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 1,
-                        ),
-                        Text(
-                          'Premios',
-                          style: TextStyle(
-                            fontSize: 30,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            'Premios',
+                            style: TextStyle(
+                              fontSize: 30,
+                            ),
                           ),
                         ),
                       ],
