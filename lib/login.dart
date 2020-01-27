@@ -1,6 +1,16 @@
 import 'package:bubbletown_v1/loginform_page.dart';
 import 'package:bubbletown_v1/signup_page.dart';
 import 'package:flutter/material.dart';
+import 'package:bubbletown_v1/Storage/user.dart';
+
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+// To read data, use the appropriate getter method provided by the SharedPreferences class.
+// For each setter there is a corresponding getter.
+// For example, you can use the getInt, getBool, and getString methods.
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,8 +20,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   @override
+  void initState() {
+    readTokenData();
+  }
+  
+  @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

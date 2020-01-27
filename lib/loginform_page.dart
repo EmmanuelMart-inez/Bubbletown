@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
 
@@ -31,6 +33,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
+    readTokenData();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
