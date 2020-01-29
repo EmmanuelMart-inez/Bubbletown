@@ -2,6 +2,7 @@ import 'package:bubbletown_v1/loginform_page.dart';
 import 'package:bubbletown_v1/models/signup_model.dart';
 import 'package:bubbletown_v1/services/signup_service.dart';
 import 'package:flutter/material.dart';
+import 'package:bubbletown_v1/Storage/globals.dart';
 
 import 'home_page.dart';
 
@@ -72,7 +73,7 @@ class _SignupState extends State<Signup> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Sign up',
+                  'Registro',
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(height: 24),
@@ -93,6 +94,7 @@ class _SignupState extends State<Signup> {
                           ),
                           style: TextStyle(fontSize: 16),
                           maxLength: 10,
+                          keyboardType: TextInputType.emailAddress,
                           onChanged: (nombre) {
                             form.nombre = nombreController.text;
                           },
@@ -116,9 +118,10 @@ class _SignupState extends State<Signup> {
                           },
                         ),
                       ),
+                      
                       SizedBox(height: 24),
                       Expanded(
-                        child: TextField(
+                        child: TextFormField(
                           controller: correoController,
                           obscureText: false,
                           decoration: InputDecoration(
@@ -128,7 +131,10 @@ class _SignupState extends State<Signup> {
                             labelText: 'Correo',
                           ),
                           style: TextStyle(fontSize: 16),
-                          maxLength: 12,
+                          maxLength: 50,
+                          keyboardType: TextInputType.emailAddress,
+                          autovalidate: true,
+                          validator: validateEmail,
                           onChanged: (email) {
                             form.email = correoController.text;
                           },
@@ -277,9 +283,30 @@ class _SignupState extends State<Signup> {
                             "https://estaticos.muyinteresante.es/media/cache/760x570_thumb/uploads/images/article/5536592a70a1ae8d775df846/dia-del-mono.jpg";
                         SignUpFormResponseModel a =
                             await postParticipante(form);
+                            
+                            //  Validar si el usuario ya esta registrado
+                        try{
                         print(a.objectId.id);
-                        buildShowDialogSuccess(
+
+                        }catch (e){
+                          print(e);
+                        }
+                        if(a.objectId.id != null){
+                          
+                          obid = a.objectId.id;
+                          buildShowDialogSuccess(
                             context, "Registro completado", "", "Continuar");
+                        }
+                        else{
+                          // Ok, no se pudo guardar en memoria el participante pero te dejaremos iniciar,
+                          // solo que no se guardará en memoria tu _id, lo tendrás global obid
+                          // print(obid);
+                          buildShowDialogFail(
+                            context,
+                            "Fallo el registro",
+                            "Debes llenar todos los campos y aceptar los terminos y condiciones para continuar",
+                            "OK");
+                        }
                       } else {
                         buildShowDialogFail(
                             context,
@@ -366,6 +393,16 @@ class _SignupState extends State<Signup> {
     );
   }
 
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter Valid Email';
+    else
+      return null;
+  }
+
   _buildCalendar() {
     showDatePicker(
       context: context,
@@ -390,6 +427,7 @@ class _SignupState extends State<Signup> {
   }
 
   bool _validarCampos(SignUpFormModel form) {
+    print('${form.nombre} ${form.paterno} ${form.email} ${form.password} ${form.sexo} ${form.fechaNacimiento}');
     if (form.nombre != null &&
         form.paterno != null &&
         form.email != null &&
@@ -430,6 +468,7 @@ class _SignupState extends State<Signup> {
       String contenido, String textButton) {
     return showDialog(
       context: context,
+      // barrierDismissible: false,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(

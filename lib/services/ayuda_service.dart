@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 Future<AyudaModel> fetchAyuda() async {
   final response =
-      await http.get('http://142.93.197.44/ayuda');
+      await http.get('https://bubbletown.me/ayuda');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.

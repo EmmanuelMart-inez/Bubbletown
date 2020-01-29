@@ -34,7 +34,6 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -79,12 +78,13 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsets.only(left: 8.0),
                               child: Container(
-                                height: 35,
-                                child: IconButton(icon: Icon(Icons.arrow_back_ios, size: 35),
-                                onPressed: () => Navigator.of(context).pop()),
+                                height: 45,
+                                child: IconButton(
+                                    icon: Icon(Icons.arrow_back_ios, size: 35),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop()),
                               ),
                             ),
                           ],
@@ -254,48 +254,61 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
   _PremiosScrollViewState({this.st});
   final String st;
 
-  Future<void> _neverSatisfied(String st) async {
+  Future<void> _neverSatisfied(String st) {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Código listo para ser escaneado!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                BarCodeImage(
-                  params: EAN8BarCodeParams(
-                    '${st.toUpperCase()}',
-                    //'1235',
-                    lineWidth:
-                        3.5, // width for a single black/white bar (default: 2.0)
-                    barHeight:
-                        100.0, // height for the entire widget (default: 100.0)
-                    withText:
-                        false, // Render with text label or not (default: false)
+        return Container(
+          child: AlertDialog(
+            title: Text('Código listo para ser escaneado!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  BarCodeImage(
+                    params: EAN8BarCodeParams(
+                      '${st.toUpperCase()}',
+                      //'1235',
+                      lineWidth:
+                          3.5, // width for a single black/white bar (default: 2.0)
+                      barHeight:
+                          100.0, // height for the entire widget (default: 100.0)
+                      withText:
+                          false, // Render with text label or not (default: false)
+                    ),
+                    onError: (error) {
+                      // Error handler
+                      print('error = $error');
+                    },
                   ),
-                  onError: (error) {
-                    // Error handler
-                    print('error = $error');
-                  },
-                ),
-                SizedBox(height: 30,),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
-                ),
-              ],
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    height: 240,
+                    width: 240,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: QrImage(
+                        data: '${st.toUpperCase()}',
+                        version: QrVersions.auto,
+                        size: 220.0,
+                      ),
+                      // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );
@@ -333,9 +346,12 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   SizedBox(height: 10),
-                                  Image.network(
-                                      '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}',
-                                      scale: 1.2),
+                                  FittedBox(
+                                    fit: BoxFit.contain,
+                                                                      child: Image.network(
+                                        '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}',
+                                        scale: 1.2),
+                                  ),
                                   Text('${snapshot.data.premios[index].nombre}',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,

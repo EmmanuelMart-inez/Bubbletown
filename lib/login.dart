@@ -2,11 +2,14 @@ import 'package:bubbletown_v1/loginform_page.dart';
 import 'package:bubbletown_v1/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bubbletown_v1/Storage/user.dart';
+import 'package:bubbletown_v1/Storage/globals.dart';
 
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'home_page.dart';
 
 // To read data, use the appropriate getter method provided by the SharedPreferences class.
 // For each setter there is a corresponding getter.
@@ -19,11 +22,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isThereToken = false;
+
   @override
   void initState() {
-    readTokenData();
+    super.initState();
+    print(obid);
+    asyncTokenValidation();
   }
-  
+
+  void asyncTokenValidation() async {
+    final token = await readTokenData();
+    if (token != null ) {
+      setState(() {
+        _isThereToken = true;
+        print("El token existe en memoria: $token");
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,10 +91,16 @@ class _LoginPageState extends State<LoginPage> {
                 minWidth: 240.0,
                 height: 42.0,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginForm()),
-                  );
+                  if (_isThereToken)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  else
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginForm()),
+                    );
                 },
                 child: Text(
                   'Ya tengo una cuenta',

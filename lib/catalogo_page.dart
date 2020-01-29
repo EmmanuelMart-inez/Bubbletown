@@ -281,9 +281,11 @@ class BebidasScrollCatalogo extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Image.network(
-                        '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
-                        scale: 1),
+                    Expanded(
+                      child: Image.network(
+                          '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                          scale: 1),
+                    ),
                     SizedBox(height: 10),
                     Text('${snapshot.data.catalogo[index].titulo}',
                         style: TextStyle(
@@ -352,9 +354,11 @@ class AlimentosScrollCatalogo extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Image.network(
-                        '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
-                        scale: 1),
+                    Expanded(
+                      child: Image.network(
+                          '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                          scale: 1),
+                    ),
                     SizedBox(height: 10),
                     Text('${snapshot.data.catalogo[index].titulo}',
                         style: TextStyle(

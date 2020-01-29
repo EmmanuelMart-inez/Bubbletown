@@ -39,7 +39,18 @@ Future<SignUpFormResponseModel> postParticipante(
     final response = await http.post(url, headers: headers, body: jsonformdata);
     // check the status code for the result
     if (response.statusCode == 200) {
-      return SignUpFormResponseModel.fromJson(json.decode(response.body));
+      print("200 ok");
+      // if(newTarjetaPuntos.statusCode == 200 && newTarjetaSellos.statusCode == 200)
+      final participante =
+          SignUpFormResponseModel.fromJson(json.decode(response.body));
+      final newTarjetaSellos = await http
+          .post('https://bubbletown.me/tarjetasellos/${participante.objectId.id}');
+      if (newTarjetaSellos.statusCode == 200) print("200 ok sellos");
+      final newTarjetaPuntos = await http
+          .post('https://bubbletown.me/tarjetapuntos/${participante.objectId.id}');
+      if (newTarjetaPuntos.statusCode == 200) print("200 ok puntos");
+      if (newTarjetaPuntos.statusCode == 200 &&
+          newTarjetaSellos.statusCode == 200) return participante;
     }
   } catch (e) {
     print(e);

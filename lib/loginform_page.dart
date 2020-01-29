@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bubbletown_v1/Storage/user.dart';
+import 'package:bubbletown_v1/Storage/globals.dart';
+import 'package:bubbletown_v1/models/login_form.dart';
+import 'package:bubbletown_v1/services/login_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -8,6 +11,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
+
+LogInFormModel form;
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -33,7 +38,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
-    readTokenData();
+    form = LogInFormModel();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
@@ -183,6 +188,9 @@ class _LoginFormState extends State<LoginForm> {
           child: Column(
             children: <Widget>[
               SizedBox(height: 25.0),
+              // TODO: Actualizar el estado de este mensaje
+              // Bienvenido de regreso cuando ya no tiene el _id almacenado, es decir, solo va a iniciar sesión, no ha realizado registro
+              // Iniciar sesión cuando se acaba de registrar
               Text('Bienvenido de regreso',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: 22.0,
@@ -196,6 +204,7 @@ class _LoginFormState extends State<LoginForm> {
                     Expanded(
                       child: TextField(
                         obscureText: false,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey[200],
@@ -203,6 +212,11 @@ class _LoginFormState extends State<LoginForm> {
                               borderRadius: BorderRadius.circular(5)),
                           labelText: 'Email address',
                         ),
+                        onChanged: (email) {
+                          setState(() {
+                            form.email = email;
+                          });
+                        },
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -216,6 +230,11 @@ class _LoginFormState extends State<LoginForm> {
                               borderRadius: BorderRadius.circular(5)),
                           labelText: 'Password',
                         ),
+                        onChanged: (passw) {
+                          setState(() {
+                            form.password = passw;
+                          });
+                        },
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -235,7 +254,11 @@ class _LoginFormState extends State<LoginForm> {
                               TextStyle(fontSize: 16, color: Colors.blueAccent),
                         ),
                         onPressed: () {
-                          buildShowDialog(context, "Recuperación de contraseña", "Acuda con un empleado para que pueda recuperar su contraseña. Gracias.", "Entendido");
+                          buildShowDialog(
+                              context,
+                              "Recuperación de contraseña",
+                              "Acuda con un empleado para que pueda recuperar su contraseña. Gracias.",
+                              "Entendido");
                         }),
                   ],
                 ),
@@ -249,11 +272,41 @@ class _LoginFormState extends State<LoginForm> {
                 child: MaterialButton(
                   minWidth: 300.0,
                   height: 50.0,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                  onPressed: () async {
+                    bool r = _validarCampos(form);
+                    if (r) {
+                      LogInFormResponseModel a = await postLogin(form);
+                      //  Validar si el usuario ya esta registrado
+                      try {
+                        final idp = await setNewTokenData(a.id);
+                        print("Id en memoria: $idp, response id : ${a.id}");
+                      } catch (e) {
+                        print(e);
+                      }
+                      if (a.id != null) {
+                        obid = a.id;
+                        print("Id en memoria: $obid");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
+                      } else {
+                        // Ok, no se pudo guardar en memoria el participante pero te dejaremos iniciar,
+                        // solo que no se guardará en memoria tu _id, lo tendrás global obid
+                        // print(obid);
+                        buildShowDialogFail(
+                            context,
+                            "Fallo el registro",
+                            "No se pudo almacenar el registro del participante, intenta con otro teléfono",
+                            "OK");
+                      }
+                    } else {
+                      buildShowDialogFail(
+                          context,
+                          "Fallo la autenticación",
+                          "El correo o la contraseña no corresponden con un participante de este programa de lealtad",
+                          "OK");
+                    }
                   },
                   child: Text(
                     'INICIAR SESIÓN',
@@ -382,6 +435,64 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ),
       ),
+    );
+  }
+
+  bool _validarCampos(LogInFormModel form) {
+    if (form.email != null && form.password != null)
+      return true;
+    else
+      return false;
+    // return '${form.nombre}${form.paterno}${form.email}${form.password}${form.sexo}${form.fechaNacimiento}';
+  }
+
+  Future buildShowDialogFail(BuildContext context, String titulo,
+      String contenido, String textButton) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("$titulo"),
+          content: new Text("$contenido"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("$textButton"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future buildShowDialogSuccess(BuildContext context, String titulo,
+      String contenido, String textButton) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("$titulo"),
+          content: new Text("$contenido"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("$textButton"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginForm()),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

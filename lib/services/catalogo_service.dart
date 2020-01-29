@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 Future<Catalogomodel> fetchCatalogo(String a) async {
   final response =
-      await http.get('http://142.93.197.44/catalogo/$a');
+      await http.get('https://bubbletown.me/catalogo/$a');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
