@@ -4,6 +4,9 @@ import 'package:bubbletown_v1/escanea_page.dart';
 import 'package:bubbletown_v1/http_error_page.dart';
 import 'package:bubbletown_v1/login.dart';
 import 'package:bubbletown_v1/micuenta_page.dart';
+import 'package:bubbletown_v1/models/movimientos_model.dart';
+import 'package:bubbletown_v1/models/tarjetapuntos_model.dart';
+import 'package:bubbletown_v1/movimientos_page.dart';
 import 'package:bubbletown_v1/premios_page.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -53,10 +56,135 @@ class _HomePageState extends State<HomePage> {
             child: AppBar(
               elevation: 0,
               backgroundColor: Colors.transparent,
+              actions: [
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(right: 38.0, top: 5.0),
+                      child: Icon(
+                        Icons.menu,
+                        size: 30,
+                      ),
+                    ),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    tooltip:
+                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  ),
+                ),
+              ],
               flexibleSpace: Container(
                 width: double.infinity,
                 child: new DefaultHeaderWidget(),
               ),
+            ),
+          ),
+          endDrawer: Drawer(
+            child: ListView(
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets
+                  .zero, // padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.account_circle),
+                  title: Text('Mi cuenta'),
+                  onTap: () {
+                    // Then close the drawer
+                    Navigator.pop(context);
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MiCuenta()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.card_membership),
+                  title: Text('Mi tarjeta'),
+                  onTap: () {
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Pago()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.card_giftcard),
+                  title: Text('Premios'),
+                  onTap: () {
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Premios()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.add_alert),
+                  title: Text('Notificaciones'),
+                  onTap: () {
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Notificaciones()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.restaurant_menu),
+                  title: Text('Catálogo'),
+                  onTap: () {
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Catalogo()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.find_in_page),
+                  title: Text('Movimientos'),
+                  onTap: () {
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Movimientos()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text('Acerca de'),
+                  onTap: () {
+                    // Update the state of the app
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => MiCuenta()),
+                    // );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
           ),
           body: SingleChildScrollView(
@@ -309,13 +437,6 @@ class DefaultHeaderWidget extends StatelessWidget {
           padding: const EdgeInsets.only(left: 18, top: 10),
           child: Text('Bubble\nTown', style: TextStyle(fontSize: 13)),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 10, top: 10),
-          child: IconButton(
-            icon: Icon(Icons.menu, color: Colors.black, size: 30.0),
-            onPressed: () {},
-          ),
-        ),
       ],
     );
   }
@@ -335,8 +456,7 @@ class WelcomeWidget extends StatelessWidget {
                   snapshot.data.participante.sexo == 'Masculino'
                       ? 'Bienvenido  '
                       : 'Bienvenida  ',
-                textAlign: TextAlign.center,
-
+                  textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 32)),
               Flexible(
                 child: Text(
