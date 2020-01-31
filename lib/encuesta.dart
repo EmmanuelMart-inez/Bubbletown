@@ -15,13 +15,16 @@ class Encuesta extends StatefulWidget {
   final idNotificacion;
 
   @override
-  const Encuesta({Key key, @required this.idEncuesta, @required this.idNotificacion}) : super(key: key);
+  const Encuesta(
+      {Key key, @required this.idEncuesta, @required this.idNotificacion})
+      : super(key: key);
   _EncuestaState createState() => _EncuestaState();
 }
 
 class _EncuestaState extends State<Encuesta> {
   int actualpage;
   int actualresp;
+  String preguntabiertaResp;
   List<String> respuestas = [];
   final colorOn = '0xFF424242';
   final colorOff = '0xFF9E9E9E';
@@ -98,15 +101,29 @@ class _EncuestaState extends State<Encuesta> {
                       onPressed: () async {
                         if (actualresp >= 0) {
                           if (actualpage + 1 < snapshot.data.paginas.length) {
-                            setState(() {
-                              actualpage++;
-                              respuestas.add(snapshot.data.paginas[actualpage]
-                                  .opciones[actualresp].calificacion);
-                              actualresp = -1;
-                            });
+                            // Si la pregunta es de tipo "abierta"
+                            if (snapshot.data.paginas[actualpage].tipo ==
+                                'abierta') {
+                              print('Pregunta abierta');
+                              setState(() {
+                                actualpage++;
+                                respuestas.add(preguntabiertaResp);
+                                actualresp = -1;
+                              });
+                            }
+                            // Si la respuesta es de opción múltiple
+                            else {
+                              setState(() {
+                                actualpage++;
+                                respuestas.add(snapshot.data.paginas[actualpage]
+                                    .opciones[actualresp].calificacion);
+                                actualresp = -1;
+                              });
+                            }
                           } else {
                             int resp;
                             // setState(() async {
+                            // Si la respuesta es de opción múltiple pero no es la última
                             respuestas.add(snapshot.data.paginas[actualpage]
                                 .opciones[actualresp].calificacion);
                             RespuestaEncuestaModel r = RespuestaEncuestaModel(
@@ -119,12 +136,12 @@ class _EncuestaState extends State<Encuesta> {
                             // });
                             if (resp == 200) {
                               //Eliminar de notificaciones la encuesta
-                                try {
-                                  final response = await http.patch(
-                                      'https://bubbletown.me/notificaciones/${widget.idNotificacion}');
-                                } catch (e) {
-                                  print(e);
-                                }
+                              try {
+                                final response = await http.patch(
+                                    'https://bubbletown.me/notificaciones/${widget.idNotificacion}');
+                              } catch (e) {
+                                print(e);
+                              }
                               //
                               buildShowDialog(context, "Encuesta enviada",
                                   "Muchas gracias!", "Cerrar");
@@ -174,43 +191,74 @@ class _EncuestaState extends State<Encuesta> {
                       ),
                     ),
                     SizedBox(height: 45),
-                    Column(
-                      children: List.generate(
-                        snapshot.data.paginas[actualpage].opciones.length,
-                        (index) {
-                          return FlatButton(
-                            color: index == actualresp
-                                ? Color(int.parse('$colorOn'))
-                                : Color(int.parse('$colorOff')),
-                            padding: EdgeInsets.all(0),
-                            onPressed: () {
-                              setState(() {
-                                actualresp = index;
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              alignment: Alignment.centerLeft,
-                              height: 60,
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 35.0, right: 5),
-                                    child: buildIconCheck(index),
+                    '${snapshot.data.paginas[actualpage].tipo}' != 'abierta'
+                        ? Column(
+                            children: List.generate(
+                              snapshot.data.paginas[actualpage].opciones.length,
+                              (index) {
+                                return FlatButton(
+                                  color: index == actualresp
+                                      ? Color(int.parse('$colorOn'))
+                                      : Color(int.parse('$colorOff')),
+                                  padding: EdgeInsets.all(0),
+                                  onPressed: () {
+                                    setState(() {
+                                      actualresp = index;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    alignment: Alignment.centerLeft,
+                                    height: 60,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 35.0, right: 5),
+                                          child: buildIconCheck(index),
+                                        ),
+                                        Text(
+                                          '${snapshot.data.paginas[actualpage].opciones[index].calificacion}',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    '${snapshot.data.paginas[actualpage].opciones[index].calificacion}',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
+                                );
+                              },
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(38.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5.0),
+                              child: Container(
+                                color: Colors.white,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.grey[200],
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    labelText: 'Respuesta',
+                                    alignLabelWithHint: true,
+                                    icon: Icon(Icons.text_format),
                                   ),
-                                ],
+                                  maxLines: 14,
+                                  maxLength: 400,
+                                  onChanged: (text) {
+                                    setState(() {
+                                      preguntabiertaResp = text;
+                                      actualresp = 1;
+                                    });
+                                  },
+                                  style: TextStyle(fontSize: 18),
+                                ),
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
                   ],
                 ),
               ),
@@ -251,9 +299,9 @@ class _EncuestaState extends State<Encuesta> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Notificaciones()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (context) => Notificaciones()),
+                );
               },
             ),
           ],

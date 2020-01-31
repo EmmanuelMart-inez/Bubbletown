@@ -266,11 +266,11 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
               child: ListBody(
                 children: <Widget>[
                   BarCodeImage(
-                    params: EAN8BarCodeParams(
+                    params: EAN13BarCodeParams(
                       '${st.toUpperCase()}',
                       //'1235',
                       lineWidth:
-                          3.5, // width for a single black/white bar (default: 2.0)
+                          2, // width for a single black/white bar (default: 2.0)
                       barHeight:
                           100.0, // height for the entire widget (default: 100.0)
                       withText:

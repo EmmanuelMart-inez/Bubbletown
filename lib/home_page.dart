@@ -562,7 +562,7 @@ class DetallesWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              'Detalles',
+              'Ayuda',
               style: TextStyle(fontSize: 14),
             ),
             onPressed: () {
