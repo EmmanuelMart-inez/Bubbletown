@@ -23,7 +23,7 @@ class _NotificacionesState extends State<Notificaciones> {
   @override
   void initState() {
     super.initState();
-    requestNotif = fetchNotificaciones('5e141e35bca2e7cee96804e7');
+    requestNotif = fetchNotificaciones();
   }
 
   @override
@@ -198,7 +198,7 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
                               padding: EdgeInsets.all(0),
                               onPressed: () async {
                                 try {
-                                  final response = await http.delete(
+                                  final response = await http.patch(
                                       'https://bubbletown.me/notificaciones/${snapshot.data.notificaciones[index].id}');
                                   if (response.statusCode == 200) {
                                     // If the call to the server was successful, parse the JSON.
@@ -250,7 +250,7 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => Encuesta()),
+                                            builder: (context) => Encuesta(idEncuesta: snapshot.data.notificaciones[index].link, idNotificacion: snapshot.data.notificaciones[index].id)),
                                       )
                                     },
                                 child: Image.asset('assets/notif/check.png',

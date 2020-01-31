@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     print(obid);
     asyncTokenValidation();
+
   }
 
   void asyncTokenValidation() async {
@@ -38,6 +39,19 @@ class _LoginPageState extends State<LoginPage> {
         _isThereToken = true;
         print("El token existe en memoria: $token");
       });
+    }
+  }
+
+  void loggoutUserPreferences() async {
+    final prefs = await SharedPreferences.getInstance()
+        .catchError((onError) => print("$onError"));
+    try {
+      final result = await prefs.remove('bubbletownToken');
+      if (result)
+        print("Se logró eliminar el token de acceso (_id) participante");
+    }
+    catch(e){
+      print(e);
     }
   }
 

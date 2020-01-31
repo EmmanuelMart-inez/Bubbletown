@@ -16,10 +16,9 @@ LogInFormModel form;
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
-    // 'profile',
     'email',
-    // 'https://www.googleapis.com/auth/user.birthday.read',
-    // 'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/user.birthday.read',
+    'https://www.googleapis.com/auth/userinfo.profile',
   ],
 );
 
@@ -30,10 +29,10 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool isLoggedIn = false;
-  String _contactText;
 
   //////////////////////         Login Google              //////////////////////////////////
   GoogleSignInAccount _currentUser;
+  String _contactText;
 
   @override
   void initState() {
@@ -44,33 +43,15 @@ class _LoginFormState extends State<LoginForm> {
         _currentUser = account;
       });
       if (_currentUser != null) {
-        // _handleGetContact();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
+        _handleGetContact();
       }
     });
     // _googleSignIn.signInSilently();
   }
 
-  Future<void> _handleGetContact() async {
-    setState(() {
-      _contactText = "Loading contact info...";
-    });
-    final http.Response response = await http.get(
-      'https://people.googleapis.com/v1/people/me/connections'
-      '?requestMask.includeField=person.names',
-      headers: await _currentUser.authHeaders,
-    );
-    if (response.statusCode != 200) {
-      setState(() {
-        _contactText = "People API gave a ${response.statusCode} "
-            "response. Check logs for details.";
-      });
-      print('People API ${response.statusCode} response: ${response.body}');
-      return;
-    }
+  Future<void> _handleGetContact() async {    
+    print("${_currentUser.id}  ${_currentUser.photoUrl}  ${_currentUser.id}  ${_currentUser.displayName.split(" ")}   ${_currentUser.email}   " );
+    return;
   }
 
   Future<void> _handleSignIn() async {
@@ -83,44 +64,6 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
-  // Widget _buildBody() {
-  //   if (_currentUser != null) {
-  //     return Column(
-  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //       children: <Widget>[
-  //         ListTile(
-  //           leading: GoogleUserCircleAvatar(
-  //             identity: _currentUser,
-  //           ),
-  //           title: Text(_currentUser.displayName ?? ''),
-  //           subtitle: Text(_currentUser.email ?? ''),
-  //         ),
-  //         const Text("Signed in successfully."),
-  //         Text(_contactText ?? ''),
-  //         RaisedButton(
-  //           child: const Text('SIGN OUT'),
-  //           onPressed: _handleSignOut,
-  //         ),
-  //         RaisedButton(
-  //           child: const Text('REFRESH'),
-  //           onPressed: _handleGetContact,
-  //         ),
-  //       ],
-  //     );
-  //   } else {
-  //     return Column(
-  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //       children: <Widget>[
-  //         const Text("You are not currently signed in."),
-  //         RaisedButton(
-  //           child: const Text('SIGN IN'),
-  //           onPressed: _handleSignIn,
-  //         ),
-  //       ],
-  //     );
-  //   }
-  // }
-
   //////////////////////          Login con Facebook           ///////////////////////////////
 
   Future<void> initiateFacebookLogin() async {
@@ -129,17 +72,24 @@ class _LoginFormState extends State<LoginForm> {
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-
         // TO DO: Checar en la documentación si se devuelve un valor diferente cuando el usuario se registra por primera vez o cuando no se ha registrado,
         // en caso de que no, el API podría implementarlo y entonces dibujar las pantallas con los formularios correspondientes antes de realizar el registro
-
         onLoginStatusChange(true);
         // _sendTokenToServer(result.accessToken.token);
+        // Mandar al API el registro del nuevo participante
         final token = result.accessToken.token;
+        print("TOKEN: $token");
         final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+            'https://graph.facebook.com/v2.12/me?fields=id,short_name,last_name,email,gender,picture&access_token=${token}');
+            
         final profile = json.decode(graphResponse.body);
         print(profile);
+
+        final graphResponseImage = await http.get(
+            'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
+            
+        // Enviar al API el id del participante
+        // _sendTokenToServer(result.accessToken.token, "facebook");
         // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
         // _showLoggedInUI();
         Navigator.push(
@@ -162,6 +112,26 @@ class _LoginFormState extends State<LoginForm> {
     setState(() {
       this.isLoggedIn = isLoggedinn;
     });
+  }
+
+  void _sendTokenToServer(String token, String social) async {
+    String url = 'https://bubbletown.me/autenticacion/$social';
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String jsonformdata = "{'token': $token}";
+    // make POST request
+    try {
+      final response =
+          await http.post(url, headers: headers, body: jsonformdata);
+      // check the status code for the result
+      if (response.statusCode == 200) {
+        print("200 ok en _sendTokenToServer");
+        print(response.body);
+      } else {
+        print("No se pudo enviar token");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   //////////////////////          Login con Facebook      end     ///////////////////////////////
@@ -195,6 +165,9 @@ class _LoginFormState extends State<LoginForm> {
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: 22.0,
                       )),
+              FlatButton(
+                onPressed: _handleSignOut,
+                child: Text('Loggout'),),
               SizedBox(height: 45.0),
               Container(
                 height: 140.0,

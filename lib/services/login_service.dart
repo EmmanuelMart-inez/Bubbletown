@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 
 Future<LogInFormResponseModel> postLogin(
-    LogInFormModel formdata) async {
+  LogInFormModel formdata) async {
   // set up POST request arguments
   String url = 'https://bubbletown.me/autenticacion';
   Map<String, String> headers = {"Content-type": "application/json"};

@@ -11,8 +11,11 @@ import 'notificaciones_page.dart';
 Future<EncuestaModel> requestEncuesta;
 
 class Encuesta extends StatefulWidget {
+  final idEncuesta;
+  final idNotificacion;
+
   @override
-  const Encuesta({Key key}) : super(key: key);
+  const Encuesta({Key key, @required this.idEncuesta, @required this.idNotificacion}) : super(key: key);
   _EncuestaState createState() => _EncuestaState();
 }
 
@@ -30,7 +33,8 @@ class _EncuestaState extends State<Encuesta> {
     coloractual = '0xFF424242';
     actualpage = 0;
     actualresp = -1;
-    requestEncuesta = fetchEncuesta('id_encuesta');
+    print(widget.idEncuesta);
+    requestEncuesta = fetchEncuesta(widget.idEncuesta);
     respuestas = [];
   }
 
@@ -91,7 +95,7 @@ class _EncuestaState extends State<Encuesta> {
                     FlatButton(
                       color: Color(0xFFAAAAAA),
                       padding: EdgeInsets.all(0),
-                      onPressed: () async{
+                      onPressed: () async {
                         if (actualresp >= 0) {
                           if (actualpage + 1 < snapshot.data.paginas.length) {
                             setState(() {
@@ -102,7 +106,7 @@ class _EncuestaState extends State<Encuesta> {
                             });
                           } else {
                             int resp;
-                            // setState(() async {  
+                            // setState(() async {
                             respuestas.add(snapshot.data.paginas[actualpage]
                                 .opciones[actualresp].calificacion);
                             RespuestaEncuestaModel r = RespuestaEncuestaModel(
@@ -110,15 +114,26 @@ class _EncuestaState extends State<Encuesta> {
                             String datajson = respuestaEncuestaModelToJson(r);
 
                             resp = await patchEncuesta(
-                                datajson, '5e2940a502ffbe39077087e0');
-                                           
+                                datajson, '5e2f34a8db5584c6403a62df');
+
                             // });
-                            if (resp == 200)
+                            if (resp == 200) {
+                              //Eliminar de notificaciones la encuesta
+                                try {
+                                  final response = await http.patch(
+                                      'https://bubbletown.me/notificaciones/${widget.idNotificacion}');
+                                } catch (e) {
+                                  print(e);
+                                }
+                              //
                               buildShowDialog(context, "Encuesta enviada",
                                   "Muchas gracias!", "Cerrar");
-                            else
-                               buildShowDialog(context, "Ocurrio un error al procesar su solicitud", "Intente más tarde", "Ok");
-
+                            } else
+                              buildShowDialog(
+                                  context,
+                                  "Ocurrio un error al procesar su solicitud",
+                                  "Intente más tarde",
+                                  "Ok");
                           }
                           ;
                         }
@@ -235,7 +250,10 @@ class _EncuestaState extends State<Encuesta> {
               child: new Text("$textButton"),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notificaciones()),
+                  );
               },
             ),
           ],
@@ -249,43 +267,3 @@ class _EncuestaState extends State<Encuesta> {
       return Icon(Icons.check, color: Colors.white, size: 30);
   }
 }
-
-// PreferredSize(
-//           preferredSize: Size.fromHeight(180.0),
-//           child: AppBar(
-//             elevation: 0,
-//             backgroundColor: Colors.transparent,
-//             flexibleSpace: Container(
-//               width: double.infinity,
-//               child: Container(
-//                 height: 200,
-//                 width: double.infinity,
-//                 decoration: BoxDecoration(
-//                   color: Colors.grey[300],
-//                 ),
-//                 child: Stack(
-//                   children: <Widget>[
-//                     Container(
-//                       alignment: Alignment.center,
-//                       child: Text(
-//                         '1 de 4', style: TextStyle(fontSize: 17)
-//                       ),
-//                     ),
-
-//                     Align(
-//                       alignment: Alignment.centerRight,
-//                         child: Container(
-//                         alignment: Alignment.center,
-//                         color: Colors.grey[600],
-//                         width: 100,
-//                         child: Text(
-//                           'next', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),

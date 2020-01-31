@@ -1,7 +1,12 @@
 //import 'package:bubbletown_v1/my_flutter_app_icons.dart';
+import 'dart:io';
+
 import 'package:bubbletown_v1/my_flutter_app_icons.dart';
 import 'package:bubbletown_v1/services/participante_service.dart';
+import 'package:bubbletown_v1/services/send_image_service.dart';
 import 'package:flutter/material.dart';
+
+import 'package:image_picker/image_picker.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
@@ -17,10 +22,34 @@ class EditarPerfil extends StatefulWidget {
 }
 
 class _EditarPerfilState extends State<EditarPerfil> {
+  bool isUpdated = false;
+
+  // Image handler
+  File _image;
+  
+  String urlImg;
+  String nombre;
+  String passwo;
+
+  // Create a global key that uniquely identifies the Form widget
+  // and allows validation of the form.
+  //
+  // Note: This is a `GlobalKey<FormState>`,
+  // not a GlobalKey<MyCustomFormState>.
+  final _formKey = GlobalKey<FormState>();
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    requestParticipante = fetchParticipante('5e141e35bca2e7cee96804e7');
+    requestParticipante = fetchParticipante();
   }
 
   @override
@@ -54,275 +83,211 @@ class _EditarPerfilState extends State<EditarPerfil> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              children: <Widget>[
-                Divider(color: Colors.black),
-                SizedBox(
-                  height: 5,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_ios, size: 35),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Container(
-                        height: 25,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color(0xFFDADADA),
-                        ),
-                        child: FlatButton(
-                          child: Text(
-                            'Guardar',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+        body: Builder(
+          builder: (context) => SingleChildScrollView(
+            child: Container(
+              width: double.infinity,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Divider(color: Colors.black),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.arrow_back_ios, size: 35),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                          onPressed: () {},
-                        ),
+                          Container(
+                            height: 25,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFFDADADA),
+                            ),
+                            child: FlatButton(
+                              child: Text(
+                                'Guardar',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onPressed: () {
+                                // Validate returns true if the form is valid, or false
+                                // otherwise.
+
+                                if (_formKey.currentState.validate()) {
+                                  upload(_image);
+                                  // If the form is valid, display a Snackbar.
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                      content:
+                                          Text('Procesando la información')));
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('Editar perfil', style: TextStyle(fontSize: 28)),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: <Widget>[
-                    Container(
-                      height: 160,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFFEBEBEB),
-                      ),
-                      child: FlatButton(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(width: 10),
-                            Column(
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Editar perfil', style: TextStyle(fontSize: 28)),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Stack(
+                      alignment: Alignment.topRight,
+                      children: <Widget>[
+                        Container(
+                          height: 160,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFFEBEBEB),
+                          ),
+                          child: FlatButton(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                FutureBuilder<ParticipanteModel>(
-                                  future: requestParticipante,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Container(
-                                          height: 120,
-                                          width: 120,
-                                          child: Image.network(
-                                              '${snapshot.data.foto}'));
-                                    } else if (snapshot.hasError) {
-                                      return Text("${snapshot.error}");
-                                    }
-                                    return CircularProgressIndicator();
-                                  },
-                                ),
-                                Text(
-                                  'FOTO DE PERFIL',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                SizedBox(width: 10),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    FutureBuilder<ParticipanteModel>(
+                                      future: requestParticipante,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Container(
+                                            height: 120,
+                                            width: 120,
+                                            child: _image == null
+                                                ? Image.network(
+                                                    '${snapshot.data.foto}')
+                                                : Image.file(_image),
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return Text("${snapshot.error}");
+                                        }
+                                        return CircularProgressIndicator();
+                                      },
+                                    ),
+                                    Text(
+                                      'FOTO DE PERFIL',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                            onPressed: getImage,
+                          ),
                         ),
-                        onPressed: () {
-                          //TODO: Implementar funcion para subir imagenes
-                        },
-                      ),
+                        Positioned(
+                          child: FlatButton(
+                            child: Image.asset(
+                              'assets/editarperfil/editarperfil.png',
+                              scale: 3.0,
+                            ),
+                            onPressed: getImage,
+                          ),
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      child: FlatButton(
-                        child: Image.asset(
-                          'assets/editarperfil/editarperfil.png',
-                          scale: 3.0,
-                        ),
-                        onPressed: () {},
-                      ),
+                    FutureBuilder<ParticipanteModel>(
+                      future: requestParticipante,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 38.0, vertical: 18),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Container(
+                                color: Color(0xFFEAF1F7),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 2),
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                      icon: Icon(Icons.person),
+                                      labelText: 'Nombre',
+                                    ),
+                                    initialValue: '${snapshot.data.nombre}',
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Porfavor ingrese algún texto';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (text) {
+                                      setState(() {
+                                        nombre = text;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      },
+                    ),
+                    FutureBuilder<ParticipanteModel>(
+                      future: requestParticipante,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 38.0, vertical: 18),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Container(
+                                color: Color(0xFFEAF1F7),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 2),
+                                  child: TextFormField(
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                      icon: Icon(Icons.lock),
+                                      labelText: 'Contraseña',
+                                    ),
+                                    initialValue: '${snapshot.data.password}',
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Porfavor ingrese algún texto';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (text) {
+                                      setState(() {
+                                        passwo = text;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      },
                     ),
                   ],
                 ),
-                Container(
-                  height: 85,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    //color: Color(0xFFDADADA),
-                    border: Border(
-                      bottom: BorderSide(width: 0.3, color: Colors.black),
-                    ),
-                  ),
-                  child: FlatButton(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'NOMBRE',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 7,
-                              ),
-                              FutureBuilder<ParticipanteModel>(
-                                future: requestParticipante,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Text(
-                                      '${snapshot.data.nombre}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text("${snapshot.error}");
-                                  }
-                                  return CircularProgressIndicator();
-                                },
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.arrow_forward_ios, size: 30),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    onPressed: () {},
-                  ),
-                ),
-                Container(
-                  height: 85,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    //color: Color(0xFFDADADA),
-                    border: Border(
-                      bottom: BorderSide(width: 0.8, color: Colors.black),
-                    ),
-                  ),
-                  child: FlatButton(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'CORREO',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 7,
-                              ),
-                              FutureBuilder<ParticipanteModel>(
-                                future: requestParticipante,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Text(
-                                      '${snapshot.data.email}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text("${snapshot.error}");
-                                  }
-                                  return CircularProgressIndicator();
-                                },
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.arrow_forward_ios, size: 30),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    onPressed: () {},
-                  ),
-                ),
-                Container(
-                  height: 85,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    //color: Color(0xFFDADADA),
-                    border: Border(
-                      bottom: BorderSide(width: 0.3, color: Colors.black),
-                    ),
-                  ),
-                  child: FlatButton(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Contraseña',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 7,
-                              ),
-                              Text(
-                                '*******',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.arrow_forward_ios, size: 30),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -416,4 +381,38 @@ String changeImageFormatToUpper(String st) {
     return newString;
   } else
     return st;
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  File _image;
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image Picker Example'),
+      ),
+      body: Center(
+        child: _image == null ? Text('No image selected.') : Image.file(_image),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+        tooltip: 'Pick Image',
+        child: Icon(Icons.add_a_photo),
+      ),
+    );
+  }
 }

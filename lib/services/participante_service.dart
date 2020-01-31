@@ -6,7 +6,10 @@ import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/participante_model.dart';
 import 'package:http/http.dart' as http;
 
-Future<ParticipanteModel> fetchParticipante(String a) async {
+
+import 'package:bubbletown_v1/models/signup_model.dart';
+
+Future<ParticipanteModel> fetchParticipante() async {
   String idParticipante = await readTokenData();
   if (idParticipante == null && (obid == "null" || obid == null)) {
     throw Exception(
@@ -25,5 +28,24 @@ Future<ParticipanteModel> fetchParticipante(String a) async {
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
+  }
+}
+
+Future<int> patchParticipante(
+  String formdata) async {
+  // set up POST request arguments
+  String url = 'https://bubbletown.me/participante';
+  Map<String, String> headers = {"Content-type": "application/json"};
+  // String jsonformdata = signUpFormModelToJson(formdata);
+  // make POST request
+  try {
+    final response = await http.patch(url, headers: headers, body: formdata);
+    // check the status code for the result
+    if (response.statusCode == 200) {
+      print("200 ok");
+      return 200;
+    }
+  } catch (e) {
+    print(e);
   }
 }

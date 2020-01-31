@@ -400,8 +400,7 @@ class _ScrollListMovimientosState extends State<ScrollListMovimientos> {
                               setState(() {
                                 snapshot.data.movimientos.removeAt(index);
                               });
-                              return MovimientosModel.fromJson(
-                                  json.decode(response.body));
+                              return "OK";
                             } else {
                               // If that call was not successful, throw an error.
                               throw Exception(

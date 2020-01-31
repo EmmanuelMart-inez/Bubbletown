@@ -36,6 +36,7 @@ class Notificacione {
     String id;
     String barText;
     String mensaje;
+    String link;
 
     Notificacione({
         this.imagenIcon,
@@ -45,6 +46,7 @@ class Notificacione {
         this.id,
         this.barText,
         this.mensaje,
+        this.link,
     });
 
     factory Notificacione.fromJson(Map<String, dynamic> json) => Notificacione(
@@ -55,6 +57,7 @@ class Notificacione {
         id: json["_id"],
         barText: json["bar_text"],
         mensaje: json["mensaje"],
+        link: json["link"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -65,5 +68,6 @@ class Notificacione {
         "_id": id,
         "bar_text": barText,
         "mensaje": mensaje,
+        "link": link,
     };
 }

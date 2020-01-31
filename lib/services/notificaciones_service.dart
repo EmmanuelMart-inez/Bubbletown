@@ -6,7 +6,7 @@ import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/notificaciones_model.dart';
 import 'package:http/http.dart' as http;
 
-Future<NotificacionesModel> fetchNotificaciones(String a) async {
+Future<NotificacionesModel> fetchNotificaciones() async {
   String id_participante = await readTokenData();
   if (id_participante == null && (obid == "null" || obid == null)) {
     throw Exception(
