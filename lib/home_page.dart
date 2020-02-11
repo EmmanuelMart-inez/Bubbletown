@@ -1,6 +1,7 @@
 //import 'package:bubbletown_v1/my_flutter_app_icons.dart';
 import 'package:bubbletown_v1/catalogo_page.dart';
 import 'package:bubbletown_v1/escanea_page.dart';
+import 'package:bubbletown_v1/fbreactions.dart';
 import 'package:bubbletown_v1/http_error_page.dart';
 import 'package:bubbletown_v1/login.dart';
 import 'package:bubbletown_v1/micuenta_page.dart';
@@ -569,6 +570,26 @@ class DetallesWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Ayuda()),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 28.0),
+          child: FlatButton(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            color: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              'FacebookReactions',
+              style: TextStyle(fontSize: 14),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FacebookReactions()),
               );
             },
           ),

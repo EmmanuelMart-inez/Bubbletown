@@ -30,6 +30,11 @@ class _EncuestaState extends State<Encuesta> {
   final colorOff = '0xFF9E9E9E';
   var coloractual = '0xFF424242';
 
+  // Valor del emoji seleccionado por el usuario
+  String emojiselected;
+  // Tamaño del emoji en animación para expander o no
+  bool _bigger;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +44,8 @@ class _EncuestaState extends State<Encuesta> {
     print(widget.idEncuesta);
     requestEncuesta = fetchEncuesta(widget.idEncuesta);
     respuestas = [];
+    emojiselected = null;
+    _bigger = false;
   }
 
   @override
@@ -103,7 +110,9 @@ class _EncuestaState extends State<Encuesta> {
                           if (actualpage + 1 < snapshot.data.paginas.length) {
                             // Si la pregunta es de tipo "abierta"
                             if (snapshot.data.paginas[actualpage].tipo ==
-                                'abierta') {
+                                    'abierta' ||
+                                snapshot.data.paginas[actualpage].tipo ==
+                                    'emoji') {
                               print('Pregunta abierta');
                               setState(() {
                                 actualpage++;
@@ -191,74 +200,161 @@ class _EncuestaState extends State<Encuesta> {
                       ),
                     ),
                     SizedBox(height: 45),
-                    '${snapshot.data.paginas[actualpage].tipo}' != 'abierta'
-                        ? Column(
-                            children: List.generate(
-                              snapshot.data.paginas[actualpage].opciones.length,
-                              (index) {
-                                return FlatButton(
-                                  color: index == actualresp
-                                      ? Color(int.parse('$colorOn'))
-                                      : Color(int.parse('$colorOff')),
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: () {
-                                    setState(() {
-                                      actualresp = index;
-                                    });
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    alignment: Alignment.centerLeft,
-                                    height: 60,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 35.0, right: 5),
-                                          child: buildIconCheck(index),
-                                        ),
-                                        Text(
-                                          '${snapshot.data.paginas[actualpage].opciones[index].calificacion}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        ),
-                                      ],
+                    (() {
+                      print('${snapshot.data.paginas[actualpage].tipo}');
+                      switch ('${snapshot.data.paginas[actualpage].tipo}') {
+                        case 'abierta':
+                          {
+                            return Padding(
+                              padding: const EdgeInsets.all(38.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5.0),
+                                child: Container(
+                                  color: Colors.white,
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.grey[200],
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      labelText: 'Respuesta',
+                                      alignLabelWithHint: true,
+                                      icon: Icon(Icons.text_format),
                                     ),
+                                    maxLines: 14,
+                                    maxLength: 400,
+                                    onChanged: (text) {
+                                      setState(() {
+                                        preguntabiertaResp = text;
+                                        actualresp = 1;
+                                      });
+                                    },
+                                    style: TextStyle(fontSize: 18),
                                   ),
-                                );
-                              },
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.all(38.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Container(
-                                color: Colors.white,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    labelText: 'Respuesta',
-                                    alignLabelWithHint: true,
-                                    icon: Icon(Icons.text_format),
-                                  ),
-                                  maxLines: 14,
-                                  maxLength: 400,
-                                  onChanged: (text) {
-                                    setState(() {
-                                      preguntabiertaResp = text;
-                                      actualresp = 1;
-                                    });
-                                  },
-                                  style: TextStyle(fontSize: 18),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          }
+                          break;
+                        case 'opcion multiple':
+                          {
+                            return Column(
+                              children: List.generate(
+                                snapshot
+                                    .data.paginas[actualpage].opciones.length,
+                                (index) {
+                                  return FlatButton(
+                                    color: index == actualresp
+                                        ? Color(int.parse('$colorOn'))
+                                        : Color(int.parse('$colorOff')),
+                                    padding: EdgeInsets.all(0),
+                                    onPressed: () {
+                                      setState(() {
+                                        actualresp = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      alignment: Alignment.centerLeft,
+                                      height: 60,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 35.0, right: 5),
+                                            child: buildIconCheck(index),
+                                          ),
+                                          Text(
+                                            '${snapshot.data.paginas[actualpage].opciones[index].calificacion}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                          break;
+                        case 'emoji':
+                          {
+                            return Column(
+                              children: <Widget>[
+                                // SizedBox(height: 40),
+                                Row(
+                                  children: <Widget>[
+                                    emojiselected != null
+                                        ? Expanded(
+                                            child: AnimatedContainer(
+                                              duration:
+                                                  Duration(milliseconds: 500),
+                                              curve:
+                                                  Curves.fastLinearToSlowEaseIn,
+                                              // onEnd: (){
+                                              //   setState(() {
+                                              //   _bigger = true;
+                                              //   });
+                                              // },
+                                              height: _bigger ? 200 : 0,
+                                              child: Image.network(
+                                                '$emojiselected',
+                                              ),
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            height: 100,
+                                          ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: List.generate(
+                                    snapshot.data.paginas[actualpage].opciones
+                                        .length,
+                                    (index) {
+                                      return Expanded(
+                                        child: IconButton(
+                                          padding: EdgeInsets.all(8.0),
+                                          iconSize: 100,
+                                          onPressed: () {
+                                            setState(() {
+                                              emojiselected =
+                                                  '${snapshot.data.paginas[actualpage].opciones[index].icon}';
+                                              preguntabiertaResp =
+                                                  '${snapshot.data.paginas[actualpage].opciones[index].calificacion}';
+                                              actualresp = 1;
+                                              _bigger = !_bigger;
+                                            });
+                                          },
+                                          icon: Image.network(
+                                            '${snapshot.data.paginas[actualpage].opciones[index].icon}',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+
+                          break;
+
+                        default:
+                          {
+                            return SizedBox(
+                              height: 1,
+                            );
+                          }
+                          break;
+                      }
+                    }()),
                   ],
                 ),
               ),

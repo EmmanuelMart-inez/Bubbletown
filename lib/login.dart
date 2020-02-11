@@ -108,7 +108,8 @@ class _LoginPageState extends State<LoginPage> {
                   if (_isThereToken)
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => LoginForm()),
+                      // MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   else
                     Navigator.push(
