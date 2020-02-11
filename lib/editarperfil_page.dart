@@ -7,6 +7,7 @@ import 'package:bubbletown_v1/services/send_image_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
@@ -26,7 +27,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
 
   // Image handler
   File _image;
-  
+
   String urlImg;
   String nombre;
   String passwo;
@@ -117,16 +118,31 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                 'Guardar',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 // Validate returns true if the form is valid, or false
                                 // otherwise.
-
-                                if (_formKey.currentState.validate()) {
-                                  upload(_image);
-                                  // If the form is valid, display a Snackbar.
+                                // If the form is valid, display a Snackbar.
                                   Scaffold.of(context).showSnackBar(SnackBar(
                                       content:
                                           Text('Procesando la información')));
+                                if (_formKey.currentState.validate()) {
+                                  if (_image != null) {
+                                    String imagenNewName = await upload(_image);
+                                    print(await patchParticipante(
+                                        '{"nombre": "$nombre", "password": "$passwo", "foto": "https://bubbletown.me/download/$imagenNewName"}'));
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content:
+                                          Text('Actualizado con éxito')));
+                                        
+                                  } else {
+                                    print(await patchParticipante(
+                                        '{"nombre": "$nombre", "password": "$passwo"}'));
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content:
+                                          Text('Actualizado con éxito')));
+                                  }
+
+                                  
                                 }
                               },
                             ),
@@ -224,6 +240,10 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                       if (value.isEmpty) {
                                         return 'Porfavor ingrese algún texto';
                                       }
+                                      // Inicialización: En caso de no haber actualizado el perfil y dar click en guardar, enviar el nombre actual
+                                      setState(() {
+                                        nombre = value;
+                                      });
                                       return null;
                                     },
                                     onChanged: (text) {
@@ -267,6 +287,13 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                       if (value.isEmpty) {
                                         return 'Porfavor ingrese algún texto';
                                       }
+                                      if (value.length < 6) {
+                                        return 'La contraseña debe tener al menos seis caracteres';
+                                      }
+                                      // Inicialización: En caso de no haber actualizado el perfil y guardar, enviar el nombre actual
+                                      setState(() {
+                                        passwo = value;
+                                      });
                                       return null;
                                     },
                                     onChanged: (text) {

@@ -31,10 +31,19 @@ Future<ParticipanteModel> fetchParticipante() async {
   }
 }
 
-Future<int> patchParticipante(
-  String formdata) async {
+Future<int> patchParticipante(String formdata) async {
+  String idParticipante = await readTokenData();
+  if (idParticipante == null && (obid == "null" || obid == null)) {
+    throw Exception(
+        'No se encontro en memoria local ni de ejecución el token del participante');
+  }
+  // Usar id en la memoria local (preferencias de usuario) o el auxiliar en memoria de ejecución
+  if (idParticipante == "null" || idParticipante == null) {
+    idParticipante = obid;
+  }
+
   // set up POST request arguments
-  String url = 'https://bubbletown.me/participante';
+  String url = 'https://bubbletown.me/participante/$idParticipante';
   Map<String, String> headers = {"Content-type": "application/json"};
   // String jsonformdata = signUpFormModelToJson(formdata);
   // make POST request
@@ -42,10 +51,13 @@ Future<int> patchParticipante(
     final response = await http.patch(url, headers: headers, body: formdata);
     // check the status code for the result
     if (response.statusCode == 200) {
-      print("200 ok");
+      print("200 ok Participante actualizado");
       return 200;
+    } else {
+      print("${response.statusCode}");
     }
   } catch (e) {
     print(e);
   }
+  return 0;
 }

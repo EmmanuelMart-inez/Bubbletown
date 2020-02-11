@@ -21,7 +21,7 @@ import 'package:image_picker/image_picker.dart';
     return image;
   }
 
-  upload(File imageFile) async {
+  Future<String> upload(File imageFile) async {
     // open a bytestream
     var stream =
         new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
@@ -44,9 +44,12 @@ import 'package:image_picker/image_picker.dart';
     // send
     var response = await request.send();
     print(response.statusCode);
-
+    
     // listen for response
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
+    String imageName = await response.stream.bytesToString();
+    //  Quitar las comillas de la cadena "imagen.png" => imagen.png
+    imageName = imageName.substring(1,imageName.length-2);
+    // print(imageName);
+    return imageName;
+    
   }
