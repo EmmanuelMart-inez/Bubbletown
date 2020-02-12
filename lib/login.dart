@@ -4,12 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/Storage/globals.dart';
 
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'home_page.dart';
 
 // To read data, use the appropriate getter method provided by the SharedPreferences class.
 // For each setter there is a corresponding getter.

@@ -41,6 +41,11 @@ class _SignupState extends State<Signup> {
   void initState() {
     super.initState();
     form = SignUpFormModel();
+    // form.nombre = nombreController.text;
+    // form.paterno = apelliController.text;
+    // form.email = correoController.text;
+    // form.password = contra1Controller.text;
+    // form.nombre = nombreController.text;
     _isfull = false;
     form.fechaNacimiento = _selectedDateTime;
   }
@@ -73,6 +78,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: 24),
                 Container(
+                  height: 280.0,
                   padding: EdgeInsets.only(left: 35, right: 35),
                   child: Column(
                     children: <Widget>[
@@ -111,14 +117,16 @@ class _SignupState extends State<Signup> {
                         controller: correoController,
                         obscureText: false,
                         decoration: InputDecoration(
-                          filled: false,
+                          // suffixIcon:
+                          //     Icon(Icons.check, color: Colors.lightBlue),
+                          // filled: false,
                           labelText: 'Correo',
                         ),
                         style: TextStyle(fontSize: 16),
                         maxLength: 50,
                         keyboardType: TextInputType.emailAddress,
-                        autovalidate: true,
-                        validator: validateEmail,
+                        // autovalidate: true,
+                        // validator: validateEmail,
                         onChanged: (email) {
                           form.email = correoController.text;
                         },
@@ -208,25 +216,17 @@ class _SignupState extends State<Signup> {
                               color: Colors.black54,
                             ),
                           ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                              color: Colors.grey.shade200,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.calendar_today,
-                                  size: 28,
-                                ),
-                                onPressed: _buildCalendar,
-                              ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.calendar_today,
+                              size: 28,
                             ),
+                            onPressed: _buildCalendar,
                           ),
                           Text(
-                            _selectedDateTime.toString().length > 6
-                                ? '${_selectedDateTime.toString().substring(0, _selectedDateTime.toString().length - 12)}'
-                                : '',
+                            '${_selectedDateTime.toString().substring(0, 10)}',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -258,7 +258,7 @@ class _SignupState extends State<Signup> {
                     ],
                   ),
                 ),
-                SizedBox(height: 25.0),
+                SizedBox(height: 15.0),
                 // Text(
                 //     '${form.nombre} ${form.paterno} ${form.email} ${form.password} ${form.sexo}  ${form.fechaNacimiento}  ${terminosycond}'),
                 Container(
@@ -273,7 +273,7 @@ class _SignupState extends State<Signup> {
                       bool r = _validarCampos(form);
                       if (r) {
                         form.foto =
-                            "https://www.bubbletown.me/download/bubble.png";
+                            "https://estaticos.muyinteresante.es/media/cache/760x570_thumb/uploads/images/article/5536592a70a1ae8d775df846/dia-del-mono.jpg";
                         SignUpFormResponseModel a =
                             await postParticipante(form);
 
@@ -306,7 +306,7 @@ class _SignupState extends State<Signup> {
                       }
                     },
                     child: Text(
-                      'ACEPTAR',
+                      'LOG IN',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -314,67 +314,67 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.only(left: 35, right: 35),
-                //   child: Column(
-                //     children: <Widget>[
-                //       SizedBox(height: 15),
-                //       Text(
-                //         'OR',
-                //         style: TextStyle(
-                //           fontSize: 14,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //       SizedBox(height: 15),
-                //       Container(
-                //         decoration: BoxDecoration(
-                //           color: Color(0xFF415DAE),
-                //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                //         ),
-                //         child: MaterialButton(
-                //           minWidth: 300.0,
-                //           height: 50.0,
-                //           onPressed: () {},
-                //           child: Text(
-                //             'CONTINUE WITH FACEBOOK',
-                //             style: TextStyle(
-                //               color: Colors.white,
-                //               fontSize: 16,
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //       SizedBox(height: 5),
-                //       Container(
-                //         decoration: BoxDecoration(
-                //           color: Color(0xFF4184F3),
-                //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                //         ),
-                //         child: MaterialButton(
-                //           minWidth: 300.0,
-                //           height: 50.0,
-                //           onPressed: () {},
-                //           // () {
-                //           //   Navigator.push(
-                //           //     context,
-                //           //     MaterialPageRoute(
-                //           //         builder: (context) => HomePage()),
-                //           //   );
-                //           // },
-                //           child: Text(
-                //             'CONTINUE WITH GOOGLE',
-                //             style: TextStyle(
-                //               color: Colors.white,
-                //               fontSize: 16,
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //       SizedBox(height: 25),
-                //     ],
-                //   ),
-                // ),
+                Container(
+                  padding: EdgeInsets.only(left: 35, right: 35),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 15),
+                      Text(
+                        'OR',
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF415DAE),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: MaterialButton(
+                          minWidth: 300.0,
+                          height: 50.0,
+                          onPressed: () {},
+                          child: Text(
+                            'CONTINUE WITH FACEBOOK',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF4184F3),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: MaterialButton(
+                          minWidth: 300.0,
+                          height: 50.0,
+                          onPressed: () {},
+                          // () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePage()),
+                          //   );
+                          // },
+                          child: Text(
+                            'CONTINUE WITH GOOGLE',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -387,8 +387,8 @@ class _SignupState extends State<Signup> {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value) && value.length > 0)
-      return 'Ingrese un correo válido';
+    if (!regex.hasMatch(value))
+      return 'Enter Valid Email';
     else
       return null;
   }

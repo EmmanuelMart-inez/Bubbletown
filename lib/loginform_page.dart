@@ -49,8 +49,12 @@ class _LoginFormState extends State<LoginForm> {
     // _googleSignIn.signInSilently();
   }
 
-  Future<void> _handleGetContact() async {    
-    print("${_currentUser.id}  ${_currentUser.photoUrl}  ${_currentUser.id}  ${_currentUser.displayName.split(" ")}   ${_currentUser.email}   " );
+  Future<void> _handleGetContact() async {
+    // _sendTokenToServer(_currentUser., id, social)
+    GoogleSignInAuthentication auth = await _currentUser.authentication;
+    _sendTokenToServer(auth.accessToken, auth.idToken, "google");
+    // print("${auth.accessToken}\n ${auth.idToken}") ; 
+    // print("${_currentUser.id}  ${_currentUser.photoUrl}  ${_currentUser.id}  ${_currentUser.displayName.split(" ")}   ${_currentUser.email}   " );
     return;
   }
 
@@ -82,14 +86,16 @@ class _LoginFormState extends State<LoginForm> {
         final graphResponse = await http.get(
             'https://graph.facebook.com/v2.12/me?fields=id,short_name,last_name,email,gender,picture&access_token=${token}');
             
-        final profile = json.decode(graphResponse.body);
-        print(profile);
+        // final profile = json.decode(graphResponse.body);
+        // print(profile);
+        // print(result.accessToken.token);
+        // print(result.accessToken.userId);
 
-        final graphResponseImage = await http.get(
-            'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
+        // final graphResponseImage = await http.get(
+        //     'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
             
         // Enviar al API el id del participante
-        // _sendTokenToServer(result.accessToken.token, "facebook");
+        _sendTokenToServer(result.accessToken.token, result.accessToken.userId, "facebook");
         // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
         // _showLoggedInUI();
         Navigator.push(
@@ -114,24 +120,27 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
-  void _sendTokenToServer(String token, String social) async {
+  Future<String> _sendTokenToServer(String token, String id, String social) async {
     String url = 'https://bubbletown.me/autenticacion/$social';
     Map<String, String> headers = {"Content-type": "application/json"};
-    String jsonformdata = "{'token': $token}";
+    String jsonformdata = "{'token': $token, 'id': $id}";
     // make POST request
     try {
       final response =
           await http.post(url, headers: headers, body: jsonformdata);
       // check the status code for the result
       if (response.statusCode == 200) {
-        print("200 ok en _sendTokenToServer");
+        print("200 en _sendTokenToServer");
         print(response.body);
+        return response.body;
       } else {
         print("No se pudo enviar token");
+        return "No se pudo efectuar el registro o inicio de sesión, intente de otra forma";
       }
     } catch (e) {
       print(e);
     }
+    return "No se pudo efectuar esta acción, intente más tarde";
   }
 
   //////////////////////          Login con Facebook      end     ///////////////////////////////
@@ -153,7 +162,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ),
         body: SingleChildScrollView(
-            child: Container(
+          child: Container(
           width: double.infinity,
           child: Column(
             children: <Widget>[
@@ -365,48 +374,7 @@ class _LoginFormState extends State<LoginForm> {
             ],
           ),
         )),
-        bottomSheet: Container(
-          height: 80.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                //crossAxisAlignment: crosAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    //Icon(Icons.my_location, color: Colors.grey[500]),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.my_location, color: Colors.grey[500]),
-                      Text(' Calle Marsella 14, Juárez, \n'
-                          '06600 Col Juárez, CDMX')
-                    ],
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    //Icon(Icons.my_location, color: Colors.grey[500]),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.timer, color: Colors.grey[500]),
-                      Text('Abierto')
-                    ],
-                  ),
-                  Row(
-                    //Icon(Icons.my_location, color: Colors.grey[500]),
-                    mainAxisSize: MainAxisSize.min,
-                    children: [Text('10:00am - 11:00 pm')],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        
       ),
     );
   }
