@@ -82,7 +82,7 @@ class _LoginFormState extends State<LoginForm> {
         // _sendTokenToServer(result.accessToken.token);
         // Mandar al API el registro del nuevo participante
         final token = result.accessToken.token;
-        print("TOKEN: $token");
+        print("TOKEN: ${token}, ${result.accessToken.userId}");
         final graphResponse = await http.get(
             'https://graph.facebook.com/v2.12/me?fields=id,short_name,last_name,email,gender,picture&access_token=${token}');
             
