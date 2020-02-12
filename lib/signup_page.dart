@@ -74,104 +74,94 @@ class _SignupState extends State<Signup> {
               children: <Widget>[
                 Text(
                   'Registro',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(height: 24),
                 Container(
-                  height: 380.0,
+                  height: 480.0,
                   padding: EdgeInsets.only(left: 35, right: 35),
                   child: Column(
                     children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: nombreController,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            suffixIcon:
-                                Icon(Icons.check, color: Colors.lightBlue),
-                            filled: false,
-                            labelText: 'Nombre',
-                          ),
-                          style: TextStyle(fontSize: 16),
-                          maxLength: 10,
-                          keyboardType: TextInputType.emailAddress,
-                          onChanged: (nombre) {
-                            form.nombre = nombreController.text;
-                          },
+                      TextField(
+                        controller: nombreController,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          // suffixIcon:
+                          //     Icon(Icons.check, color: Colors.lightBlue),
+                          filled: false,
+                          labelText: 'Nombre',
                         ),
+                        style: TextStyle(fontSize: 16),
+                        maxLength: 10,
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (nombre) {
+                          form.nombre = nombreController.text;
+                        },
                       ),
-                      SizedBox(height: 24),
-                      Expanded(
-                        child: TextField(
-                          controller: apelliController,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            suffixIcon:
-                                Icon(Icons.check, color: Colors.lightBlue),
-                            filled: false,
-                            labelText: 'Apellido',
-                          ),
-                          style: TextStyle(fontSize: 16),
-                          maxLength: 12,
-                          onChanged: (pat) {
-                            form.paterno = apelliController.text;
-                          },
+                      TextField(
+                        controller: apelliController,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          // suffixIcon:
+                          //     Icon(Icons.check, color: Colors.lightBlue),
+                          filled: false,
+                          labelText: 'Apellido',
                         ),
+                        style: TextStyle(fontSize: 16),
+                        maxLength: 12,
+                        onChanged: (pat) {
+                          form.paterno = apelliController.text;
+                        },
                       ),
-                      
-                      SizedBox(height: 24),
-                      Expanded(
-                        child: TextFormField(
-                          controller: correoController,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            suffixIcon:
-                                Icon(Icons.check, color: Colors.lightBlue),
-                            filled: false,
-                            labelText: 'Correo',
-                          ),
-                          style: TextStyle(fontSize: 16),
-                          maxLength: 50,
-                          keyboardType: TextInputType.emailAddress,
-                          autovalidate: true,
-                          validator: validateEmail,
-                          onChanged: (email) {
-                            form.email = correoController.text;
-                          },
+                      TextFormField(
+                        controller: correoController,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          // suffixIcon:
+                          //     Icon(Icons.check, color: Colors.lightBlue),
+                          // filled: false,
+                          labelText: 'Correo',
                         ),
+                        style: TextStyle(fontSize: 16),
+                        maxLength: 50,
+                        keyboardType: TextInputType.emailAddress,
+                        // autovalidate: true,
+                        // validator: validateEmail,
+                        onChanged: (email) {
+                          form.email = correoController.text;
+                        },
                       ),
-                      SizedBox(height: 24),
-                      Expanded(
-                        child: TextField(
-                          controller: contra1Controller,
-                          obscureText: mostrarcontra,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                Icons.remove_red_eye,
-                                color: Colors.lightBlue,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  mostrarcontra = !mostrarcontra;
-                                });
-                              },
+                      TextField(
+                        controller: contra1Controller,
+                        obscureText: mostrarcontra,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.remove_red_eye,
+                              color: Colors.lightBlue,
                             ),
-                            filled: false,
-                            labelText: 'Contraseña',
+                            onPressed: () {
+                              setState(() {
+                                mostrarcontra = !mostrarcontra;
+                              });
+                            },
                           ),
-                          style: TextStyle(fontSize: 16),
-                          onChanged: (contra) {
-                            form.password = contra1Controller.text;
-                          },
+                          filled: false,
+                          labelText: 'Contraseña',
                         ),
+                        style: TextStyle(fontSize: 16),
+                        onChanged: (contra) {
+                          form.password = contra1Controller.text;
+                        },
                       ),
-                      SizedBox(height: 24),
+                      SizedBox(
+                        height: 15,
+                      ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Sexo:',
+                            'Sexo:     ',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.black54,
@@ -217,7 +207,7 @@ class _SignupState extends State<Signup> {
                         ],
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
                             'Fecha de nacimiento: ',
@@ -227,13 +217,16 @@ class _SignupState extends State<Signup> {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.calendar_today),
+                            icon: Icon(
+                              Icons.calendar_today,
+                              size: 28,
+                            ),
                             onPressed: _buildCalendar,
                           ),
                           Text(
-                            '$_selectedDateTime',
+                            '${_selectedDateTime.toString().substring(0, 10)}',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -283,29 +276,26 @@ class _SignupState extends State<Signup> {
                             "https://estaticos.muyinteresante.es/media/cache/760x570_thumb/uploads/images/article/5536592a70a1ae8d775df846/dia-del-mono.jpg";
                         SignUpFormResponseModel a =
                             await postParticipante(form);
-                            
-                            //  Validar si el usuario ya esta registrado
-                        try{
-                        print(a.objectId.id);
 
-                        }catch (e){
+                        //  Validar si el usuario ya esta registrado
+                        try {
+                          print(a.objectId.id);
+                        } catch (e) {
                           print(e);
                         }
-                        if(a.objectId.id != null){
-                          
+                        if (a.objectId.id != null) {
                           obid = a.objectId.id;
                           buildShowDialogSuccess(
-                            context, "Registro completado", "", "Continuar");
-                        }
-                        else{
+                              context, "Registro completado", "", "Continuar");
+                        } else {
                           // Ok, no se pudo guardar en memoria el participante pero te dejaremos iniciar,
                           // solo que no se guardará en memoria tu _id, lo tendrás global obid
                           // print(obid);
                           buildShowDialogFail(
-                            context,
-                            "Fallo el registro",
-                            "Debes llenar todos los campos y aceptar los terminos y condiciones para continuar",
-                            "OK");
+                              context,
+                              "Fallo el registro",
+                              "Debes llenar todos los campos y aceptar los terminos y condiciones para continuar",
+                              "OK");
                         }
                       } else {
                         buildShowDialogFail(
@@ -427,7 +417,8 @@ class _SignupState extends State<Signup> {
   }
 
   bool _validarCampos(SignUpFormModel form) {
-    print('${form.nombre} ${form.paterno} ${form.email} ${form.password} ${form.sexo} ${form.fechaNacimiento}');
+    print(
+        '${form.nombre} ${form.paterno} ${form.email} ${form.password} ${form.sexo} ${form.fechaNacimiento}');
     if (form.nombre != null &&
         form.paterno != null &&
         form.email != null &&

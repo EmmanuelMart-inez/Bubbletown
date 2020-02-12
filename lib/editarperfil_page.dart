@@ -248,6 +248,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                     },
                                     onChanged: (text) {
                                       setState(() {
+                                        _formKey.currentState.validate();
                                         nombre = text;
                                       });
                                     },
@@ -287,7 +288,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                       if (value.isEmpty) {
                                         return 'Porfavor ingrese algún texto';
                                       }
-                                      if (value.length < 6) {
+                                      if (value.length < 5) {
                                         return 'La contraseña debe tener al menos seis caracteres';
                                       }
                                       // Inicialización: En caso de no haber actualizado el perfil y guardar, enviar el nombre actual
@@ -298,6 +299,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                     },
                                     onChanged: (text) {
                                       setState(() {
+                                        _formKey.currentState.validate();
                                         passwo = text;
                                       });
                                     },

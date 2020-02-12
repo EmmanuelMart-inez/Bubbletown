@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 import 'Storage/user.dart';
 import 'ayuda_page.dart';
@@ -29,7 +30,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isThereToken = false;
-
   @override
   void initState() {
     super.initState();
@@ -608,26 +608,41 @@ class BubbleCardSellosWidget extends StatefulWidget {
   _BubbleCardSellosWidgetState createState() => _BubbleCardSellosWidgetState();
 }
 
-class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget> {
+class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
+    with TickerProviderStateMixin {
+  AnimationController _controller;
   bool isPreset = false;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(
-            height: 150,
-            width: 240,
-            margin: EdgeInsets.only(left: 45.0),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              border: Border.all(width: 1.5, color: Colors.black),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: isPreset
-                ? TarjetaSellosBackWidget()
-                : _buildSellosAcumulados(
-                    widget.numeroSellos, widget.totalSellos)),
+        RotationTransitionOnY(
+          turns: Tween(begin: 0.0, end: 1.0).animate(_controller.drive(CurveTween(curve: Curves.bounceInOut))),
+          child: Container(
+              height: 150,
+              width: 240,
+              margin: EdgeInsets.only(left: 45.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                border: Border.all(width: 1.5, color: Colors.black),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: isPreset
+                  ? TarjetaSellosBackWidget()
+                  : _buildSellosAcumulados(
+                      widget.numeroSellos, widget.totalSellos)),
+        ),
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.black,
@@ -638,6 +653,8 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget> {
             onPressed: () {
               setState(() {
                 isPreset = !isPreset;
+                isPreset ? _controller.forward() :
+                _controller.reverse();
               });
             },
           ),
@@ -818,6 +835,60 @@ class TarjetaSellosBackWidget extends StatelessWidget {
           Text('Premio: $producto_card'),
         ],
       ),
+    );
+  }
+}
+
+
+/// Animates the rotation of a widget.
+///
+/// Here's an illustration of the [RotationTransition] widget, with it's [turns]
+/// animated by a [CurvedAnimation] set to [Curves.elasticOut]:
+/// {@animation 300 378 https://flutter.github.io/assets-for-api-docs/assets/widgets/rotation_transition.mp4}
+/// See also:
+///
+///  * [ScaleTransition], a widget that animates the scale of a transformed
+///    widget.
+///  * [SizeTransition], a widget that animates its own size and clips and
+///    aligns its child.
+class RotationTransitionOnY extends AnimatedWidget {
+  /// Creates a rotation transition.
+  ///
+  /// The [turns] argument must not be null.
+  const RotationTransitionOnY({
+    Key key,
+    @required Animation<double> turns,
+    this.alignment = Alignment.center,
+    this.child,
+  }) : assert(turns != null),
+       super(key: key, listenable: turns);
+
+  /// The animation that controls the rotation of the child.
+  ///
+  /// If the current value of the turns animation is v, the child will be
+  /// rotated v * 2 * pi radians before being painted.
+  Animation<double> get turns => listenable;
+
+  /// The alignment of the origin of the coordinate system around which the
+  /// rotation occurs, relative to the size of the box.
+  ///
+  /// For example, to set the origin of the rotation to top right corner, use
+  /// an alignment of (1.0, -1.0) or use [Alignment.topRight]
+  final Alignment alignment;
+
+  /// The widget below this widget in the tree.
+  ///
+  /// {@macro flutter.widgets.child}
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final double turnsValue = turns.value;
+    final Matrix4 transform = Matrix4.rotationY(turnsValue * math.pi *2.0);
+    return Transform(
+      transform: transform,
+      alignment: alignment,
+      child: child,
     );
   }
 }
