@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:bubbletown_v1/models/login_form.dart';
+import 'package:bubbletown_v1/models/signup_model.dart';
 import 'package:bubbletown_v1/services/login_service.dart';
+import 'package:bubbletown_v1/services/signup_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -52,9 +54,9 @@ class _LoginFormState extends State<LoginForm> {
   Future<void> _handleGetContact() async {
     // _sendTokenToServer(_currentUser., id, social)
     GoogleSignInAuthentication auth = await _currentUser.authentication;
-    _sendTokenToServer(auth.accessToken, auth.idToken, "google");
-    // print("${auth.accessToken}\n ${auth.idToken}") ; 
-    // print("${_currentUser.id}  ${_currentUser.photoUrl}  ${_currentUser.id}  ${_currentUser.displayName.split(" ")}   ${_currentUser.email}   " );
+    // _sendTokenToServer(auth.accessToken, auth.idToken, "google");
+    // print("${auth.accessToken}\n ${auth.idToken}") ;
+    print("${_currentUser.id}   ${_currentUser.email}   " );
     return;
   }
 
@@ -82,20 +84,27 @@ class _LoginFormState extends State<LoginForm> {
         // _sendTokenToServer(result.accessToken.token);
         // Mandar al API el registro del nuevo participante
         final token = result.accessToken.token;
-        print("TOKEN: ${token}, ${result.accessToken.userId}");
+        // print("TOKEN: ${token}, ${result.accessToken.userId}");
+
         final graphResponse = await http.get(
             'https://graph.facebook.com/v2.12/me?fields=id,short_name,last_name,email,gender,picture&access_token=${token}');
-            
-        // final profile = json.decode(graphResponse.body);
-        // print(profile);
+
+        // SignUpFormModel form = SignUpFormModel(email: ,nombre: ,sexo: ,paterno: ,password: ,foto: ,fechaNacimiento: );
+        // SignUpFormResponseModel a = await postParticipante(form);
+        final profile = json.decode(graphResponse.body);
+        print(profile);
         // print(result.accessToken.token);
         // print(result.accessToken.userId);
+        print(profile["id"]);
+        print(profile["email"]);
+        final res = await postLoginSocialNetwork("facebook", null);
+        print(res.id);
 
-        // final graphResponseImage = await http.get(
-        //     'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
-            
-        // Enviar al API el id del participante
-        _sendTokenToServer(result.accessToken.token, result.accessToken.userId, "facebook");
+        final graphResponseImage = await http.get(
+            'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
+
+        // Enviar al API el id del participante para validar usuario
+        _sendTokenToServer(profile["id"], profile["id"], "facebook");
         // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
         // _showLoggedInUI();
         Navigator.push(
@@ -120,7 +129,8 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
-  Future<String> _sendTokenToServer(String token, String id, String social) async {
+  Future<String> _sendTokenToServer(
+      String token, String id, String social) async {
     String url = 'https://bubbletown.me/autenticacion/$social';
     Map<String, String> headers = {"Content-type": "application/json"};
     String jsonformdata = "{'token': $token, 'id': $id}";
@@ -162,7 +172,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ),
         body: SingleChildScrollView(
-          child: Container(
+            child: Container(
           width: double.infinity,
           child: Column(
             children: <Widget>[
@@ -176,7 +186,8 @@ class _LoginFormState extends State<LoginForm> {
                       )),
               FlatButton(
                 onPressed: _handleSignOut,
-                child: Text('Loggout'),),
+                child: Text('Loggout'),
+              ),
               SizedBox(height: 45.0),
               Container(
                 height: 140.0,
@@ -374,7 +385,6 @@ class _LoginFormState extends State<LoginForm> {
             ],
           ),
         )),
-        
       ),
     );
   }
