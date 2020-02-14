@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
@@ -41,11 +42,13 @@ class _LoginFormState extends State<LoginForm> {
     super.initState();
     form = LogInFormModel();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      setState(() {
-        _currentUser = account;
-      });
-      if (_currentUser != null) {
-        _handleGetContact();
+      if (this.mounted) {
+        setState(() {
+          _currentUser = account;
+        });
+        if (_currentUser != null) {
+          _handleGetContact();
+        }
       }
     });
     // _googleSignIn.signInSilently();
@@ -56,7 +59,20 @@ class _LoginFormState extends State<LoginForm> {
     GoogleSignInAuthentication auth = await _currentUser.authentication;
     // _sendTokenToServer(auth.accessToken, auth.idToken, "google");
     // print("${auth.accessToken}\n ${auth.idToken}") ;
-    print("${_currentUser.id}   ${_currentUser.email}   " );
+    print("${_currentUser.id}   ${_currentUser.email}   ");
+    final res = await postLoginSocialNetwork("google",
+        LogInFormModel(email: _currentUser.email, password: _currentUser.id));
+    // if(res.id )
+    print(res.id);
+    final idParticipante = await setNewTokenData(res.id);
+    if (idParticipante != null &&
+        idParticipante != "null" &&
+        idParticipante.length > 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
     return;
   }
 
@@ -97,20 +113,28 @@ class _LoginFormState extends State<LoginForm> {
         // print(result.accessToken.userId);
         print(profile["id"]);
         print(profile["email"]);
-        final res = await postLoginSocialNetwork("facebook", null);
+        final res = await postLoginSocialNetwork("facebook",
+            LogInFormModel(email: profile["email"], password: profile["id"]));
+
+        final idParticipante = await setNewTokenData(res.id);
         print(res.id);
 
         final graphResponseImage = await http.get(
             'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
 
         // Enviar al API el id del participante para validar usuario
-        _sendTokenToServer(profile["id"], profile["id"], "facebook");
+        if (idParticipante != null &&
+            idParticipante != "null" &&
+            idParticipante.length > 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        }
+        // _sendTokenToServer(profile["id"], profile["id"], "facebook");
         // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
         // _showLoggedInUI();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
+
         break;
       case FacebookLoginStatus.cancelledByUser:
         // _showCancelledMessage();
