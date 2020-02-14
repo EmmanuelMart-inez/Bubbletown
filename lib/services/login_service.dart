@@ -36,10 +36,10 @@ Future<LogInFormResponseModel> postRegistroSocialNetwork(String socialNetwork,
     String jsonformdata;
     if (socialNetwork == 'google')
       jsonformdata =
-        '{"${socialNetwork}_id":"${formsocial.password}", "email":"${formsocial.email}", "nombre": "${formdata.nombre.split(" ")[0]}", "paterno": "${formdata.nombre.split(" ")[1]}", "sexo": "${formdata.sexo}", "password": "social", "foto": "${formdata.foto}"}';
+        '{"${socialNetwork}_id":"${formsocial.password}", "email":"${formsocial.email}", "nombre": "${formdata.nombre.split(" ")[0]}", "paterno": "${formdata.nombre.split(" ")[1]}", "sexo": "${formdata.sexo}", "password": "socialBTWNpass7", "foto": "${formdata.foto}"}';
     if (socialNetwork == 'facebook')
       jsonformdata =
-        '{"${socialNetwork}_id":"${formsocial.password}", "email":"${formsocial.email}", "nombre": "${formdata.nombre}", "paterno": "${formdata.paterno}", "sexo": "${formdata.sexo}", "password": "social", "foto": "${formdata.foto}"}';
+        '{"${socialNetwork}_id":"${formsocial.password}", "email":"${formsocial.email}", "nombre": "${formdata.nombre}", "paterno": "${formdata.paterno}", "sexo": "${formdata.sexo}", "password": "socialBTWNpass7", "foto": "${formdata.foto}"}';
     print(jsonformdata);
     final response = await http.post(url, headers: headers, body: jsonformdata);
     // check the status code for the result

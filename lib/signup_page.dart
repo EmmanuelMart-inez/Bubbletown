@@ -63,7 +63,10 @@ class _SignupState extends State<Signup> {
     // _sendTokenToServer(auth.accessToken, auth.idToken, "google");
     // print("${auth.accessToken}\n ${auth.idToken}") ;
     print("${_currentUser.id}   ${_currentUser.email}  ${_currentUser} ");
-    final res = await postRegistroSocialNetwork("google", SignUpFormModel(nombre: _currentUser.displayName, foto: _currentUser.photoUrl),
+    final res = await postRegistroSocialNetwork(
+        "google",
+        SignUpFormModel(
+            nombre: _currentUser.displayName, foto: _currentUser.photoUrl),
         LogInFormModel(email: _currentUser.email, password: _currentUser.id));
     // if(res.id )
     print(res.id);
@@ -121,10 +124,15 @@ class _SignupState extends State<Signup> {
         final graphResponseImage = await http.get(
             'https://graph.facebook.com/v2.12/${profile["id"]}/picture?redirect=0&width=1024&access_token=${token}');
 
-        print('${profile["short_name"]}  ${profile["picture"]["data"]["url"]}  ${profile["last_name"]}  ${profile["gender"]}');
+        print(
+            '${profile["short_name"]}  ${profile["picture"]["data"]["url"]}  ${profile["last_name"]}  ${profile["gender"]}');
         final res = await postRegistroSocialNetwork(
             "facebook",
-            SignUpFormModel(nombre: profile["short_name"], foto: profile["picture"]["data"]["url"], paterno: profile["last_name"], sexo: profile["gender"]),
+            SignUpFormModel(
+                nombre: profile["short_name"],
+                foto: profile["picture"]["data"]["url"],
+                paterno: profile["last_name"],
+                sexo: profile["gender"]),
             LogInFormModel(email: profile["email"], password: profile["id"]));
 
         final idParticipante = await setNewTokenData(res.id);
@@ -134,6 +142,7 @@ class _SignupState extends State<Signup> {
         if (idParticipante != null &&
             idParticipante != "null" &&
             idParticipante.length > 0) {
+          _handleSignOut();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
@@ -208,10 +217,6 @@ class _SignupState extends State<Signup> {
             width: double.infinity,
             child: Column(
               children: <Widget>[
-                FlatButton(
-                onPressed: _handleSignOut,
-                child: Text('Loggout'),
-              ),
                 Text(
                   'Registro',
                   style: TextStyle(fontSize: 20),

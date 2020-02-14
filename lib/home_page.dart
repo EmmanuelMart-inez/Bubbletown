@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 
 import 'Storage/user.dart';
@@ -43,6 +44,18 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _isThereToken = true;
       });
+    }
+  }
+
+  void loggoutUserPreferences() async {
+    final prefs = await SharedPreferences.getInstance()
+        .catchError((onError) => print("$onError"));
+    try {
+      final result = await prefs.remove('bubbletownToken');
+      if (result)
+        print("Se logró eliminar el token de acceso (_id) participante");
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -85,6 +98,8 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets
                   .zero, // padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
               children: <Widget>[
+                Image.asset('assets/logobubbletown.jpg', scale: 6, ),
+                // Divider(thickness: 2, color: Colors.black, height: 2,),
                 ListTile(
                   leading: Icon(Icons.account_circle),
                   title: Text('Mi cuenta'),
@@ -176,10 +191,26 @@ class _HomePageState extends State<HomePage> {
                   title: Text('Acerca de'),
                   onTap: () {
                     // Update the state of the app
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => MiCuenta()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Ayuda()),
+                    );
+                    // ...
+                    // Then close the drawer
+                    // Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text('Cerrar Sesión'),
+                  onTap: () {
+                    // Delete token from local storage
+                    loggoutUserPreferences();
+                    // Update the state of the app
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
                     // ...
                     // Then close the drawer
                     // Navigator.pop(context);
@@ -574,26 +605,26 @@ class DetallesWidget extends StatelessWidget {
             },
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 28.0),
-          child: FlatButton(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            color: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text(
-              'FacebookReactions',
-              style: TextStyle(fontSize: 14),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FacebookReactions()),
-              );
-            },
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 28.0),
+        //   child: FlatButton(
+        //     padding: EdgeInsets.symmetric(horizontal: 30),
+        //     color: Colors.grey[300],
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //     child: Text(
+        //       'FacebookReactions',
+        //       style: TextStyle(fontSize: 14),
+        //     ),
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => FacebookReactions()),
+        //       );
+        //     },
+        //   ),
+        // ),
       ],
     );
   }
@@ -628,7 +659,8 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RotationTransitionOnY(
-          turns: Tween(begin: 0.0, end: 1.0).animate(_controller.drive(CurveTween(curve: Curves.bounceInOut))),
+          turns: Tween(begin: 0.0, end: 1.0).animate(
+              _controller.drive(CurveTween(curve: Curves.bounceInOut))),
           child: Container(
               height: 150,
               width: 240,
@@ -653,8 +685,7 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
             onPressed: () {
               setState(() {
                 isPreset = !isPreset;
-                isPreset ? _controller.forward() :
-                _controller.reverse();
+                isPreset ? _controller.forward() : _controller.reverse();
               });
             },
           ),
@@ -839,7 +870,6 @@ class TarjetaSellosBackWidget extends StatelessWidget {
   }
 }
 
-
 /// Animates the rotation of a widget.
 ///
 /// Here's an illustration of the [RotationTransition] widget, with it's [turns]
@@ -860,8 +890,8 @@ class RotationTransitionOnY extends AnimatedWidget {
     @required Animation<double> turns,
     this.alignment = Alignment.center,
     this.child,
-  }) : assert(turns != null),
-       super(key: key, listenable: turns);
+  })  : assert(turns != null),
+        super(key: key, listenable: turns);
 
   /// The animation that controls the rotation of the child.
   ///
@@ -884,7 +914,7 @@ class RotationTransitionOnY extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final double turnsValue = turns.value;
-    final Matrix4 transform = Matrix4.rotationY(turnsValue * math.pi *2.0);
+    final Matrix4 transform = Matrix4.rotationY(turnsValue * math.pi * 2.0);
     return Transform(
       transform: transform,
       alignment: alignment,

@@ -126,6 +126,7 @@ class _LoginFormState extends State<LoginForm> {
         if (idParticipante != null &&
             idParticipante != "null" &&
             idParticipante.length > 0) {
+          _handleSignOut();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
@@ -208,10 +209,6 @@ class _LoginFormState extends State<LoginForm> {
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: 22.0,
                       )),
-              FlatButton(
-                onPressed: _handleSignOut,
-                child: Text('Loggout'),
-              ),
               SizedBox(height: 45.0),
               Container(
                 height: 140.0,
