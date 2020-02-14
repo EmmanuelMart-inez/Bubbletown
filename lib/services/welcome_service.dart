@@ -22,9 +22,11 @@ Future<Welcome> fetchWelcome() async {
     final response =
         await http.get('https://bubbletown.me/wparticipante/$id_participante');
     if (response.statusCode == 200) {
+      print("200");
       // If the call to the server was successful, parse the JSON.
       return Welcome.fromJson(json.decode(response.body));
     } else {
+      print("else");
       // If that call was not successful, throw an error.
       throw Exception('Failed to load from api');
     }

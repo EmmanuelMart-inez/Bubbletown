@@ -1,6 +1,9 @@
+import 'package:bubbletown_v1/gender_page.dart';
 import 'package:bubbletown_v1/loginform_page.dart';
 import 'package:bubbletown_v1/models/signup_model.dart';
+import 'package:bubbletown_v1/services/participante_service.dart';
 import 'package:bubbletown_v1/services/signup_service.dart';
+import 'package:bubbletown_v1/services/welcome_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +16,7 @@ import 'dart:convert';
 import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/login_form.dart';
 import 'home_page.dart';
+import 'models/welcome_model.dart';
 
 LogInFormModel form;
 
@@ -143,10 +147,20 @@ class _SignupState extends State<Signup> {
             idParticipante != "null" &&
             idParticipante.length > 0) {
           _handleSignOut();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
+          Welcome pForGender = await fetchWelcome();
+          print(pForGender.participante.sexo);
+          if (pForGender.participante.sexo != "Masculino" ||
+              pForGender.participante.sexo != "Femenino") {
+            print("seleccionar genero");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GenderPage()),
+            );
+          } else
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
         }
         // _sendTokenToServer(profile["id"], profile["id"], "facebook");
         // final bubbletownapi_response = await http.get('http://142.93.197.44/participante/facebook_token/${token}');
