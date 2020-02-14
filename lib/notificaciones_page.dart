@@ -1,3 +1,4 @@
+import 'package:bubbletown_v1/drawer_menu.dart';
 import 'package:bubbletown_v1/encuesta.dart';
 import 'package:bubbletown_v1/services/notificaciones_service.dart';
 import 'dart:async';
@@ -45,18 +46,19 @@ class _NotificacionesState extends State<Notificaciones> {
                     padding: const EdgeInsets.only(left: 18, top: 10),
                     child: Text('Bubble\nTown', style: TextStyle(fontSize: 13)),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10, top: 10),
-                    child: IconButton(
-                      icon: Icon(Icons.menu, color: Colors.black, size: 30.0),
-                      onPressed: () {},
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 10, top: 10),
+                  //   child: IconButton(
+                  //     icon: Icon(Icons.menu, color: Colors.black, size: 30.0),
+                  //     onPressed: () {},
+                  //   ),
+                  // ),
                 ],
               ),
             ),
           ),
         ),
+        endDrawer: DrawerHamburguerMenu(),
         body: SingleChildScrollView(
           child: Container(
             width: double.infinity,

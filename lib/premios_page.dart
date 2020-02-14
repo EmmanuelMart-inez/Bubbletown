@@ -1,3 +1,4 @@
+import 'package:bubbletown_v1/drawer_menu.dart';
 import 'package:bubbletown_v1/models/premios_model.dart';
 import 'package:bubbletown_v1/services/premios_service.dart';
 import 'package:flutter/material.dart';
@@ -59,14 +60,14 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
                         child: Text('Bubble\nTown',
                             style: TextStyle(fontSize: 13)),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10, top: 10),
-                        child: IconButton(
-                          icon:
-                              Icon(Icons.menu, color: Colors.black, size: 30.0),
-                          onPressed: () {},
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 10, top: 10),
+                      //   child: IconButton(
+                      //     icon:
+                      //         Icon(Icons.menu, color: Colors.black, size: 30.0),
+                      //     onPressed: () {},
+                      //   ),
+                      // ),
                     ],
                   ),
                   Container(
@@ -106,6 +107,7 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
             ),
           ),
         ),
+        endDrawer: DrawerHamburguerMenu(),
         body: PremiosScrollView(),
         bottomNavigationBar: Container(
           height: 105,

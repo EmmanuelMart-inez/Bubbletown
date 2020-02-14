@@ -1,5 +1,6 @@
 //import 'package:bubbletown_v1/my_flutter_app_icons.dart';
 //import 'package:bubbletown_v1/my_flutter_app_icons.dart';
+import 'package:bubbletown_v1/drawer_menu.dart';
 import 'package:flutter/material.dart';
 
 import 'ayuda_page.dart';
@@ -35,18 +36,19 @@ class _Home_backState extends State<Home_back> {
                     padding: const EdgeInsets.only(left: 18, top: 5),
                     child: Text('Bubble\nTown', style: TextStyle(fontSize: 13)),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10, top: 5),
-                    child: IconButton(
-                      icon: Icon(Icons.menu, color: Colors.black, size: 25.0),
-                      onPressed: () {},
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 10, top: 5),
+                  //   child: IconButton(
+                  //     icon: Icon(Icons.menu, color: Colors.black, size: 25.0),
+                  //     onPressed: () {},
+                  //   ),
+                  // ),
                 ],
               ),
             ),
           ),
         ),
+        endDrawer: DrawerHamburguerMenu(),
         body: SingleChildScrollView(
           child: Container(
             width: double.infinity,
