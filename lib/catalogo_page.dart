@@ -306,9 +306,11 @@ class BebidasScrollCatalogo extends StatelessWidget {
             }),
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          print(snapshot.error);
+          return CircularProgressIndicator();
         }
-        return FittedBox( child: Padding(
+        return FittedBox(
+            child: Padding(
           padding: const EdgeInsets.all(38.0),
           child: CircularProgressIndicator(),
         ));
@@ -384,7 +386,8 @@ class AlimentosScrollCatalogo extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
-        return FittedBox( child: Padding(
+        return FittedBox(
+            child: Padding(
           padding: const EdgeInsets.all(38.0),
           child: CircularProgressIndicator(),
         ));

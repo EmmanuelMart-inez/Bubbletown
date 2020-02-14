@@ -17,13 +17,11 @@ class Pago extends StatefulWidget {
 }
 
 class _PagoState extends State<Pago> {
-  
   @override
   void initState() {
     super.initState();
     requestTarjeta = fetchWelcome();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +142,8 @@ class _PagoState extends State<Pago> {
                                   ),
                                 );
                               } else if (snapshot.hasError) {
-                                return Text("${snapshot.error}");
+                                print(snapshot.error);
+                                return CircularProgressIndicator();
                               }
                               return CircularProgressIndicator();
                             },
@@ -165,7 +164,8 @@ class _PagoState extends State<Pago> {
                               gapless: true,
                             );
                           } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
+                            print(snapshot.error);
+                            return CircularProgressIndicator();
                           }
                           return CircularProgressIndicator();
                         },

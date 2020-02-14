@@ -388,9 +388,11 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
             }),
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          print(snapshot.error);
+          return CircularProgressIndicator();
         }
-        return Center(child: CircularProgressIndicator(
+        return Center(
+            child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
         ));
       },

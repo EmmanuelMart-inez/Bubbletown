@@ -230,8 +230,14 @@ class AyudaScrollList extends StatelessWidget {
                 header: Container(
                   child: Column(
                     children: <Widget>[
-                      SizedBox(height: 8,),
-                      Divider(height: 10, thickness: 0.45, color: Colors.black,),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Divider(
+                        height: 10,
+                        thickness: 0.45,
+                        color: Colors.black,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 42.0),
                         child: Row(
@@ -271,7 +277,8 @@ class AyudaScrollList extends StatelessWidget {
             }),
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          print(snapshot.error);
+          return CircularProgressIndicator();
         }
         return CircularProgressIndicator();
       },

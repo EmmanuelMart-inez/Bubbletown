@@ -252,7 +252,11 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => Encuesta(idEncuesta: snapshot.data.notificaciones[index].link, idNotificacion: snapshot.data.notificaciones[index].id)),
+                                            builder: (context) => Encuesta(
+                                                idEncuesta: snapshot.data
+                                                    .notificaciones[index].link,
+                                                idNotificacion: snapshot.data
+                                                    .notificaciones[index].id)),
                                       )
                                     },
                                 child: Image.asset('assets/notif/check.png',
@@ -267,7 +271,8 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
             }),
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          print(snapshot.error);
+          return CircularProgressIndicator();
         }
         return CircularProgressIndicator();
       },

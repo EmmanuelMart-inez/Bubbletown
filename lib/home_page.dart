@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                       new NotificacionesWidget(),
                     ],
                   ),
-                  //SizedBox(height: 25), 
+                  //SizedBox(height: 25),
                   new WelcomeWidget(),
                   Image.asset('assets/bubbliehappy.png', scale: 1),
                   FutureBuilder<Welcome>(
@@ -110,7 +110,8 @@ class _HomePageState extends State<HomePage> {
                                 .data.participante.tarjetaSellos.numSellos,
                             totalSellos: 8);
                       } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
+                        print(snapshot.error);
+                        return CircularProgressIndicator();
                       }
                       // print(snapshot);
                       return CircularProgressIndicator();
@@ -365,7 +366,8 @@ class WelcomeWidget extends StatelessWidget {
             ],
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          print(snapshot.error);
+          return CircularProgressIndicator();
         }
         return CircularProgressIndicator();
       },
@@ -415,7 +417,8 @@ class PagarWidget extends StatelessWidget {
                                         fontSize: 25,
                                         color: Colors.green[400]));
                               } else if (snapshot.hasError) {
-                                return Text("${snapshot.error}");
+                                print(snapshot.error);
+                                return CircularProgressIndicator();
                               }
                               return CircularProgressIndicator();
                             },

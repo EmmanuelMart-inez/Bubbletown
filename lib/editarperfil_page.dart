@@ -124,27 +124,24 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                 // Validate returns true if the form is valid, or false
                                 // otherwise.
                                 // If the form is valid, display a Snackbar.
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                      content:
-                                          Text('Procesando la información')));
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content:
+                                        Text('Procesando la información')));
                                 if (_formKey.currentState.validate()) {
                                   if (_image != null) {
                                     String imagenNewName = await upload(_image);
                                     print(await patchParticipante(
                                         '{"nombre": "$nombre", "password": "$passwo", "foto": "https://bubbletown.me/download/$imagenNewName"}'));
                                     Scaffold.of(context).showSnackBar(SnackBar(
-                                      content:
-                                          Text('Actualizado con éxito')));
-                                        
+                                        content:
+                                            Text('Actualizado con éxito')));
                                   } else {
                                     print(await patchParticipante(
                                         '{"nombre": "$nombre", "password": "$passwo"}'));
                                     Scaffold.of(context).showSnackBar(SnackBar(
-                                      content:
-                                          Text('Actualizado con éxito')));
+                                        content:
+                                            Text('Actualizado con éxito')));
                                   }
-
-                                  
                                 }
                               },
                             ),
@@ -190,7 +187,8 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                                 : Image.file(_image),
                                           );
                                         } else if (snapshot.hasError) {
-                                          return Text("${snapshot.error}");
+                                          print(snapshot.error);
+                                          return CircularProgressIndicator();
                                         }
                                         return CircularProgressIndicator();
                                       },

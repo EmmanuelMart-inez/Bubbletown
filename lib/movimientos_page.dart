@@ -420,7 +420,8 @@ class _ScrollListMovimientosState extends State<ScrollListMovimientos> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          print(snapshot.error);
+          return CircularProgressIndicator();
         }
         return CircularProgressIndicator();
       },
