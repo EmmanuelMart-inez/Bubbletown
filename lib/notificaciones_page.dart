@@ -163,6 +163,26 @@ class NotificacionesScrollList extends StatefulWidget {
 }
 
 class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
+  void deleteItem(int indexCard, String id, List<Notificacione> n) async {
+    print("index card $indexCard deleted");
+    try {
+      final response =
+          await http.patch('https://bubbletown.me/notificaciones/${id}');
+      if (response.statusCode == 200) {
+        // If the call to the server was successful, parse the JSON.
+        setState(() {
+          n.removeAt(indexCard);
+        });
+        // return NotificacionesModel.fromJson(json.decode(response.body));
+      } else {
+        // If that call was not successful, throw an error.
+        throw Exception('Error al eliminar, intente más tarde');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<NotificacionesModel>(
@@ -177,94 +197,20 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
                     const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black, width: 1),
                   ),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Image.network(
-                              '${changeImageFormatToUpper(snapshot.data.notificaciones[index].imagenIcon)}',
-                              scale: 1),
-                          Text(
-                            '${snapshot.data.notificaciones[index].titulo}',
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
-                          ButtonTheme(
-                            minWidth: 4,
-                            child: FlatButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () async {
-                                try {
-                                  final response = await http.patch(
-                                      'https://bubbletown.me/notificaciones/${snapshot.data.notificaciones[index].id}');
-                                  if (response.statusCode == 200) {
-                                    // If the call to the server was successful, parse the JSON.
-                                    setState(() {
-                                      snapshot.data.notificaciones
-                                          .removeAt(index);
-                                    });
-                                    return NotificacionesModel.fromJson(
-                                        json.decode(response.body));
-                                  } else {
-                                    // If that call was not successful, throw an error.
-                                    throw Exception(
-                                        'Error al eliminar, intente más tarde');
-                                  }
-                                } catch (e) {
-                                  print(e);
-                                }
-                              },
-                              child: Icon(
-                                Icons.close,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        child: Text(
-                          "${snapshot.data.notificaciones[index].mensaje}",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                      SizedBox(height: 35),
-                      Divider(height: 3, color: Colors.black),
-                      Container(
-                        height: 50,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Text(
-                              'Responder',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            FlatButton(
-                                onPressed: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Encuesta(
-                                                idEncuesta: snapshot.data
-                                                    .notificaciones[index].link,
-                                                idNotificacion: snapshot.data
-                                                    .notificaciones[index].id)),
-                                      )
-                                    },
-                                child: Image.asset('assets/notif/check.png',
-                                    scale: 4)),
-                          ],
-                        ),
-                      ),
-                    ],
+                  child: NotificacionCard(
+                    listNotificaciones: snapshot.data.notificaciones,
+                    index: index,
+                    deleteItem: deleteItem,
+                    id: snapshot.data.notificaciones[index].id,
+                    imageHeader: changeImageFormatToUpper(
+                        snapshot.data.notificaciones[index].imagenIcon),
+                    textHeader: snapshot.data.notificaciones[index].titulo,
+                    body: snapshot.data.notificaciones[index].mensaje,
+                    textAccion: snapshot.data.notificaciones[index].barText,
+                    link: snapshot.data.notificaciones[index].link,
                   ),
                 ),
               );
@@ -291,5 +237,135 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
       return newString;
     } else
       return st;
+  }
+}
+
+class NotificacionCard extends StatelessWidget {
+  const NotificacionCard({
+    Key key,
+    this.index,
+    this.id,
+    this.imageHeader,
+    this.textHeader,
+    this.body,
+    this.textAccion,
+    this.link,
+    this.listNotificaciones,
+    this.deleteItem,
+  }) : super(key: key);
+
+  final index;
+  final id;
+  final imageHeader;
+  final textHeader;
+  final body;
+  final textAccion;
+  final link;
+  final listNotificaciones;
+  final deleteItem;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        SizedBox(height: 10),
+        Container(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left:8.0),
+                child: FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Image.network('${this.imageHeader}'),
+                ),
+              ),
+              Container(
+                width: 190,
+                child: Text(
+                  // 'Como estuvo tu bebida?',
+                  '${this.textHeader}',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+              ),
+              IconButton(
+                alignment: Alignment.topRight,
+                icon: Icon(
+                  Icons.close,
+                  size: 24,
+                ),
+                onPressed: () => this
+                    .deleteItem(this.index, this.id, this.listNotificaciones),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          child: Text(
+            "Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida?",
+            // "${this.body}",
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 3,
+            style: TextStyle(fontSize: 14, height: 0.8),
+          ),
+        ),
+        // SizedBox(height: 35),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Divider(height: 3, color: Colors.black),
+        ),
+        OpcionalActionCardBar(textAccion: textAccion, link: link, id: id),
+      ],
+    );
+  }
+}
+
+class OpcionalActionCardBar extends StatelessWidget {
+  const OpcionalActionCardBar({
+    Key key,
+    @required this.textAccion,
+    @required this.link,
+    @required this.id,
+  }) : super(key: key);
+
+  final textAccion;
+  final link;
+  final id;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: Añadir aqui el la validación del ícono
+    if (textAccion != null && textAccion != "null" && textAccion.toString().length > 0)
+      return FlatButton(
+        child: Container(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(
+                '${this.textAccion}',
+                // '${this.textAccion}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Image.asset('assets/notif/check.png', scale: 4),
+            ],
+          ),
+        ),
+        onPressed: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Encuesta(idEncuesta: this.link, idNotificacion: this.id)),
+          )
+        },
+      );
+    else 
+      return SizedBox(height: 0.0,);
   }
 }
