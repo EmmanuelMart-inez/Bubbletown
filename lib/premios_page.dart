@@ -4,6 +4,8 @@ import 'package:bubbletown_v1/services/premios_service.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:qr/qr.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
@@ -267,36 +269,48 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  BarCodeImage(
-                    params: EAN13BarCodeParams(
-                      '${st.toUpperCase()}',
-                      //'1235',
-                      lineWidth:
-                          2, // width for a single black/white bar (default: 2.0)
-                      barHeight:
-                          100.0, // height for the entire widget (default: 100.0)
-                      withText:
-                          false, // Render with text label or not (default: false)
-                    ),
-                    onError: (error) {
-                      // Error handler
-                      print('error = $error');
-                    },
-                  ),
                   SizedBox(
                     height: 30,
                   ),
                   Container(
                     height: 240,
                     width: 240,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: QrImage(
-                        data: '${st.toUpperCase()}',
-                        version: QrVersions.auto,
-                        size: 220.0,
+                    child: Center(
+                        child: PrettyQr(
+                            // image: AssetImage('images/twitter.png'),
+                            typeNumber: 3,
+                            size: 220,
+                            data: '${st.toUpperCase()}',
+                            errorCorrectLevel: QrErrorCorrectLevel.M,
+                            roundEdges: true)),
+                    // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Center(
+                      child: Text(
+                    '${st.toUpperCase()}',
+                    style: TextStyle(
+                      fontSize: 22,
+                    ),
+                  )),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 240,
+                      width: 240,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: QrImage(
+                          data: '${st.toUpperCase()}',
+                          version: QrVersions.auto,
+                          size: 220.0,
+                        ),
+                        // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
                       ),
-                      // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
                     ),
                   ),
                 ],
@@ -322,70 +336,85 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
       future: requestPremios,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 0.95,
-            children: List.generate(snapshot.data.premios.length, (index) {
-              return Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        _neverSatisfied(snapshot
-                            .data.premios[index].codigoBarras
-                            .toString());
-                      },
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        children: <Widget>[
-                          Stack(
-                            alignment: Alignment.topCenter,
+          return Container(
+            // width: double.infinity,
+                      child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 0.95,
+              children: List.generate(snapshot.data.premios.length, (index) {
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          _neverSatisfied(snapshot
+                              .data.premios[index].codigoBarras
+                              .toString());
+                        },
+                        child: Card(
+                          // borderOnForeground: true,
+                          color: Colors.white,
+                          margin: EdgeInsets.all(0),
+                          child: Column(
                             children: <Widget>[
-                              Image.asset('assets/premiosbackground.png',
-                                  scale: 1.4),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(height: 10),
-                                  FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Image.network(
-                                        '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}',
-                                        scale: 1.2),
-                                  ),
-                                  Text('${snapshot.data.premios[index].nombre}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15)),
-                                  SizedBox(height: 11),
-                                  BarCodeImage(
-                                    params: Code39BarCodeParams(
-                                      '${snapshot.data.premios[index].codigoBarras.toString()}',
-                                      // '1235',
-                                      lineWidth:
-                                          0.30, // width for a single black/white bar (default: 2.0)
-                                      barHeight:
-                                          15.0, // height for the entire widget (default: 100.0)
-                                      withText:
-                                          false, // Render with text label or not (default: false)
+                              SizedBox(
+                                height: 185,
+                                child: Stack(
+                                  // fit: StackFit.loose,
+                                  children: <Widget>[
+                                    Image.asset('assets/premiosbackground.png',
+                                        scale: 1.4),
+                                    Positioned(
+                                      // bottom: 14.0,
+                                      top: 10.0,
+                                      left: 16.0,
+                                      right: 16.0,
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        alignment: Alignment.center,
+                                        child: Image.network(
+                                            '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}'),
+                                      ),
                                     ),
-                                    onError: (error) {
-                                      // Error handler
-                                      print('error = $error');
-                                    },
-                                  ),
-                                ],
+                                    Positioned(
+                                      bottom: 14.0,
+                                      left: 16.0,
+                                      right: 16.0,
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        alignment: Alignment.center,
+                                        child: BarCodeImage(
+                                          params: Code39BarCodeParams(
+                                            // '123654',
+                                            '${snapshot.data.premios[index].codigoBarras.toString()}',
+                                            // '1235',
+                                            lineWidth:
+                                                1.0, // width for a single black/white bar (default: 2.0)
+                                            barHeight:
+                                                17.0, // height for the entire widget (default: 100.0)
+                                            withText:
+                                                false, // Render with text label or not (default: false)
+                                          ),
+                                          onError: (error) {
+                                            // Error handler
+                                            print('error = $error');
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                    ],
+                  ),
+                );
+              }),
+            ),
           );
         } else if (snapshot.hasError) {
           print(snapshot.error);
@@ -413,3 +442,49 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
       return st;
   }
 }
+
+// Stack(
+//                         alignment: Alignment.topCenter,
+//                         children: <Widget>[
+//                           Stack(
+//                             alignment: Alignment.topCenter,
+//                             children: <Widget>[
+//                               Image.asset('assets/premiosbackground.png',
+//                                   scale: 1.4),
+//                               Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: <Widget>[
+//                                   SizedBox(height: 10),
+//                                   FittedBox(
+//                                     fit: BoxFit.contain,
+//                                     child: Image.network(
+//                                         '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}',
+//                                         scale: 1.2),
+//                                   ),
+//                                   Text('${snapshot.data.premios[index].nombre}',
+//                                       style: TextStyle(
+//                                           fontWeight: FontWeight.bold,
+//                                           fontSize: 15)),
+//                                   SizedBox(height: 11),
+//                                   // BarCodeImage(
+//                                   //   params: Code39BarCodeParams(
+//                                   //     '${snapshot.data.premios[index].codigoBarras.toString()}',
+//                                   //     // '1235',
+//                                   //     lineWidth:
+//                                   //         0.30, // width for a single black/white bar (default: 2.0)
+//                                   //     barHeight:
+//                                   //         15.0, // height for the entire widget (default: 100.0)
+//                                   //     withText:
+//                                   //         false, // Render with text label or not (default: false)
+//                                   //   ),
+//                                   //   onError: (error) {
+//                                   //     // Error handler
+//                                   //     print('error = $error');
+//                                   //   },
+//                                   // ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       ),

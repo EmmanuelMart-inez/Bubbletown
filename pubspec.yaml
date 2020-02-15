@@ -21,8 +21,10 @@ dependencies:
     sdk: flutter
   
   http: ^0.12.0+2
+  # QR codes
   qr_flutter: ^3.1.0
   barcode_flutter: ^1.1.0
+  pretty_qr_code: ^1.0.1
   provider: ^4.0.1
   screen: ^0.0.5
   expandable: ^4.0.2

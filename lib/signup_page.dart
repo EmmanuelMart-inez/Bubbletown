@@ -78,10 +78,21 @@ class _SignupState extends State<Signup> {
     if (idParticipante != null &&
         idParticipante != "null" &&
         idParticipante.length > 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      _handleSignOut();
+      Welcome pForGender = await fetchWelcome();
+      print(pForGender.participante.sexo);
+      if (pForGender.participante.sexo != "Masculino" ||
+          pForGender.participante.sexo != "Femenino") {
+        print("seleccionar genero");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GenderPage()),
+        );
+      } else
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
     }
     return;
   }
