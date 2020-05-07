@@ -107,8 +107,8 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.hasData) {
                         return BubbleCardSellosWidget(
                             numeroSellos: snapshot
-                                .data.participante.tarjetaSellos.numSellos,
-                            totalSellos: 8);
+                                .data.numSellos,
+                            totalSellos: snapshot.data.tarjetaSellos.numSellos);
                       } else if (snapshot.hasError) {
                         print(snapshot.error);
                         return CircularProgressIndicator();
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/bottombar/inicio.png',
-              scale: 2,
+              scale: 1.5,
             ),
             title: Text('Inicio',
                 style: TextStyle(color: Colors.black, fontSize: 14)),
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/bottombar/bar.png',
-              scale: 2,
+              scale: 1.5,
             ),
             title: Text('Tarjeta',
                 style: TextStyle(color: Colors.black, fontSize: 14)),
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/bottombar/catalogo.png',
-              scale: 2,
+              scale: 1.5,
             ),
             title: Text('Catálogo',
                 style: TextStyle(color: Colors.black, fontSize: 14)),
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/bottombar/premios.png',
-              scale: 2,
+              scale: 1.5,
             ),
             title: Text('Premios',
                 style: TextStyle(color: Colors.black, fontSize: 14)),
@@ -412,7 +412,7 @@ class PagarWidget extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
-                                    '${snapshot.data.participante.tarjetaPuntos.balance.round()}',
+                                    '${snapshot.data.numPuntos.round()}',
                                     style: TextStyle(
                                         fontSize: 25,
                                         color: Colors.green[400]));
@@ -716,7 +716,7 @@ class TarjetaSellosBackWidget extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Text(
-                        '${snapshot.data.participante.tarjetaSellos.descripcion}',
+                        '${snapshot.data.tarjetaSellos.descripcion}',
                         textAlign: TextAlign.center,
                       );
                     } else if (snapshot.hasError) {

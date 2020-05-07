@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
+import 'Storage/globals.dart';
 
 LogInFormModel form;
 
@@ -156,7 +157,7 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<String> _sendTokenToServer(
       String token, String id, String social) async {
-    String url = 'https://bubbletown.me/autenticacion/$social';
+    String url = '$apiURL/autenticacion/$social';
     Map<String, String> headers = {"Content-type": "application/json"};
     String jsonformdata = "{'token': $token, 'id': $id}";
     // make POST request

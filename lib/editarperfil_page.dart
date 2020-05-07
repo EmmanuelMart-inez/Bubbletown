@@ -9,12 +9,14 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'Storage/globals.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
 import 'models/participante_model.dart';
 import 'premios_page.dart';
+import 'Storage/globals.dart';
 
 Future<ParticipanteModel> requestParticipante;
 
@@ -131,7 +133,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                   if (_image != null) {
                                     String imagenNewName = await upload(_image);
                                     print(await patchParticipante(
-                                        '{"nombre": "$nombre", "password": "$passwo", "foto": "https://bubbletown.me/download/$imagenNewName"}'));
+                                        '{"nombre": "$nombre", "password": "$passwo", "foto": `$apiURL/download/$imagenNewName`}'));
                                     Scaffold.of(context).showSnackBar(SnackBar(
                                         content:
                                             Text('Actualizado con éxito')));
@@ -183,7 +185,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                             width: 120,
                                             child: _image == null
                                                 ? Image.network(
-                                                    '${snapshot.data.foto}')
+                                                    '${apiURLImages}/${snapshot.data.foto}')
                                                 : Image.file(_image),
                                           );
                                         } else if (snapshot.hasError) {

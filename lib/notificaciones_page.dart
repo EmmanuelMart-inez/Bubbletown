@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import 'package:image/image.dart' as Img;
+import 'Storage/globals.dart';
+
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
@@ -166,8 +169,7 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
   void deleteItem(int indexCard, String id, List<Notificacione> n) async {
     print("index card $indexCard deleted");
     try {
-      final response =
-          await http.patch('https://bubbletown.me/notificaciones/${id}');
+      final response = await http.patch('$apiURL/notificaciones/${id}');
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON.
         setState(() {
@@ -201,17 +203,20 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
                     border: Border.all(color: Colors.black, width: 1),
                   ),
                   child: NotificacionCard(
-                    listNotificaciones: snapshot.data.notificaciones,
-                    index: index,
-                    deleteItem: deleteItem,
-                    id: snapshot.data.notificaciones[index].id,
-                    imageHeader: changeImageFormatToUpper(
-                        snapshot.data.notificaciones[index].imagenIcon),
-                    textHeader: snapshot.data.notificaciones[index].titulo,
-                    body: snapshot.data.notificaciones[index].mensaje,
-                    textAccion: snapshot.data.notificaciones[index].barText,
-                    link: snapshot.data.notificaciones[index].link,
-                  ),
+                      listNotificaciones: snapshot.data.notificaciones,
+                      index: index,
+                      deleteItem: deleteItem,
+                      id: snapshot.data.notificaciones[index].id,
+                      // imageHeader:
+                      // snapshot.data.notificaciones[index].imagenIcon,
+                      imageHeader: changeImageFormatToUpper(
+                          snapshot.data.notificaciones[index].imagenIcon),
+                      textHeader: snapshot.data.notificaciones[index].titulo,
+                      body: snapshot.data.notificaciones[index].mensaje,
+                      textAccion: snapshot.data.notificaciones[index].barText,
+                      link: snapshot.data.notificaciones[index].link,
+                      tipoNotificacion:
+                          snapshot.data.notificaciones[index].tipoNotificacion),
                 ),
               );
             }),
@@ -229,12 +234,18 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
     String start;
     String format;
     String newString;
-    if (st.substring(st.length - 3).compareTo('PNG') > 0) {
-      format = "PNG";
-      start = st.substring(0, st.length - 3);
-      newString = '$start$format';
-      // print(newString);
-      return newString;
+
+    // if (st.substring(st.length - 3).compareTo('PNG') > 0) {
+    //   format = "PNG";
+    //   start = st.substring(0, st.length - 3);
+    //   newString = '$start$format';
+    //   // print(newString);
+    //   return newString;
+    // } else
+    //   return st;
+    print(st.substring(st.length - 4));
+    if (st.substring(st.length - 4) == 'null') {
+      return "$apiURL/download/transparent.png";
     } else
       return st;
   }
@@ -250,6 +261,7 @@ class NotificacionCard extends StatelessWidget {
     this.body,
     this.textAccion,
     this.link,
+    this.tipoNotificacion,
     this.listNotificaciones,
     this.deleteItem,
   }) : super(key: key);
@@ -261,6 +273,7 @@ class NotificacionCard extends StatelessWidget {
   final body;
   final textAccion;
   final link;
+  final tipoNotificacion;
   final listNotificaciones;
   final deleteItem;
 
@@ -275,11 +288,20 @@ class NotificacionCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left:8.0),
+                padding: const EdgeInsets.only(left: 8.0),
+                // child: Container(
+                //   height: 20,
+                // width: 30,
                 child: FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: Image.network('${this.imageHeader}'),
+                  // child: Text('${this.imageHeader}'),
+                  child: Image.network(
+                    '${apiURLImages}/${this.imageHeader}',
+                    height: 55.0,
+                    width: 55.0,
+                  ),
                 ),
+                // ),
               ),
               Container(
                 width: 190,
@@ -306,8 +328,8 @@ class NotificacionCard extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           child: Text(
-            "Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida?",
-            // "${this.body}",
+            // "Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida?",
+            "${this.body}",
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
@@ -319,7 +341,11 @@ class NotificacionCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Divider(height: 3, color: Colors.black),
         ),
-        OpcionalActionCardBar(textAccion: textAccion, link: link, id: id),
+        OpcionalActionCardBar(
+            textAccion: textAccion,
+            link: link,
+            id: id,
+            tipoNotificacion: tipoNotificacion),
       ],
     );
   }
@@ -330,17 +356,21 @@ class OpcionalActionCardBar extends StatelessWidget {
     Key key,
     @required this.textAccion,
     @required this.link,
+    @required this.tipoNotificacion,
     @required this.id,
   }) : super(key: key);
 
   final textAccion;
   final link;
   final id;
+  final tipoNotificacion;
 
   @override
   Widget build(BuildContext context) {
     // TODO: Añadir aqui el la validación del ícono
-    if (textAccion != null && textAccion != "null" && textAccion.toString().length > 0)
+    if (textAccion != null &&
+        textAccion != "null" &&
+        textAccion.toString().length > 0)
       return FlatButton(
         child: Container(
           height: 50,
@@ -357,15 +387,37 @@ class OpcionalActionCardBar extends StatelessWidget {
           ),
         ),
         onPressed: () => {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    Encuesta(idEncuesta: this.link, idNotificacion: this.id)),
-          )
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              if (tipoNotificacion == 'ninguna' || tipoNotificacion == 'premio')
+                return Container(
+                  child: AlertDialog(
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Image.network('$apiURLImages/bird1.png'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('SIGUIENTE'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              else
+                return Encuesta(idEncuesta: this.link, idNotificacion: this.id);
+            },
+          ))
         },
       );
-    else 
-      return SizedBox(height: 0.0,);
+    else
+      return SizedBox(
+        height: 0.0,
+      );
   }
 }

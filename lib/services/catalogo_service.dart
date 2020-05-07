@@ -3,10 +3,11 @@ import 'dart:convert';
 
 import 'package:bubbletown_v1/models/catalogo_model.dart';
 import 'package:http/http.dart' as http;
+import '../Storage/globals.dart';
 
 Future<Catalogomodel> fetchCatalogo(String a) async {
   final response =
-      await http.get('https://bubbletown.me/catalogo/$a');
+      await http.get('$apiURL/catalogo/$a');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.

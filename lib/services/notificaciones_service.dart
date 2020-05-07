@@ -5,6 +5,7 @@ import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/notificaciones_model.dart';
 import 'package:http/http.dart' as http;
+import '../Storage/globals.dart';
 
 Future<NotificacionesModel> fetchNotificaciones() async {
   String id_participante = await readTokenData();
@@ -17,7 +18,7 @@ Future<NotificacionesModel> fetchNotificaciones() async {
     id_participante = obid;
   }
   final response =
-      await http.get('https://bubbletown.me/notificaciones/$id_participante');
+      await http.get('$apiURL/notificaciones/$id_participante');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.

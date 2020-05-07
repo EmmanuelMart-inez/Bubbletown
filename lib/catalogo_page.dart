@@ -5,6 +5,7 @@ import 'escanea_page.dart';
 import 'home_page.dart';
 import 'models/catalogo_model.dart';
 import 'premios_page.dart';
+import 'Storage/globals.dart';
 
 Future<Catalogomodel> requestCatalogoBebidas;
 Future<Catalogomodel> requestCatalogoAlimentos;
@@ -284,7 +285,7 @@ class BebidasScrollCatalogo extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Image.network(
-                          '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                          '${apiURLImages}/${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
                           scale: 1),
                     ),
                     SizedBox(height: 10),
@@ -362,7 +363,7 @@ class AlimentosScrollCatalogo extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Image.network(
-                          '${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                          '${apiURLImages}/${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
                           scale: 1),
                     ),
                     SizedBox(height: 10),

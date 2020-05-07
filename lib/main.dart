@@ -184,6 +184,10 @@ import 'encuestaopen_page.dart';
 //import 'loginform_page.dart';
 //import 'signup_page.dart';
 import 'home_page.dart';
+import 'package:bubbletown_v1/Storage/user.dart';
+import 'dart:async';
+
+// String a =  readPreference("bubbletownToken");
 
 
 void main() {
@@ -195,7 +199,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         supportedLocales: [

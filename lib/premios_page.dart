@@ -1,3 +1,4 @@
+import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:bubbletown_v1/drawer_menu.dart';
 import 'package:bubbletown_v1/models/premios_model.dart';
 import 'package:bubbletown_v1/services/premios_service.dart';
@@ -10,6 +11,7 @@ import 'package:qr/qr.dart';
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
+import 'Storage/globals.dart';
 
 Future<PremiosModel> requestPremios;
 
@@ -258,67 +260,69 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
   _PremiosScrollViewState({this.st});
   final String st;
 
-  Future<void> _neverSatisfied(String st) {
+  Future<void> _neverSatisfied(String st, String urlImageDisplay) {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return Container(
           child: AlertDialog(
-            title: Text('Código listo para ser escaneado!'),
+            title: Text('$st'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    height: 240,
-                    width: 240,
-                    child: Center(
-                        child: PrettyQr(
-                            // image: AssetImage('images/twitter.png'),
-                            typeNumber: 3,
-                            size: 220,
-                            data: '${st.toUpperCase()}',
-                            errorCorrectLevel: QrErrorCorrectLevel.M,
-                            roundEdges: true)),
-                    // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Center(
-                      child: Text(
-                    '${st.toUpperCase()}',
-                    style: TextStyle(
-                      fontSize: 22,
-                    ),
-                  )),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Center(
-                    child: Container(
-                      height: 240,
-                      width: 240,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: QrImage(
-                          data: '${st.toUpperCase()}',
-                          version: QrVersions.auto,
-                          size: 220.0,
-                        ),
-                        // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
-                      ),
-                    ),
-                  ),
+                  Image.network('$apiURLImages/$urlImageDisplay'),
+                  // OLD: Shows String QR, QR Standard and QR liquid
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
+                  // Container(
+                  //   height: 240,
+                  //   width: 240,
+                  //   child: Center(
+                  //       child: PrettyQr(
+                  //           // image: AssetImage('images/twitter.png'),
+                  //           typeNumber: 3,
+                  //           size: 220,
+                  //           data: '${st.toUpperCase()}',
+                  //           errorCorrectLevel: QrErrorCorrectLevel.M,
+                  //           roundEdges: true)),
+                  //   // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
+                  // ),
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
+                  // Center(
+                  //     child: Text(
+                  //   '${st.toUpperCase()}',
+                  //   style: TextStyle(
+                  //     fontSize: 22,
+                  //   ),
+                  // )),
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
+                  // Center(
+                  //   child: Container(
+                  //     height: 240,
+                  //     width: 240,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(8.0),
+                  //       child: QrImage(
+                  //         data: '${st.toUpperCase()}',
+                  //         version: QrVersions.auto,
+                  //         size: 220.0,
+                  //       ),
+                  //       // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('OK'),
+                child: Text('SIGUIENTE'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -338,7 +342,7 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
         if (snapshot.hasData) {
           return Container(
             // width: double.infinity,
-                      child: GridView.count(
+            child: GridView.count(
               crossAxisCount: 2,
               childAspectRatio: 0.95,
               children: List.generate(snapshot.data.premios.length, (index) {
@@ -349,7 +353,9 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                       GestureDetector(
                         onTap: () {
                           _neverSatisfied(snapshot
-                              .data.premios[index].codigoBarras
+                              .data.premios[index].nombre
+                              .toString(), snapshot
+                              .data.premios[index].imagenDisplay
                               .toString());
                         },
                         child: Card(
@@ -374,7 +380,7 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                                         fit: BoxFit.contain,
                                         alignment: Alignment.center,
                                         child: Image.network(
-                                            '${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}'),
+                                            '$apiURLImages/${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}'),
                                       ),
                                     ),
                                     Positioned(
@@ -417,7 +423,7 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
             ),
           );
         } else if (snapshot.hasError) {
-          print(snapshot.error);
+          print('Snapshot Error: ${snapshot.error}');
           return CircularProgressIndicator();
         }
         return Center(

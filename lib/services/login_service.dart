@@ -5,10 +5,12 @@ import 'dart:math';
 import 'package:bubbletown_v1/models/login_form.dart';
 import 'package:bubbletown_v1/models/signup_model.dart';
 import 'package:http/http.dart' as http;
+import '../Storage/globals.dart';
 
 Future<LogInFormResponseModel> postLogin(LogInFormModel formdata) async {
   // set up POST request arguments
-  String url = 'https://bubbletown.me/autenticacion';
+  String url = '$apiURL/autenticacion';
+  print(url);
   Map<String, String> headers = {"Content-type": "application/json"};
   String jsonformdata = logInFormModelToJson(formdata);
   // make POST request
@@ -28,7 +30,7 @@ Future<LogInFormResponseModel> postLogin(LogInFormModel formdata) async {
 Future<LogInFormResponseModel> postRegistroSocialNetwork(String socialNetwork,
     SignUpFormModel formdata, LogInFormModel formsocial) async {
   // set up POST request arguments
-  String url = 'https://bubbletown.me/registro/$socialNetwork';
+  String url = '$apiURL/registro/$socialNetwork';
   Map<String, String> headers = {"Content-type": "application/json"};
 
   // make POST request
@@ -48,10 +50,10 @@ Future<LogInFormResponseModel> postRegistroSocialNetwork(String socialNetwork,
       final participante =
           SignUpFormResponseModel.fromJson(json.decode(response.body));
       final newTarjetaSellos = await http.post(
-          'https://bubbletown.me/tarjetasellos/${participante.objectId.id}');
+          '$apiURL/tarjetasellos/${participante.objectId.id}');
       if (newTarjetaSellos.statusCode == 200) print("200 ok sellos");
       final newTarjetaPuntos = await http.post(
-          'https://bubbletown.me/tarjetapuntos/${participante.objectId.id}');
+          '$apiURL/tarjetapuntos/${participante.objectId.id}');
       if (newTarjetaPuntos.statusCode == 200) print("200 ok puntos");
       if (newTarjetaPuntos.statusCode == 200 &&
           newTarjetaSellos.statusCode == 200) {
@@ -74,7 +76,8 @@ Future<LogInFormResponseModel> postRegistroSocialNetwork(String socialNetwork,
 Future<LogInFormResponseModel> postLoginSocialNetwork(
     String socialNetwork, LogInFormModel formdata) async {
   // set up POST request arguments
-  String url = 'https://bubbletown.me/autenticacion/$socialNetwork';
+  String url = '$apiURL/autenticacion/$socialNetwork';
+  print(url);
   Map<String, String> headers = {"Content-type": "application/json"};
 
   // make POST request
@@ -98,7 +101,7 @@ Future<LogInFormResponseModel> postLoginSocialNetwork(
 // Future<LogInFormResponseModel> postLoginSocialNetwork(
 //     String socialNetwork, LogInFormModel formdata) async {
 //   // set up POST request arguments
-//   String url = 'https://bubbletown.me/registro/$socialNetwork';
+//   String url = '$apiURL/registro/$socialNetwork';
 //   Map<String, String> headers = {"Content-type": "application/json"};
 
 //   // make POST request

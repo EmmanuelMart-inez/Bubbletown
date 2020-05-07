@@ -5,6 +5,8 @@ import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:bubbletown_v1/models/welcome_model.dart';
 import 'package:http/http.dart' as http;
+import '../Storage/globals.dart';
+
 
 Future<Welcome> fetchWelcome() async {
   try {
@@ -20,7 +22,7 @@ Future<Welcome> fetchWelcome() async {
     }
     // Realizar la petición al servidor
     final response =
-        await http.get('https://bubbletown.me/wparticipante/$id_participante');
+        await http.get('$apiURL/wparticipante/$id_participante');
     if (response.statusCode == 200) {
       print("200");
       // If the call to the server was successful, parse the JSON.

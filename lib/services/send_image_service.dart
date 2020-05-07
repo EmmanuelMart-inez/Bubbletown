@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../Storage/globals.dart';
 
   Future<File> getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -29,7 +30,7 @@ import 'package:image_picker/image_picker.dart';
     var length = await imageFile.length();
 
     // string to uri
-    var uri = Uri.parse("https://bubbletown.me/upload");
+    var uri = Uri.parse("$apiURL/upload");
 
     // create multipart request
     var request = new http.MultipartRequest("POST", uri);

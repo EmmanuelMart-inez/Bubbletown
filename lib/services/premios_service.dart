@@ -6,6 +6,8 @@ import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/premios_model.dart';
 import 'package:http/http.dart' as http;
 
+import '../Storage/globals.dart';
+
 Future<PremiosModel> fetchPremios() async {
   String idParticipante = await readTokenData();
   if (idParticipante == null && (obid == "null" || obid == null)) {
@@ -17,8 +19,8 @@ Future<PremiosModel> fetchPremios() async {
     idParticipante = obid;
   }
   final response =
-      await http.get('https://bubbletown.me/premios/$idParticipante');
-
+      await http.get('$apiURL/premios/$idParticipante');
+      print('$apiURL/premios/$idParticipante');
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
     return PremiosModel.fromJson(json.decode(response.body));

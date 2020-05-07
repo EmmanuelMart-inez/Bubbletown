@@ -116,7 +116,7 @@ class _MiCuentaState extends State<MiCuenta> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 12.0),
                                           child: Text(
-                                            'Puntos: ${snapshot.data.participante.tarjetaPuntos.balance.toString()}',
+                                            'Puntos: ${snapshot.data.numPuntos.toString()}',
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),
@@ -124,7 +124,7 @@ class _MiCuentaState extends State<MiCuenta> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 12.0),
                                           child: Text(
-                                            'Sellos: ${snapshot.data.participante.tarjetaSellos.numSellos.toString()}',
+                                            'Sellos: ${snapshot.data.numSellos.toString()}',
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),

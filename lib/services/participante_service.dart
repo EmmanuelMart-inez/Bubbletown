@@ -6,8 +6,8 @@ import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/participante_model.dart';
 import 'package:http/http.dart' as http;
 
-
 import 'package:bubbletown_v1/models/signup_model.dart';
+import '../Storage/globals.dart';
 
 Future<ParticipanteModel> fetchParticipante() async {
   String idParticipante = await readTokenData();
@@ -20,7 +20,7 @@ Future<ParticipanteModel> fetchParticipante() async {
     idParticipante = obid;
   }
   final response =
-      await http.get('https://bubbletown.me/participante/$idParticipante');
+      await http.get('$apiURL/participante/$idParticipante');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
@@ -43,7 +43,7 @@ Future<int> patchParticipante(String formdata) async {
   }
 
   // set up POST request arguments
-  String url = 'https://bubbletown.me/participante/$idParticipante';
+  String url = '$apiURL/participante/$idParticipante';
   Map<String, String> headers = {"Content-type": "application/json"};
   // String jsonformdata = signUpFormModelToJson(formdata);
   // make POST request

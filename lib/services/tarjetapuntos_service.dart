@@ -5,6 +5,7 @@ import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/tarjetapuntos_model.dart';
 import 'package:http/http.dart' as http;
+import '../Storage/globals.dart';
 
 Future<MiTarjeta> fetchTarjeta() async {
   String idParticipante = await readTokenData();
@@ -17,7 +18,7 @@ Future<MiTarjeta> fetchTarjeta() async {
     idParticipante = obid;
   }
   final response =
-      await http.get('https://bubbletown.me/tarjetapuntos/$idParticipante');
+      await http.get('$apiURL/tarjetapuntos/$idParticipante');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.

@@ -11,6 +11,8 @@ import 'home_page.dart';
 import 'models/ayuda_model.dart';
 import 'premios_page.dart';
 
+import 'Storage/globals.dart';
+
 Future<AyudaModel> requestAyuda;
 
 class Ayuda extends StatefulWidget {
@@ -239,12 +241,12 @@ class AyudaScrollList extends StatelessWidget {
                         color: Colors.black,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 42.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 42.0, vertical: 10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Image.network(
-                                '${snapshot.data.ayuda[index].imagenIcon}',
+                                '${apiURLImages}/${snapshot.data.ayuda[index].imagenIcon}',
                                 scale: 1.9),
                             Text(
                               '  ${snapshot.data.ayuda[index].titulo}',

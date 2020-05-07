@@ -3,10 +3,11 @@ import 'dart:convert';
 
 import 'package:bubbletown_v1/models/signup_model.dart';
 import 'package:http/http.dart' as http;
+import '../Storage/globals.dart';
 
 // Future<EncuestaModel> fetchEncuesta(String a) async {
 //   final response =
-//       await http.get('https://bubbletown.me/encuesta/5e296c4202ffbe39077087e3');
+//       await http.get('$apiURL/encuesta/5e296c4202ffbe39077087e3');
 
 //   if (response.statusCode == 200) {
 //     // If the call to the server was successful, parse the JSON.
@@ -19,7 +20,7 @@ import 'package:http/http.dart' as http;
 
 // Future<int> patchEncuesta(String jsondata, String idEncuestaParticipante) async {
 //   // set up POST request arguments
-//   String url = 'https://bubbletown.me/controlencuestas/$idEncuestaParticipante';
+//   String url = '$apiURL/controlencuestas/$idEncuestaParticipante';
 //   Map<String, String> headers = {"Content-type": "application/json"};
 //     // String json = '{"title": "Hello", "body": "body text", "userId": 1}';
 //   // make POST request
@@ -31,7 +32,7 @@ import 'package:http/http.dart' as http;
 Future<SignUpFormResponseModel> postParticipante(
     SignUpFormModel formdata) async {
   // set up POST request arguments
-  String url = 'https://bubbletown.me/participante';
+  String url = '$apiURL/participante';
   Map<String, String> headers = {"Content-type": "application/json"};
   String jsonformdata = signUpFormModelToJson(formdata);
   // make POST request
@@ -44,10 +45,10 @@ Future<SignUpFormResponseModel> postParticipante(
       final participante =
           SignUpFormResponseModel.fromJson(json.decode(response.body));
       final newTarjetaSellos = await http
-          .post('https://bubbletown.me/tarjetasellos/${participante.objectId.id}');
+          .post('$apiURL/tarjetasellos/${participante.objectId.id}');
       if (newTarjetaSellos.statusCode == 200) print("200 ok sellos");
       final newTarjetaPuntos = await http
-          .post('https://bubbletown.me/tarjetapuntos/${participante.objectId.id}');
+          .post('$apiURL/tarjetapuntos/${participante.objectId.id}');
       if (newTarjetaPuntos.statusCode == 200) print("200 ok puntos");
       if (newTarjetaPuntos.statusCode == 200 &&
           newTarjetaSellos.statusCode == 200) return participante;

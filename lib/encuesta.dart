@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'Storage/globals.dart';
 
 import 'notificaciones_page.dart';
 
@@ -140,14 +141,14 @@ class _EncuestaState extends State<Encuesta> {
                             String datajson = respuestaEncuestaModelToJson(r);
 
                             resp = await patchEncuesta(
-                                datajson, '5e2f34a8db5584c6403a62df');
+                                datajson, widget.idEncuesta);
 
                             // });
                             if (resp == 200) {
                               //Eliminar de notificaciones la encuesta
                               try {
                                 final response = await http.patch(
-                                    'https://bubbletown.me/notificaciones/${widget.idNotificacion}');
+                                    '$apiURL/notificaciones/${widget.idNotificacion}');
                               } catch (e) {
                                 print(e);
                               }
@@ -301,7 +302,7 @@ class _EncuestaState extends State<Encuesta> {
                                               // },
                                               height: _bigger ? 200 : 0,
                                               child: Image.network(
-                                                '$emojiselected',
+                                                '$apiURLImages/$emojiselected',
                                               ),
                                             ),
                                           )
@@ -311,6 +312,7 @@ class _EncuestaState extends State<Encuesta> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
+                                Text('$apiURLImages/$emojiselected'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
@@ -333,7 +335,7 @@ class _EncuestaState extends State<Encuesta> {
                                             });
                                           },
                                           icon: Image.network(
-                                            '${snapshot.data.paginas[actualpage].opciones[index].icon}',
+                                            '$apiURLImages/${snapshot.data.paginas[actualpage].opciones[index].icon}'
                                           ),
                                         ),
                                       );

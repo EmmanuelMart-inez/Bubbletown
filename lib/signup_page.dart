@@ -17,6 +17,7 @@ import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/models/login_form.dart';
 import 'home_page.dart';
 import 'models/welcome_model.dart';
+import 'Storage/globals.dart';
 
 LogInFormModel form;
 
@@ -448,7 +449,7 @@ class _SignupState extends State<Signup> {
                       bool r = _validarCampos(formStateModel);
                       if (r) {
                         formStateModel.foto =
-                            "https://www.bubbletown.me/download/bubble.png";
+                            "$apiURL/download/bubble.png";
                         SignUpFormResponseModel a =
                             await postParticipante(formStateModel);
 

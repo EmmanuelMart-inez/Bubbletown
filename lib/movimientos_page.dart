@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'Storage/globals.dart';
 
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
 import 'home_page.dart';
 import 'models/movimientos_model.dart';
 import 'premios_page.dart';
+import 'Storage/globals.dart';
 
 Future<MovimientosModel> requestMovimientos;
 
@@ -175,7 +177,7 @@ class _MovimientosState extends State<Movimientos> {
   }
 
   Container buildMovimientosElement() {
-    final iconURL = "https://bubbletown.me//download/premio2.PNG";
+    final iconURL = "$apiURL//download/premio2.PNG";
     final nombre = "Canjeo de bebida";
     final tipo = "entrada";
     final fecha = "14/May/19";
@@ -196,7 +198,7 @@ class _MovimientosState extends State<Movimientos> {
         children: <Widget>[
           SizedBox(width: 2),
           Image.network(
-            iconURL,
+            '${apiURLImages}/${iconURL}',
             width: 65,
           ),
           Column(
@@ -315,7 +317,7 @@ class _ScrollListMovimientosState extends State<ScrollListMovimientos> {
                     children: <Widget>[
                       SizedBox(width: 2),
                       Image.network(
-                        '${changeImageFormatToUpper(snapshot.data.movimientos[index].imagenIcon)}',
+                        '$apiURLImages/${changeImageFormatToUpper(snapshot.data.movimientos[index].imagenIcon)}',
                         width: 65,
                       ),
                       Column(
@@ -396,7 +398,7 @@ class _ScrollListMovimientosState extends State<ScrollListMovimientos> {
                       FlatButton(
                           onPressed: () async {
                             final response = await http.delete(
-                                'https://bubbletown.me/movimiento/${snapshot.data.movimientos[index].id}');
+                                '$apiURL/movimiento/${snapshot.data.movimientos[index].id}');
                             if (response.statusCode == 200) {
                               // If the call to the server was successful, parse the JSON.
                               setState(() {
@@ -444,7 +446,7 @@ class _ScrollListMovimientosState extends State<ScrollListMovimientos> {
 }
 
 Container buildMovimientosElement() {
-  final iconURL = "https://bubbletown.me//download/premio2.PNG";
+  final iconURL = "ayuda1.png";
   final nombre = "Canjeo de bebida";
   final tipo = "entrada";
   final fecha = "14/May/19";
@@ -465,7 +467,7 @@ Container buildMovimientosElement() {
       children: <Widget>[
         SizedBox(width: 2),
         Image.network(
-          iconURL,
+          '${apiURLImages}/${iconURL}',
           width: 65,
         ),
         Column(

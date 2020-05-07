@@ -31,7 +31,6 @@ class Premio {
     String codigoQr;
     String imagenDisplay;
     DateTime fechaVigencia;
-    DateTime fechaRedencion;
     int codigoBarras;
     String id;
     DateTime fechaCreacion;
@@ -44,7 +43,6 @@ class Premio {
         this.codigoQr,
         this.imagenDisplay,
         this.fechaVigencia,
-        this.fechaRedencion,
         this.codigoBarras,
         this.id,
         this.fechaCreacion,
@@ -58,7 +56,6 @@ class Premio {
         codigoQr: json["codigo_qr"],
         imagenDisplay: json["imagen_display"],
         fechaVigencia: DateTime.parse(json["fecha_vigencia"]),
-        fechaRedencion: DateTime.parse(json["fecha_redencion"]),
         codigoBarras: json["codigo_barras"],
         id: json["_id"],
         fechaCreacion: DateTime.parse(json["fecha_creacion"]),
@@ -72,7 +69,6 @@ class Premio {
         "codigo_qr": codigoQr,
         "imagen_display": imagenDisplay,
         "fecha_vigencia": fechaVigencia.toIso8601String(),
-        "fecha_redencion": fechaRedencion.toIso8601String(),
         "codigo_barras": codigoBarras,
         "_id": id,
         "fecha_creacion": fechaCreacion.toIso8601String(),
