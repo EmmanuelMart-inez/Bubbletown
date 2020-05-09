@@ -44,14 +44,17 @@ Future<SignUpFormResponseModel> postParticipante(
       // if(newTarjetaPuntos.statusCode == 200 && newTarjetaSellos.statusCode == 200)
       final participante =
           SignUpFormResponseModel.fromJson(json.decode(response.body));
-      final newTarjetaSellos = await http
-          .post('$apiURL/tarjetasellos/${participante.objectId.id}');
+      final newTarjetaSellos =
+          await http.post('$apiURL/tarjetasellos/${participante.objectId.id}');
       if (newTarjetaSellos.statusCode == 200) print("200 ok sellos");
-      final newTarjetaPuntos = await http
-          .post('$apiURL/tarjetapuntos/${participante.objectId.id}');
+      final newTarjetaPuntos =
+          await http.post('$apiURL/tarjetapuntos/${participante.objectId.id}');
       if (newTarjetaPuntos.statusCode == 200) print("200 ok puntos");
       if (newTarjetaPuntos.statusCode == 200 &&
           newTarjetaSellos.statusCode == 200) return participante;
+    } else {
+      print(response.body);
+      return SignUpFormResponseModel(message: "Ya existe una cuenta asociada a este correo, inicia sesión o solicita la recuperación de tu contraseña con el personal de la empresa");
     }
   } catch (e) {
     print(e);

@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 
 import 'Storage/user.dart';
+import 'Storage/globals.dart';
 import 'ayuda_page.dart';
 import 'models/welcome_model.dart';
 import 'services/welcome_service.dart';
@@ -106,9 +107,11 @@ class _HomePageState extends State<HomePage> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return BubbleCardSellosWidget(
-                            numeroSellos: snapshot
-                                .data.numSellos,
-                            totalSellos: snapshot.data.tarjetaSellos.numSellos);
+                          numeroSellos: snapshot.data.numSellos,
+                          totalSellos: snapshot.data.tarjetaSellos.numSellos,
+                          iconoOff: snapshot.data.tarjetaSellos.iconoOff,
+                          iconoOn: snapshot.data.tarjetaSellos.iconoOn,
+                        );
                       } else if (snapshot.hasError) {
                         print(snapshot.error);
                         return CircularProgressIndicator();
@@ -404,7 +407,7 @@ class PagarWidget extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
-                          Text('saldo',
+                          Text('saldo ',
                               style: TextStyle(
                                   fontSize: 18, color: Colors.green[400])),
                           FutureBuilder<Welcome>(
@@ -425,7 +428,7 @@ class PagarWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Text('bubblies', style: TextStyle(fontSize: 12)),
+                      Text('Bubblies', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                 ),
@@ -497,10 +500,12 @@ class DetallesWidget extends StatelessWidget {
 }
 
 class BubbleCardSellosWidget extends StatefulWidget {
-  BubbleCardSellosWidget({this.numeroSellos, this.totalSellos});
+  BubbleCardSellosWidget(
+      {this.numeroSellos, this.totalSellos, this.iconoOff, this.iconoOn});
   final numeroSellos;
   final totalSellos;
-
+  final iconoOff;
+  final iconoOn;
   @override
   _BubbleCardSellosWidgetState createState() => _BubbleCardSellosWidgetState();
 }
@@ -513,7 +518,8 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
   @override
   void initState() {
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 2500),
+      
       vsync: this,
     );
     super.initState();
@@ -524,10 +530,13 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Text('Value: ${_controller.value}... status: ${_controller.status}'),
         RotationTransitionOnY(
-          turns: Tween(begin: 0.0, end: 1.0).animate(
-              _controller.drive(CurveTween(curve: Curves.bounceInOut))),
-          child: Container(
+            alignment: Alignment(0.15, -1),
+            turns: Tween(begin: 0.0, end: -0.5).animate(
+
+                _controller.drive(CurveTween(curve: Curves.elasticOut))),
+            child: Container(
               height: 150,
               width: 240,
               margin: EdgeInsets.only(left: 45.0),
@@ -537,10 +546,13 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: isPreset
-                  ? TarjetaSellosBackWidget()
-                  : _buildSellosAcumulados(
-                      widget.numeroSellos, widget.totalSellos)),
-        ),
+                  ? Transform(
+                      transform: Matrix4.identity()..rotateY(math.pi),
+                      alignment: FractionalOffset.center,
+                      child: TarjetaSellosBackWidget())
+                  : _buildSellosAcumulados(widget.numeroSellos,
+                      widget.totalSellos, widget.iconoOff, widget.iconoOn),
+            )),
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.black,
@@ -551,6 +563,7 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
             onPressed: () {
               setState(() {
                 isPreset = !isPreset;
+                // print("Value: ${_controller.value}... status: ${_controller.status}");
                 isPreset ? _controller.forward() : _controller.reverse();
               });
             },
@@ -560,22 +573,23 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
     );
   }
 
-  List<Widget> getSello(int numsellos, int totalsellos, int row) {
+  List<Widget> getSello(int numsellos, int totalsellos, int row,
+      String iconoOff, String iconoOn) {
     final children = <Widget>[];
     var i = 0;
-    if (row == 2) i += 4;
-    if (row == 1) if (totalsellos > 4) totalsellos = 4;
+    if (row == 2) i += 5;
+    if (row == 1) if (totalsellos > 5) totalsellos = 5;
     for (i = i; i < totalsellos; i++) {
       if (numsellos > i)
-        children.add(new SelloStarOnWidget());
+        children.add(Expanded(child: SelloOnWidget(filename: iconoOn)));
       else
-        children.add(new SelloStarOffWidget());
+        children.add(Expanded(child: SelloOffWidget(filename: iconoOff)));
     }
     if (row == 1) row = 2;
     return children;
   }
 
-  Padding _buildSellosAcumulados(nSellos, tSellos) {
+  Padding _buildSellosAcumulados(nSellos, tSellos, iconoOff, iconoOn) {
     int numeroSellos = nSellos;
     int totalSellos = tSellos;
     return Padding(
@@ -583,13 +597,19 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: getSello(numeroSellos, totalSellos, 1),
+          Flexible(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children:
+                  getSello(numeroSellos, totalSellos, 1, iconoOff, iconoOn),
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: getSello(numeroSellos, totalSellos, 2),
+          Flexible(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children:
+                  getSello(numeroSellos, totalSellos, 2, iconoOff, iconoOn),
+            ),
           ),
         ],
       ),
@@ -597,10 +617,45 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
   }
 }
 
+class SelloOffWidget extends StatelessWidget {
+  SelloOffWidget({this.filename});
+  final filename;
+
+  @override
+  Widget build(BuildContext context) {
+    if (filename != null && filename != "null") {
+      return Image.network("$apiURLImages/$filename");
+    } else
+      return Icon(Icons.stars, color: Colors.grey[800], size: 50);
+  }
+}
+
+// 10821686
 class SelloStarOffWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(Icons.stars, color: Colors.grey[800], size: 50);
+  }
+}
+
+class SelloOnWidget extends StatelessWidget {
+  SelloOnWidget({this.filename});
+  final filename;
+
+  @override
+  Widget build(BuildContext context) {
+    if (filename != null && filename != "null") {
+      return Image.network("$apiURLImages/$filename");
+    } else
+      return CircleAvatar(
+        radius: 22,
+        backgroundColor: Colors.grey[600],
+        child: Icon(
+          Icons.star,
+          color: Colors.yellow[700],
+          size: 40,
+        ),
+      );
   }
 }
 

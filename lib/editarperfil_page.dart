@@ -184,8 +184,16 @@ class _EditarPerfilState extends State<EditarPerfil> {
                                             height: 120,
                                             width: 120,
                                             child: _image == null
-                                                ? Image.network(
-                                                    '${apiURLImages}/${snapshot.data.foto}')
+                                                ? FadeInImage.assetNetwork(
+                                                    fadeInCurve:
+                                                        Curves.bounceIn,
+                                                    placeholder:
+                                                        'assets/placeholderAvatar.png',
+                                                    image:
+                                                        '${snapshot.data.foto}')
+                                                // Image.network(
+                                                //     '${snapshot.data.foto}')
+                                                // '${apiURLImages}/${snapshot.data.foto}')
                                                 : Image.file(_image),
                                           );
                                         } else if (snapshot.hasError) {

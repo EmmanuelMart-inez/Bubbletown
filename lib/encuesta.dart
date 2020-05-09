@@ -188,7 +188,7 @@ class _EncuestaState extends State<Encuesta> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   //mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text('$respuestas'),
+                    // Text('$respuestas'),
                     SizedBox(height: 45),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -312,7 +312,7 @@ class _EncuestaState extends State<Encuesta> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
-                                Text('$apiURLImages/$emojiselected'),
+                                // Text('$apiURLImages/$emojiselected'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,

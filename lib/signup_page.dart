@@ -4,6 +4,7 @@ import 'package:bubbletown_v1/models/signup_model.dart';
 import 'package:bubbletown_v1/services/participante_service.dart';
 import 'package:bubbletown_v1/services/signup_service.dart';
 import 'package:bubbletown_v1/services/welcome_service.dart';
+import 'package:bubbletown_v1/terminosycondiciones_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bubbletown_v1/Storage/globals.dart';
 import 'package:http/http.dart' as http;
@@ -204,7 +205,7 @@ class _SignupState extends State<Signup> {
   final correoController = TextEditingController();
   final contra1Controller = TextEditingController();
   final contra2Controller = TextEditingController();
-  var mostrarcontra = false;
+  var mostrarcontra = true;
   bool terminosycond = false;
   DateTime _selectedDateTime;
   int _value = 2;
@@ -422,12 +423,18 @@ class _SignupState extends State<Signup> {
                           FlatButton(
                             padding: EdgeInsets.only(left: 5),
                             child: Text(
-                              'terminos y condiciones',
+                              'términos y condiciones',
                               //textAlign: TextAlign.start,
                               style: TextStyle(
-                                  fontSize: 16, color: Colors.blueAccent),
+                                  fontSize: 14, color: Colors.blueAccent),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TerminosCondicionesPage()),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -448,21 +455,27 @@ class _SignupState extends State<Signup> {
                     onPressed: () async {
                       bool r = _validarCampos(formStateModel);
                       if (r) {
-                        formStateModel.foto =
-                            "$apiURL/download/bubble.png";
+                        formStateModel.foto = "$apiURL/download/bubble.png";
                         SignUpFormResponseModel a =
                             await postParticipante(formStateModel);
 
                         //  Validar si el usuario ya esta registrado
-                        try {
-                          print(a.objectId.id);
-                        } catch (e) {
-                          print(e);
-                        }
-                        if (a.objectId.id != null) {
-                          obid = a.objectId.id;
-                          buildShowDialogSuccess(
-                              context, "Registro completado", "", "Continuar");
+                        // try {
+                        //   print(a.objectId.id);
+                        // } catch (e) {
+                        //   print(e);
+                        // }
+                        print(
+                            "la respuesta del api es: ${a.message}, oid: ${a.objectId}");
+                        if (a.objectId != null) {
+                          if (a.objectId.id != null) {
+                            obid = a.objectId.id;
+                            buildShowDialogSuccess(context,
+                                "Registro completado", "", "Continuar");
+                          } else {
+                            buildShowDialogFail(context, "Intenta de nuevo",
+                                "${a.message}", "DE ACUERDO");
+                          }
                         } else {
                           // Ok, no se pudo guardar en memoria el participante pero te dejaremos iniciar,
                           // solo que no se guardará en memoria tu _id, lo tendrás global obid
@@ -470,7 +483,9 @@ class _SignupState extends State<Signup> {
                           buildShowDialogFail(
                               context,
                               "Fallo el registro",
-                              "Debes llenar todos los campos y aceptar los terminos y condiciones para continuar",
+                              a.message != 'null'
+                                  ? "${a.message}"
+                                  : "Debes llenar todos los campos y aceptar los terminos y condiciones para continuar",
                               "OK");
                         }
                       } else {

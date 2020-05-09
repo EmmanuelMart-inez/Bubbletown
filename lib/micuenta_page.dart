@@ -6,6 +6,7 @@ import 'package:bubbletown_v1/models/welcome_model.dart';
 import 'package:bubbletown_v1/movimientos_page.dart';
 import 'package:bubbletown_v1/my_flutter_app_icons.dart';
 import 'package:bubbletown_v1/services/welcome_service.dart';
+import 'package:bubbletown_v1/terminosycondiciones_page.dart';
 import 'package:flutter/material.dart';
 
 import 'ayuda_page.dart';
@@ -254,7 +255,13 @@ class _MiCuentaState extends State<MiCuenta> {
                           ),
                         ],
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TerminosCondicionesPage()));
+                      },
                     ),
                   ),
                 ],

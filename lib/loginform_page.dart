@@ -289,37 +289,48 @@ class _LoginFormState extends State<LoginForm> {
                   height: 50.0,
                   onPressed: () async {
                     bool r = _validarCampos(form);
+                    // Si el formulario está completo
                     if (r) {
                       LogInFormResponseModel a = await postLogin(form);
                       //  Validar si el usuario ya esta registrado
-                      try {
-                        final idp = await setNewTokenData(a.id);
-                        print("Id en memoria: $idp, response id : ${a.id}");
-                      } catch (e) {
-                        print(e);
-                      }
-                      if (a.id != null) {
-                        obid = a.id;
-                        print("Id en memoria: $obid");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
+                      // Si se encontró un participante
+                      print(a.id);
+                      if (a.id != "null" && a.id != null) {
+                        try {
+                          final idp = await setNewTokenData(a.id);
+                          print("Id en memoria: $idp, response id : ${a.id}");
+                        } catch (e) {
+                          print(e);
+                        }
+                        if (a.id != null) {
+                          obid = a.id;
+                          print("Id en memoria: $obid");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        } else {
+                          // Ok, no se pudo guardar en memoria el participante pero te dejaremos iniciar,
+                          // solo que no se guardará en memoria tu _id, lo tendrás global obid
+                          // print(obid);
+                          buildShowDialogFail(
+                              context,
+                              "Fallo el registro",
+                              "No se pudo almacenar el registro del participante, intenta con otro teléfono",
+                              "OK");
+                        }
                       } else {
-                        // Ok, no se pudo guardar en memoria el participante pero te dejaremos iniciar,
-                        // solo que no se guardará en memoria tu _id, lo tendrás global obid
-                        // print(obid);
                         buildShowDialogFail(
                             context,
-                            "Fallo el registro",
-                            "No se pudo almacenar el registro del participante, intenta con otro teléfono",
+                            "Fallo la autenticación",
+                            "El correo o la contraseña no corresponden con un participante de este programa de lealtad",
                             "OK");
                       }
                     } else {
                       buildShowDialogFail(
                           context,
-                          "Fallo la autenticación",
-                          "El correo o la contraseña no corresponden con un participante de este programa de lealtad",
+                          "Formulario incompleto",
+                          "Por favor llene el todo el formulario, ingresando su fecha de cumpleaños, sexo y acepte los términos y condiciones",
                           "OK");
                     }
                   },
@@ -412,6 +423,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   bool _validarCampos(LogInFormModel form) {
+    print("${form.email} ${form.password} ");
     if (form.email != null && form.password != null)
       return true;
     else

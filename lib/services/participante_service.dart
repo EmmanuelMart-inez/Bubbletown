@@ -21,7 +21,7 @@ Future<ParticipanteModel> fetchParticipante() async {
   }
   final response =
       await http.get('$apiURL/participante/$idParticipante');
-
+  print(response.body);
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
     return ParticipanteModel.fromJson(json.decode(response.body));

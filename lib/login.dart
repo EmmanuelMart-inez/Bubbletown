@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void asyncTokenValidation() async {
     final token = await readTokenData();
-    if (token != null ) {
+    if (token != null && token != 0) {
       setState(() {
         _isThereToken = true;
         print("El token existe en memoria: $token");
@@ -117,6 +117,27 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: Text(
                   'Ya tengo una cuenta',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(width: 3.0),
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              ),
+              child: MaterialButton(
+                minWidth: 240.0,
+                height: 42.0,
+                onPressed: () {
+                  loggoutUserPreferences();
+                  setState(() {
+                    _isThereToken = false;
+                  });
+                },
+                child: Text(
+                  'Eliminar (participante_id) token de userPreferences',
                   style: TextStyle(color: Colors.black),
                 ),
               ),

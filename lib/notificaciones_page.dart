@@ -210,13 +210,13 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
                       // imageHeader:
                       // snapshot.data.notificaciones[index].imagenIcon,
                       imageHeader: changeImageFormatToUpper(
-                          snapshot.data.notificaciones[index].imagenIcon),
-                      textHeader: snapshot.data.notificaciones[index].titulo,
-                      body: snapshot.data.notificaciones[index].mensaje,
-                      textAccion: snapshot.data.notificaciones[index].barText,
-                      link: snapshot.data.notificaciones[index].link,
+                          snapshot.data.notificaciones[index].idNotificacion.imagenIcon),
+                      textHeader: snapshot.data.notificaciones[index].idNotificacion.titulo,
+                      body: snapshot.data.notificaciones[index].idNotificacion.mensaje,
+                      textAccion: snapshot.data.notificaciones[index].idNotificacion.barText,
+                      link: snapshot.data.notificaciones[index].idNotificacion.link,
                       tipoNotificacion:
-                          snapshot.data.notificaciones[index].tipoNotificacion),
+                          snapshot.data.notificaciones[index].idNotificacion.tipoNotificacion),
                 ),
               );
             }),
