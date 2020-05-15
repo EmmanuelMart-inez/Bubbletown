@@ -16,6 +16,7 @@ class _EncuestaAbiertaState extends State<EncuestaAbierta> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(

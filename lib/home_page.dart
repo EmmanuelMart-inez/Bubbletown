@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(40.0),
             child: AppBar(
+              automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [
@@ -224,6 +225,7 @@ class ExpiredTokenWidget extends StatelessWidget {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -401,9 +403,9 @@ class PagarWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(' Redimir puntos', style: TextStyle(fontSize: 15)),
-                      SizedBox(height: 8),
+                      SizedBox(height: 7),
                       Text(' Pagar', style: TextStyle(fontSize: 28)),
-                      SizedBox(height: 8),
+                      SizedBox(height: 7),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
@@ -518,7 +520,7 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
   @override
   void initState() {
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 2500),
+      duration: const Duration(milliseconds: 300),
       
       vsync: this,
     );
@@ -530,12 +532,12 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Value: ${_controller.value}... status: ${_controller.status}'),
+        // Text('Value: ${_controller.value}... status: ${_controller.status}'),
         RotationTransitionOnY(
             alignment: Alignment(0.15, -1),
             turns: Tween(begin: 0.0, end: -0.5).animate(
 
-                _controller.drive(CurveTween(curve: Curves.elasticOut))),
+                _controller.drive(CurveTween(curve: Curves.slowMiddle))),
             child: Container(
               height: 150,
               width: 240,

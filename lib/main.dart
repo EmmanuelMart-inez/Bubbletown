@@ -157,8 +157,6 @@
 //   }
 // }
 
-
-
 //import 'package:bubbletown_v1/loginform_page.dart';
 import 'package:bubbletown_v1/editarperfil_page.dart';
 import 'package:bubbletown_v1/encuesta.dart';
@@ -176,7 +174,7 @@ import 'package:bubbletown_v1/slideSwitch.dart';
 //import 'package:bubbletown_v1/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import  'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'catalogo_page.dart';
 import 'encuestaopen_page.dart';
@@ -189,17 +187,17 @@ import 'dart:async';
 
 // String a =  readPreference("bubbletownToken");
 
-
 void main() {
   debugPaintSizeEnabled = false;
   runApp(MyApp());
- } 
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         supportedLocales: [
           const Locale('en', 'US'), // American English

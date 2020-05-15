@@ -35,6 +35,7 @@ class _AyudaState extends State<Ayuda> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(

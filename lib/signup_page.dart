@@ -229,6 +229,8 @@ class _SignupState extends State<Signup> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
@@ -432,7 +434,8 @@ class _SignupState extends State<Signup> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => TerminosCondicionesPage()),
+                                    builder: (context) =>
+                                        TerminosCondicionesPage()),
                               );
                             },
                           ),
@@ -518,24 +521,24 @@ class _SignupState extends State<Signup> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 15),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF415DAE),
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                        child: MaterialButton(
-                          minWidth: 300.0,
-                          height: 50.0,
-                          onPressed: () => initiateFacebookLogin(),
-                          child: Text(
-                            'REGISTRARME CON FACEBOOK',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //     color: Color(0xFF415DAE),
+                      //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      //   ),
+                      //   child: MaterialButton(
+                      //     minWidth: 300.0,
+                      //     height: 50.0,
+                      //     onPressed: () => initiateFacebookLogin(),
+                      //     child: Text(
+                      //       'REGISTRARME CON FACEBOOK',
+                      //       style: TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 16,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: 5),
                       Container(
                         decoration: BoxDecoration(

@@ -31,6 +31,7 @@ class _PagoState extends State<Pago> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(

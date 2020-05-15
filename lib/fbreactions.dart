@@ -12,6 +12,8 @@ class _FacebookReactionsState extends State<FacebookReactions> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           title: Text('Facebook reacciones'),
         ),
         body: Container(

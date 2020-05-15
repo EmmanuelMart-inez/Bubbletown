@@ -50,6 +50,7 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(160.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(

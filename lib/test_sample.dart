@@ -16,6 +16,8 @@ class MyWidget extends StatelessWidget {
       title: 'Flutter Demo',
       home: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           title: Text(title),
         ),
         body: Center(

@@ -38,6 +38,7 @@ class _NotificacionesState extends State<Notificaciones> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -191,36 +192,47 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
       future: requestNotif,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Column(
-            children:
-                List.generate(snapshot.data.notificaciones.length, (index) {
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 1),
+          // print(snapshot.data.notificaciones.length);
+          if (snapshot.data.notificaciones.length != null)
+            return Column(
+              children:
+                  List.generate(snapshot.data.notificaciones.length, (index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                    child: NotificacionCard(
+                        listNotificaciones: snapshot.data.notificaciones,
+                        index: index,
+                        deleteItem: deleteItem,
+                        id: snapshot.data.notificaciones[index].id,
+                        // imageHeader:
+                        // snapshot.data.notificaciones[index].imagenIcon,
+                        imageHeader: changeImageFormatToUpper(snapshot.data
+                            .notificaciones[index].idNotificacion.imagenIcon),
+                        imagenDisplay: changeImageFormatToUpper(snapshot
+                            .data
+                            .notificaciones[index]
+                            .idNotificacion
+                            .imagenDisplay),
+                        textHeader: snapshot
+                            .data.notificaciones[index].idNotificacion.titulo,
+                        body: snapshot
+                            .data.notificaciones[index].idNotificacion.mensaje,
+                        textAccion: snapshot
+                            .data.notificaciones[index].idNotificacion.barText,
+                        link: snapshot
+                            .data.notificaciones[index].idNotificacion.link,
+                        tipoNotificacion: snapshot.data.notificaciones[index]
+                            .idNotificacion.tipoNotificacion),
                   ),
-                  child: NotificacionCard(
-                      listNotificaciones: snapshot.data.notificaciones,
-                      index: index,
-                      deleteItem: deleteItem,
-                      id: snapshot.data.notificaciones[index].id,
-                      // imageHeader:
-                      // snapshot.data.notificaciones[index].imagenIcon,
-                      imageHeader: changeImageFormatToUpper(
-                          snapshot.data.notificaciones[index].idNotificacion.imagenIcon),
-                      textHeader: snapshot.data.notificaciones[index].idNotificacion.titulo,
-                      body: snapshot.data.notificaciones[index].idNotificacion.mensaje,
-                      textAccion: snapshot.data.notificaciones[index].idNotificacion.barText,
-                      link: snapshot.data.notificaciones[index].idNotificacion.link,
-                      tipoNotificacion:
-                          snapshot.data.notificaciones[index].idNotificacion.tipoNotificacion),
-                ),
-              );
-            }),
-          );
+                );
+              }),
+            );
         } else if (snapshot.hasError) {
           print(snapshot.error);
           return CircularProgressIndicator();
@@ -243,8 +255,10 @@ class _NotificacionesScrollListState extends State<NotificacionesScrollList> {
     //   return newString;
     // } else
     //   return st;
-    print(st.substring(st.length - 4));
-    if (st.substring(st.length - 4) == 'null') {
+    // print(st.substring(st.length - 4));
+    if(st == null)
+      return "$apiURL/download/transparent.png";
+    if (st.substring(st.length - 4) == 'null' ) {
       return "$apiURL/download/transparent.png";
     } else
       return st;
@@ -257,6 +271,7 @@ class NotificacionCard extends StatelessWidget {
     this.index,
     this.id,
     this.imageHeader,
+    this.imagenDisplay,
     this.textHeader,
     this.body,
     this.textAccion,
@@ -269,6 +284,7 @@ class NotificacionCard extends StatelessWidget {
   final index;
   final id;
   final imageHeader;
+  final imagenDisplay;
   final textHeader;
   final body;
   final textAccion;
@@ -345,7 +361,8 @@ class NotificacionCard extends StatelessWidget {
             textAccion: textAccion,
             link: link,
             id: id,
-            tipoNotificacion: tipoNotificacion),
+            tipoNotificacion: tipoNotificacion,
+            imagenDisplay: imagenDisplay),
       ],
     );
   }
@@ -358,12 +375,14 @@ class OpcionalActionCardBar extends StatelessWidget {
     @required this.link,
     @required this.tipoNotificacion,
     @required this.id,
+    @required this.imagenDisplay,
   }) : super(key: key);
 
   final textAccion;
   final link;
   final id;
   final tipoNotificacion;
+  final imagenDisplay;
 
   @override
   Widget build(BuildContext context) {
@@ -395,7 +414,7 @@ class OpcionalActionCardBar extends StatelessWidget {
                     content: SingleChildScrollView(
                       child: ListBody(
                         children: <Widget>[
-                          Image.network('$apiURLImages/bird1.png'),
+                          Image.network('$apiURLImages/${imagenDisplay}'),
                         ],
                       ),
                     ),

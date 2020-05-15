@@ -45,7 +45,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-Future<Post> post;
+  Future<Post> post;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ Future<Post> post;
   @mustCallSuper
   void didChangeDependencies() {
     post = fetchPost();
-   }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +68,8 @@ Future<Post> post;
       ),
       home: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           title: Text('Fetch Data Example'),
         ),
         body: Center(
@@ -89,9 +91,6 @@ Future<Post> post;
     );
   }
 }
-
-
-
 
 /*
           FutureBuilder<Welcome>(

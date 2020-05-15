@@ -9,6 +9,8 @@ class TerminosCondicionesPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
@@ -66,10 +68,12 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('2. Datos Obtenidos',
+                    child: Text(
+                      '2. Datos Obtenidos',
                       style: TextStyle(
                         fontSize: 14,
-                      ),),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -88,10 +92,12 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('3. Finalidades',
+                    child: Text(
+                      '3. Finalidades',
                       style: TextStyle(
                         fontSize: 14,
-                      ),),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -110,10 +116,12 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('4. Acumulación de sellos',
+                    child: Text(
+                      '4. Acumulación de sellos',
                       style: TextStyle(
                         fontSize: 14,
-                      ),),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -122,7 +130,8 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('El realizar compras en la tienda te permitirá recibir sellos en tu tarjeta de lealtad, los cuales después de cierta cantidad podrás recibir algún producto de cortesía que la empresa decida, al acumular todos los sellos disponibles en la tarjeta que aparecerá en la aplicación se considerará como acreedor al premio correspondiente y podrá volver a llenar su tarjeta de sellos para obtener un beneficio. La recompensa que se obtendrá al acumular todos los sellos aparecerá en la parte posterior de la tarjeta. Para obtener un  sello se deberá presentar la tarjeta que aparece en la aplicación móvil para poder capturar los datos del participante al que se le otorgará el sello, que después de realizar su compra recibirá el sello en su aplicación móvil. La tarjeta de sellos tiene vigencia, por lo que la tarjeta deberá ser llenada durante el tiempo de vigencia, de lo contrario podrá cambiar el premio o podrán borrarse los sellos que llevaba acumulados, según la empresa lo considere.  Un  sello también podrá ser acumulado por alguna promoción, responder una ensta o participar en alguna dinámica de la empresa. Los sellos podrán tardar hasta 24 horas en verse reflejados en la aplicación.'),
+                    child: Text(
+                        'El realizar compras en la tienda te permitirá recibir sellos en tu tarjeta de lealtad, los cuales después de cierta cantidad podrás recibir algún producto de cortesía que la empresa decida, al acumular todos los sellos disponibles en la tarjeta que aparecerá en la aplicación se considerará como acreedor al premio correspondiente y podrá volver a llenar su tarjeta de sellos para obtener un beneficio. La recompensa que se obtendrá al acumular todos los sellos aparecerá en la parte posterior de la tarjeta. Para obtener un  sello se deberá presentar la tarjeta que aparece en la aplicación móvil para poder capturar los datos del participante al que se le otorgará el sello, que después de realizar su compra recibirá el sello en su aplicación móvil. La tarjeta de sellos tiene vigencia, por lo que la tarjeta deberá ser llenada durante el tiempo de vigencia, de lo contrario podrá cambiar el premio o podrán borrarse los sellos que llevaba acumulados, según la empresa lo considere.  Un  sello también podrá ser acumulado por alguna promoción, responder una ensta o participar en alguna dinámica de la empresa. Los sellos podrán tardar hasta 24 horas en verse reflejados en la aplicación.'),
                   ),
                 ),
                 SizedBox(
@@ -131,10 +140,12 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('5. Sistema de puntos',
+                    child: Text(
+                      '5. Sistema de puntos',
                       style: TextStyle(
                         fontSize: 14,
-                      ),),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -143,7 +154,8 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('Al realizar compras podrás obtener una bonificación en puntos (en lo sucesivo , los “bublins”) que podrás canjear por productos de la empresa. Los puntos no tienen valor monetario y no pueden canjearse por dinero en efectivo o algún título de crédito'),
+                    child: Text(
+                        'Al realizar compras podrás obtener una bonificación en puntos (en lo sucesivo , los “bublins”) que podrás canjear por productos de la empresa. Los puntos no tienen valor monetario y no pueden canjearse por dinero en efectivo o algún título de crédito'),
                   ),
                 ),
                 SizedBox(
@@ -152,10 +164,12 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('6. Generalidades',
+                    child: Text(
+                      '6. Generalidades',
                       style: TextStyle(
                         fontSize: 14,
-                      ),),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -164,7 +178,8 @@ class TerminosCondicionesPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    child: Text('Bubbletown se reserva el derecho de cancelar tu cuenta y/o participación en el programa de lealtad si así el personal de la empresa o el sistema considera que has violado los términos de uso, o que el uso de tu cuenta no es autorizado, es fraudulento o ilegal. La empresa se reserva el derecho de hacer inválida cualquier bonificación o premio que algún participante intente realizar si este se considera sospechoso, de igual forma se reserva el derecho de dar de baja cualquier cuenta del programa de lealtad. La empresa se reserva el derecho de terminar, descontinuar o cancelar el programa de lealtad en cualquier momento sin necesidad de alguna notificación previa. La empresa se deslinda de cualquier uso inapropiado de la aplicación dejando la responsabilidad al titular de la aplicación.  Al registrarte y hacer uso del programa, aceptas los presentes términos y condiciones descritos, y los términos relacionados a los que se haga referencia, asimismo, confirmas haber leído el Aviso de Privacidad del programa y aceptado el mismo. En caso de no aceptar la totalidad de los presentes términos y condiciones, deberás reservarte el derecho de participar en el programa. La participación continua en este programa de lealtad confirmará tu aceptación de los cambios o modificaciones realizadas al programa y sus términos. Es responsabilidad de los miembros del programa revisar las actualizaciones y/o modificaciones de los presentes Términos y Condiciones aplicables a el programa de lealtad frecuentemente. Es obligación de los miembros del programa leer el Aviso de Privacidad cuidadosamente para entender cómo BubbleTown recolecta, utiliza y muestra la información de sus participantes.'),
+                    child: Text(
+                        'Bubbletown se reserva el derecho de cancelar tu cuenta y/o participación en el programa de lealtad si así el personal de la empresa o el sistema considera que has violado los términos de uso, o que el uso de tu cuenta no es autorizado, es fraudulento o ilegal. La empresa se reserva el derecho de hacer inválida cualquier bonificación o premio que algún participante intente realizar si este se considera sospechoso, de igual forma se reserva el derecho de dar de baja cualquier cuenta del programa de lealtad. La empresa se reserva el derecho de terminar, descontinuar o cancelar el programa de lealtad en cualquier momento sin necesidad de alguna notificación previa. La empresa se deslinda de cualquier uso inapropiado de la aplicación dejando la responsabilidad al titular de la aplicación.  Al registrarte y hacer uso del programa, aceptas los presentes términos y condiciones descritos, y los términos relacionados a los que se haga referencia, asimismo, confirmas haber leído el Aviso de Privacidad del programa y aceptado el mismo. En caso de no aceptar la totalidad de los presentes términos y condiciones, deberás reservarte el derecho de participar en el programa. La participación continua en este programa de lealtad confirmará tu aceptación de los cambios o modificaciones realizadas al programa y sus términos. Es responsabilidad de los miembros del programa revisar las actualizaciones y/o modificaciones de los presentes Términos y Condiciones aplicables a el programa de lealtad frecuentemente. Es obligación de los miembros del programa leer el Aviso de Privacidad cuidadosamente para entender cómo BubbleTown recolecta, utiliza y muestra la información de sus participantes.'),
                   ),
                 ),
               ],

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class MyTabbedPage extends StatefulWidget {
-  const MyTabbedPage({ Key key }) : super(key: key);
+  const MyTabbedPage({Key key}) : super(key: key);
   @override
   _MyTabbedPageState createState() => _MyTabbedPageState();
 }
 
-class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderStateMixin {
+class _MyTabbedPageState extends State<MyTabbedPage>
+    with SingleTickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'LEFT'),
     Tab(text: 'RIGHT'),
@@ -20,16 +21,17 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
     _tabController = TabController(vsync: this, length: myTabs.length);
   }
 
- @override
- void dispose() {
-   _tabController.dispose();
-   super.dispose();
- }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Used for removing back buttoon "<".
         bottom: TabBar(
           controller: _tabController,
           tabs: myTabs,

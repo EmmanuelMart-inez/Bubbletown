@@ -57,6 +57,8 @@ class _SignupState extends State<Signup> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(

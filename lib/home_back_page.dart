@@ -25,6 +25,7 @@ class _Home_backState extends State<Home_back> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(30.0),
           child: AppBar(
+            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(

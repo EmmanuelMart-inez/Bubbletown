@@ -64,6 +64,8 @@ class _EditarPerfilState extends State<EditarPerfil> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
+            automaticallyImplyLeading:
+                false, // Used for removing back buttoon "<".
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -442,6 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Used for removing back buttoon "<".
         title: Text('Image Picker Example'),
       ),
       body: Center(

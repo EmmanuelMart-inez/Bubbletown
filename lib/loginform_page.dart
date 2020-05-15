@@ -33,7 +33,8 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool isLoggedIn = false;
-
+  String catchs = "";
+  String idPart = "";
   //////////////////////         Login Google              //////////////////////////////////
   GoogleSignInAccount _currentUser;
   String _contactText;
@@ -43,19 +44,23 @@ class _LoginFormState extends State<LoginForm> {
     super.initState();
     form = LogInFormModel();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      if (this.mounted) {
-        setState(() {
-          _currentUser = account;
-        });
-        if (_currentUser != null) {
-          _handleGetContact();
-        }
+      // if (this.mounted) {
+      setState(() {
+        _currentUser = account;
+        catchs = account.id;
+      });
+      if (_currentUser != null) {
+        _handleGetContact();
       }
+      // }
     });
-    // _googleSignIn.signInSilently();
+    _googleSignIn.signInSilently();
   }
 
   Future<void> _handleGetContact() async {
+    setState(() {
+      idPart = "Loading contact info...";
+    });
     // _sendTokenToServer(_currentUser., id, social)
     GoogleSignInAuthentication auth = await _currentUser.authentication;
     // _sendTokenToServer(auth.accessToken, auth.idToken, "google");
@@ -66,6 +71,11 @@ class _LoginFormState extends State<LoginForm> {
     // if(res.id )
     print(res.id);
     final idParticipante = await setNewTokenData(res.id);
+    setState(() {
+      catchs = "idpar: $idParticipante";
+      idPart = 'id_:${idParticipante}, res:${res.id}';
+    });
+    print("token guardado?: $idParticipante");
     if (idParticipante != null &&
         idParticipante != "null" &&
         idParticipante.length > 0) {
@@ -79,9 +89,16 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _handleSignIn() async {
     try {
+      setState(() {
+        catchs = "login click";
+      });
       await _googleSignIn.signIn();
+      print("login click");
     } catch (error) {
       print(error);
+      setState(() {
+        catchs = "$error";
+      });
     }
   }
 
@@ -187,6 +204,8 @@ class _LoginFormState extends State<LoginForm> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading:
+              false, // Used for removing back buttoon "<".
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
@@ -279,6 +298,8 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
               SizedBox(height: 15.0),
+              // Text('$catchs'),
+              // Text('$idPart'),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.black87,
@@ -356,24 +377,24 @@ class _LoginFormState extends State<LoginForm> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 15),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF415DAE),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: MaterialButton(
-                        minWidth: 300.0,
-                        height: 50.0,
-                        onPressed: () => initiateFacebookLogin(),
-                        child: Text(
-                          'CONTINUAR CON FACEBOOK',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: Color(0xFF415DAE),
+                    //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    //   ),
+                    //   child: MaterialButton(
+                    //     minWidth: 300.0,
+                    //     height: 50.0,
+                    //     onPressed: () => initiateFacebookLogin(),
+                    //     child: Text(
+                    //       'CONTINUAR CON FACEBOOK',
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 16,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(height: 5),
                     // _buildBody(),
                     Container(
@@ -394,24 +415,24 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ),
                     ),
-                    // Container(
-                    //   decoration: BoxDecoration(
-                    //     color: Color(0xFF4184F3),
-                    //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    //   ),
-                    //   child: MaterialButton(
-                    //     minWidth: 300.0,
-                    //     height: 50.0,
-                    //     onPressed: _handleSignOut,
-                    //                             child: Text(
-                    //                               'loggout',
-                    //                               style: TextStyle(
-                    //                                 color: Colors.white,
-                    //                                 fontSize: 16,
-                    //                               ),
-                    //                             ),
-                    //                           ),
-                    //                         ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF4184F3),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      child: MaterialButton(
+                        minWidth: 300.0,
+                        height: 50.0,
+                        onPressed: _handleSignOut,
+                        child: Text(
+                          'loggout',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

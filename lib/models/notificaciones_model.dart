@@ -52,6 +52,7 @@ class IdNotificacion {
     String titulo;
     DateTime fecha;
     String imagenIcon;
+    String imagenDisplay;
     String id;
     String barText;
     String link;
@@ -62,6 +63,7 @@ class IdNotificacion {
         this.titulo,
         this.fecha,
         this.imagenIcon,
+        this.imagenDisplay,
         this.id,
         this.barText,
         this.link,
@@ -73,6 +75,7 @@ class IdNotificacion {
         titulo: json["titulo"] == null ? null : json["titulo"],
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
         imagenIcon: json["imagenIcon"] == null ? null : json["imagenIcon"],
+        imagenDisplay: json["imagenDisplay"] == null ? null : json["imagenDisplay"],
         id: json["_id"] == null ? null : json["_id"],
         barText: json["bar_text"] == null ? null : json["bar_text"],
         link: json["link"] == null ? null : json["link"],
@@ -84,6 +87,7 @@ class IdNotificacion {
         "titulo": titulo == null ? null : titulo,
         "fecha": fecha == null ? null : fecha.toIso8601String(),
         "imagenIcon": imagenIcon == null ? null : imagenIcon,
+        "imagenDisplay": imagenDisplay == null ? null : imagenDisplay,
         "_id": id == null ? null : id,
         "bar_text": barText == null ? null : barText,
         "link": link == null ? null : link,
