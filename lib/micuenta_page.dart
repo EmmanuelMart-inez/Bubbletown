@@ -8,7 +8,10 @@ import 'package:bubbletown_v1/my_flutter_app_icons.dart';
 import 'package:bubbletown_v1/services/welcome_service.dart';
 import 'package:bubbletown_v1/terminosycondiciones_page.dart';
 import 'package:flutter/material.dart';
+import 'package:bubbletown_v1/Storage/globals.dart';
+import 'package:bubbletown_v1/Storage/user.dart';
 
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'ayuda_page.dart';
 import 'catalogo_page.dart';
 import 'escanea_page.dart';
@@ -23,10 +26,29 @@ class MiCuenta extends StatefulWidget {
 }
 
 class _MiCuentaState extends State<MiCuenta> {
+  int colorPaletteIndex = 0;
+  final controller = PageController(viewportFraction: 0.5, initialPage: 0
+      // initialPage: 4
+      );
+
   @override
   void initState() {
+    getColorPalette();
     requestParticipante = fetchWelcome();
     super.initState();
+  }
+
+  // Get current color palette
+  void getColorPalette() async {
+    final pIndex = await readTheme('indexPallete');
+    if (pIndex == '-1')
+      setState(() {
+        colorPaletteIndex = 0;
+      });
+    else
+      setState(() {
+        colorPaletteIndex = int.parse(pIndex);
+      });
   }
 
   @override
@@ -37,7 +59,8 @@ class _MiCuentaState extends State<MiCuenta> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
-            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
+            automaticallyImplyLeading:
+                false, // Used for removing back buttoon "<".
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -263,6 +286,94 @@ class _MiCuentaState extends State<MiCuenta> {
                                 builder: (context) =>
                                     TerminosCondicionesPage()));
                       },
+                    ),
+                  ),
+                  Container(
+                    child: Center(
+                      child: Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 36,
+                            ),
+                            // Text(page.toString()),
+                            SizedBox(
+                              height: 30,
+                              child: PageView(
+                                  reverse: false,
+                                  onPageChanged: (int currentPage) => {
+                                        setState(() {
+                                          colorPaletteIndex = currentPage;
+                                          // page = currentPage;
+                                          setPreference('indexPallete',
+                                              currentPage.toString());
+                                        })
+                                      },
+                                  controller: controller,
+                                  children: List.generate(
+                                      colorPalette.length,
+                                      (int index) => Card(
+                                            key: PageStorageKey<String>(
+                                                index.toString()),
+                                            // shape: RoundedRectangleBorder(
+                                            //     borderRadius:
+                                            //         BorderRadius.circular(16)),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    flex: 5,
+                                                    child: Container(
+                                                      color: Color(int.parse(
+                                                          "0xFF${colorPalette[index][0]}")),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Container(
+                                                      color: Color(int.parse(
+                                                          "0xFF${colorPalette[index][1]}")),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Container(
+                                                      color: Color(int.parse(
+                                                          "0xFF${colorPalette[index][2]}")),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      color: Color(int.parse(
+                                                          "0xFF${colorPalette[index][3]}")),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ))),
+                            ),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            Container(
+                              child: SmoothPageIndicator(
+                                controller: controller,
+                                count: colorPalette.length,
+                                effect: WormEffect(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 16,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],

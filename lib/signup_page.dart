@@ -38,13 +38,29 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   bool isLoggedIn = false;
 
+
+  // Get current color palette
+  void getColorPalette() async {
+    final pIndex = await readTheme('indexPallete');
+    if (pIndex == '-1')
+      setState(() {
+        colorPaletteIndex = 0;
+      });
+    else
+      setState(() {
+        colorPaletteIndex = int.parse(pIndex);
+      });
+  }
+
   //////////////////////         Login Google              //////////////////////////////////
   GoogleSignInAccount _currentUser;
   String _contactText;
+  int colorPaletteIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    getColorPalette();
     form = LogInFormModel();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       if (this.mounted) {
@@ -243,6 +259,7 @@ class _SignupState extends State<Signup> {
         ),
         body: SingleChildScrollView(
           child: Container(
+            color: Colors.transparent,
             width: double.infinity,
             child: Column(
               children: <Widget>[
@@ -390,7 +407,7 @@ class _SignupState extends State<Signup> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: Container(
-                              color: Colors.grey.shade200,
+                              color: Color(int.parse("0xFF${colorPalette[colorPaletteIndex][3]}")),
                               child: IconButton(
                                 icon: Icon(
                                   Icons.calendar_today,

@@ -58,3 +58,18 @@ Future<String> readPreference(String key) async {
     return '0';
   }
 }
+
+
+Future<String> readTheme(String key) async {
+  final prefs = await SharedPreferences.getInstance()
+      .catchError((onError) => '0');
+  try {
+    // Try reading data from the counter key. If it doesn't exist, return 0.
+    final value = prefs.getString('$key');
+    print("value : $value");
+    return value;
+  } catch (e) {
+    return '-1';
+  }
+}
+

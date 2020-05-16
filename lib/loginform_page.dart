@@ -38,10 +38,25 @@ class _LoginFormState extends State<LoginForm> {
   //////////////////////         Login Google              //////////////////////////////////
   GoogleSignInAccount _currentUser;
   String _contactText;
+  int colorPaletteIndex = 0;
+
+  // Get current color palette
+  void getColorPalette() async {
+    final pIndex = await readTheme('indexPallete');
+    if (pIndex == '-1')
+      setState(() {
+        colorPaletteIndex = 0;
+      });
+    else
+      setState(() {
+        colorPaletteIndex = int.parse(pIndex);
+      });
+  }
 
   @override
   void initState() {
     super.initState();
+    getColorPalette();
     form = LogInFormModel();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       // if (this.mounted) {
@@ -202,12 +217,14 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Color(int.parse("0xFF${colorPalette[colorPaletteIndex][3]}")),
         appBar: AppBar(
           automaticallyImplyLeading:
               false, // Used for removing back buttoon "<".
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor:
+              Color(int.parse("0xFF${colorPalette[colorPaletteIndex][3]}")),
           leading: IconButton(
             padding: EdgeInsets.only(top: 15),
             icon: Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -218,6 +235,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         body: SingleChildScrollView(
             child: Container(
+          // color: Color(int.parse("0x55${colorPalette[colorPaletteIndex][3]}")),
           width: double.infinity,
           child: Column(
             children: <Widget>[
@@ -415,24 +433,24 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF4184F3),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: MaterialButton(
-                        minWidth: 300.0,
-                        height: 50.0,
-                        onPressed: _handleSignOut,
-                        child: Text(
-                          'loggout',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: Color(0xFF4184F3),
+                    //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    //   ),
+                    //   child: MaterialButton(
+                    //     minWidth: 300.0,
+                    //     height: 50.0,
+                    //     onPressed: _handleSignOut,
+                    //     child: Text(
+                    //       'loggout',
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 16,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

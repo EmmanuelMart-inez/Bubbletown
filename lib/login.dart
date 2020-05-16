@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:bubbletown_v1/Storage/user.dart';
 import 'package:bubbletown_v1/Storage/globals.dart';
 
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 // To read data, use the appropriate getter method provided by the SharedPreferences class.
 // For each setter there is a corresponding getter.
@@ -20,14 +20,20 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isThereToken = false;
+  // int page = 0;
+  int colorPaletteIndex = 0;
+  final controller = PageController(viewportFraction: 0.5, initialPage: 0
+      // initialPage: 4
+      );
 
   @override
   void initState() {
     super.initState();
-    // print(obid);
-  // print(mythem)
-    asyncTokenValidation();
 
+    // print(obid);
+    // print(mythem)
+    getColorPalette();
+    asyncTokenValidation();
   }
 
   void asyncTokenValidation() async {
@@ -47,20 +53,33 @@ class _LoginPageState extends State<LoginPage> {
       final result = await prefs.remove('bubbletownToken');
       if (result)
         print("Se logró eliminar el token de acceso (_id) participante");
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
+  }
+
+  // Get current color palette
+  void getColorPalette() async {
+    final pIndex = await readTheme('indexPallete');
+    if (pIndex == '-1')
+      setState(() {
+        colorPaletteIndex = 0;
+      });
+    else
+      setState(() {
+        colorPaletteIndex = int.parse(pIndex);
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(int.parse("0xFF${colorPalette[colorPaletteIndex][3]}")),
       body: Center(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 150.0),
+            SizedBox(height: 120.0),
+            // SizedBox(height: 150.0),
             Text(
               'Bubbletown',
               style: TextStyle(
@@ -69,12 +88,14 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 35.0),
-            Image.asset('assets/bubblies.png'),
-            SizedBox(height: 45.0),
+            Image.asset('assets/logoBubbletown.png', width: 190,),
+            SizedBox(height: 35.0),
+            // SizedBox(height: 45.0),
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[600],
                 border: Border.all(width: 3.0, color: Colors.grey[600]),
+                // border: Border.all(width: 3.0, color: Colors.grey[600]),
                 borderRadius: BorderRadius.all(Radius.circular(30.0)),
               ),
               child: MaterialButton(
@@ -121,6 +142,126 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+            Container(
+              child: Center(
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 36,
+                      ),
+                      // Text(page.toString()),
+                      SizedBox(
+                        height: 30,
+                        child: PageView(
+                            reverse: false,
+                            onPageChanged: (int currentPage) => {
+                                  setState(() {
+                                    colorPaletteIndex = currentPage;
+                                    // page = currentPage;
+                                    setPreference(
+                                        'indexPallete', currentPage.toString());
+                                  })
+                                },
+                            controller: controller,
+                            children: List.generate(
+                                colorPalette.length,
+                                (int index) => Card(
+                                      key: PageStorageKey<String>(
+                                          index.toString()),
+                                      // shape: RoundedRectangleBorder(
+                                      //     borderRadius:
+                                      //         BorderRadius.circular(16)),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              flex: 5,
+                                              child: Container(
+                                                color: Color(int.parse(
+                                                    "0xFF${colorPalette[index][0]}")),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Container(
+                                                color: Color(int.parse(
+                                                    "0xFF${colorPalette[index][1]}")),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Container(
+                                                color: Color(int.parse(
+                                                    "0xFF${colorPalette[index][2]}")),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                color: Color(int.parse(
+                                                    "0xFF${colorPalette[index][3]}")),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ))),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      //   child: Text('Worm'),
+                      // ),
+                      Container(
+                        child: SmoothPageIndicator(
+                          controller: controller,
+                          count: colorPalette.length,
+                          effect: WormEffect(),
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      //   child: Text("Slide"),
+                      // ),
+                      // Container(
+                      //   child: SmoothPageIndicator(
+                      //     controller: controller,
+                      //     count: 6,
+                      //     effect: SlideEffect(
+                      //         spacing: 8.0,
+                      //         radius: 4.0,
+                      //         dotWidth: 24.0,
+                      //         dotHeight: 16.0,
+                      //         dotColor: Colors.grey,
+                      //         paintStyle: PaintingStyle.stroke,
+                      //         strokeWidth: 2,
+                      //         activeDotColor: Colors.indigo),
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      //   child: Text("Scrolling Dots "),
+                      // ),
+                      // SmoothPageIndicator(
+                      //     controller: controller,
+                      //     count: 6,
+                      //     effect: ScrollingDotsEffect(
+                      //       activeStrokeWidth: 2.6,
+                      //       activeDotScale: .4,
+                      //       radius: 8,
+                      //       spacing: 10,
+                      //     )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             // Container(
             //   decoration: BoxDecoration(
             //     color: Colors.white,
@@ -146,7 +287,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       bottomSheet: Container(
-        height: 80.0,
+        color: Color(int.parse("0xFF${colorPalette[colorPaletteIndex][1]}")),
+        height: 60.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
