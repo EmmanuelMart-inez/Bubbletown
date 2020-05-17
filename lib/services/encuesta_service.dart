@@ -13,7 +13,7 @@ Future<EncuestaModel> fetchEncuesta(String idEncuesta) async {
   // en caso de que no exista lanzar una excepción
   final response =
       await http.get('$apiURL/encuesta/$idEncuesta');
-
+      print('$apiURL/encuesta/$idEncuesta');
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
     return EncuestaModel.fromJson(json.decode(response.body));

@@ -626,6 +626,7 @@ class SelloOffWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (filename != null && filename != "null") {
+      print("$apiURLImages/$filename");
       return Image.network("$apiURLImages/$filename");
     } else
       return Icon(Icons.stars, color: Colors.grey[800], size: 50);
@@ -647,6 +648,7 @@ class SelloOnWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (filename != null && filename != "null") {
+      print("$apiURLImages/$filename");
       return Image.network("$apiURLImages/$filename");
     } else
       return CircleAvatar(
