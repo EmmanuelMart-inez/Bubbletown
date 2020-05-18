@@ -50,7 +50,8 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(160.0),
           child: AppBar(
-            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
+            automaticallyImplyLeading:
+                false, // Used for removing back buttoon "<".
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -192,62 +193,62 @@ class _PremiosState extends State<Premios> with SingleTickerProviderStateMixin {
   }
 }
 
-class TabRoundedBodyContent extends StatelessWidget {
-  const TabRoundedBodyContent({
-    Key key,
-    @required TabController tabController,
-  })  : _tabController = tabController,
-        super(key: key);
+// class TabRoundedBodyContent extends StatelessWidget {
+//   const TabRoundedBodyContent({
+//     Key key,
+//     @required TabController tabController,
+//   })  : _tabController = tabController,
+//         super(key: key);
 
-  final TabController _tabController;
+//   final TabController _tabController;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 800,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      //color: Colors.red[100],
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          Text('hola'),
-          Text('hola'),
-          Text('hola'),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: double.infinity,
+//       height: 800,
+//       padding: EdgeInsets.symmetric(horizontal: 20),
+//       //color: Colors.red[100],
+//       child: TabBarView(
+//         controller: _tabController,
+//         children: [
+//           Text('hola'),
+//           Text('hola'),
+//           Text('hola'),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-class TabRoundedTopBar extends StatelessWidget {
-  const TabRoundedTopBar({
-    Key key,
-    @required TabController tabController,
-  })  : _tabController = tabController,
-        super(key: key);
+// class TabRoundedTopBar extends StatelessWidget {
+//   const TabRoundedTopBar({
+//     Key key,
+//     @required TabController tabController,
+//   })  : _tabController = tabController,
+//         super(key: key);
 
-  final TabController _tabController;
+//   final TabController _tabController;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      //margin: EdgeInsets.symmetric(horizontal: 130),
-      width: 200,
-      height: 40,
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       //margin: EdgeInsets.symmetric(horizontal: 130),
+//       width: 200,
+//       height: 40,
 
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 2),
-        margin: EdgeInsets.symmetric(horizontal: 25),
-        child: TabBar(controller: _tabController, tabs: [
-          CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
-          CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
-          CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
-        ]),
-      ),
-    );
-  }
-}
+//       child: Container(
+//         padding: EdgeInsets.symmetric(horizontal: 2),
+//         margin: EdgeInsets.symmetric(horizontal: 25),
+//         child: TabBar(controller: _tabController, tabs: [
+//           CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
+//           CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
+//           CircleAvatar(radius: 10.0, backgroundColor: Colors.grey[350]),
+//         ]),
+//       ),
+//     );
+//   }
+// }
 
 class PremiosScrollView extends StatefulWidget {
   // PremiosScrollView({this.st});
@@ -268,28 +269,29 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
       builder: (BuildContext context) {
         return Container(
           child: AlertDialog(
-            title: Text('$st'),
+            contentPadding: EdgeInsets.all(0),
+            // title: Text('$st'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   Image.network('$apiURLImages/$urlImageDisplay'),
                   // OLD: Shows String QR, QR Standard and QR liquid
-                  // SizedBox(
-                  //   height: 30,
-                  // ),
-                  // Container(
-                  //   height: 240,
-                  //   width: 240,
-                  //   child: Center(
-                  //       child: PrettyQr(
-                  //           // image: AssetImage('images/twitter.png'),
-                  //           typeNumber: 3,
-                  //           size: 220,
-                  //           data: '${st.toUpperCase()}',
-                  //           errorCorrectLevel: QrErrorCorrectLevel.M,
-                  //           roundEdges: true)),
-                  //   // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
-                  // ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    height: 240,
+                    width: 240,
+                    child: Center(
+                        child: PrettyQr(
+                            // image: AssetImage('images/twitter.png'),
+                            typeNumber: 3,
+                            size: 220,
+                            data: '${st.toUpperCase()}',
+                            errorCorrectLevel: QrErrorCorrectLevel.M,
+                            roundEdges: true)),
+                    // Image.network('http://2.bp.blogspot.com/-fUGggfrgxS8/Tk7rgOaqP_I/AAAAAAAABCI/sbE8ddlPOsQ/s1600/achoshare+QR+code.png', scale: 1.5,),
+                  ),
                   // SizedBox(
                   //   height: 30,
                   // ),
@@ -353,11 +355,10 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
-                          _neverSatisfied(snapshot
-                              .data.premios[index].nombre
-                              .toString(), snapshot
-                              .data.premios[index].imagenDisplay
-                              .toString());
+                          _neverSatisfied(
+                              snapshot.data.premios[index].id,
+                              snapshot.data.premios[index].imagenDisplay
+                                  .toString());
                         },
                         child: Card(
                           // borderOnForeground: true,
@@ -367,6 +368,7 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                             children: <Widget>[
                               SizedBox(
                                 height: 185,
+                                // width: 160,
                                 child: Stack(
                                   // fit: StackFit.loose,
                                   children: <Widget>[
@@ -377,12 +379,17 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                                       top: 10.0,
                                       left: 16.0,
                                       right: 16.0,
-                                      child: FittedBox(
-                                        fit: BoxFit.contain,
-                                        alignment: Alignment.center,
-                                        child: Image.network(
-                                            '$apiURLImages/${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}'),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Image.network(
+                                            '$apiURLImages/${snapshot.data.premios[index].imagenIcon}',
+                                            height: 130,
+                                            fit: BoxFit.contain,
+                                            alignment: Alignment.center,
+                                          ),
+                                        ],
                                       ),
+                                      // '$apiURLImages/${changeImageFormatToUpper(snapshot.data.premios[index].imagenIcon)}', fit: BoxFit.contain, alignment: Alignment.center,),
                                     ),
                                     Positioned(
                                       bottom: 14.0,
@@ -393,8 +400,8 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
                                         alignment: Alignment.center,
                                         child: BarCodeImage(
                                           params: Code39BarCodeParams(
-                                            // '123654',
-                                            '${snapshot.data.premios[index].codigoBarras.toString()}',
+                                            '123654',
+                                            // '${snapshot.data.premios[index].codigoBarras.toString()}',
                                             // '1235',
                                             lineWidth:
                                                 1.0, // width for a single black/white bar (default: 2.0)

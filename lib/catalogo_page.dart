@@ -286,7 +286,7 @@ class BebidasScrollCatalogo extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Image.network(
-                          '${apiURLImages}/${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
+                          '${apiURLImages}/${snapshot.data.catalogo[index].imagen}',
                           scale: 1),
                     ),
                     SizedBox(height: 10),

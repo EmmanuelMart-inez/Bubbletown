@@ -389,7 +389,7 @@ class OpcionalActionCardBar extends StatelessWidget {
     // TODO: Añadir aqui el la validación del ícono
     if (textAccion != null &&
         textAccion != "null" &&
-        textAccion.toString().length > 0)
+        textAccion.toString().length > 0 && tipoNotificacion == 'encuesta')
       return FlatButton(
         child: Container(
           height: 50,
@@ -408,6 +408,7 @@ class OpcionalActionCardBar extends StatelessWidget {
         onPressed: () => {
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
+              // TODO: En un futuro agregar el imagen display en premios y notificaciones básicas
               if (tipoNotificacion == 'ninguna' || tipoNotificacion == 'premio')
                 return Container(
                   child: AlertDialog(

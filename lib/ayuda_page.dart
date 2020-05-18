@@ -35,7 +35,8 @@ class _AyudaState extends State<Ayuda> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
-            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
+            automaticallyImplyLeading:
+                false, // Used for removing back buttoon "<".
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -242,17 +243,31 @@ class AyudaScrollList extends StatelessWidget {
                         color: Colors.black,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 42.0, vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 42.0, vertical: 10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Image.network(
+                            Expanded(
+                              child: Image.network(
                                 '${apiURLImages}/${snapshot.data.ayuda[index].imagenIcon}',
-                                scale: 1.9),
-                            Text(
-                              '  ${snapshot.data.ayuda[index].titulo}',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w500),
+                                width: 50,
+                                height: 55,
+                                fit: BoxFit.contain,
+                                alignment: Alignment.centerLeft,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal : 10.0),
+                                child: Text(
+                                  '${snapshot.data.ayuda[index].titulo}',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.w500, ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
