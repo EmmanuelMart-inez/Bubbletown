@@ -108,34 +108,64 @@ class _EncuestaState extends State<Encuesta> {
                       padding: EdgeInsets.all(0),
                       onPressed: () async {
                         if (actualresp >= 0) {
-                          if (actualpage + 1 < snapshot.data.paginas.length) {
+                          if (respuestas.length <
+                              snapshot.data.paginas.length) {
                             // Si la pregunta es de tipo "abierta"
+                            print(snapshot.data.paginas[actualpage].tipo);
                             if (snapshot.data.paginas[actualpage].tipo ==
                                     'abierta' ||
                                 snapshot.data.paginas[actualpage].tipo ==
                                     'emoji') {
                               print('Pregunta abierta');
                               setState(() {
-                                actualpage++;
-                                respuestas.add(preguntabiertaResp);
-                                actualresp = -1;
+                                // Verificar que no se haya respuesto la pregunta
+                                // En caso de serlo, sobre escribir la respuesta anterior
+                                if (respuestas.length - actualpage < 1)
+                                  respuestas.add(preguntabiertaResp);
+                                else
+                                  respuestas[actualpage] = preguntabiertaResp;
+                                // Marcar como respondida y avanzar de pagina
+                                if (actualpage + 1 <
+                                    snapshot.data.paginas.length) {
+                                  actualpage++;
+                                  actualresp = -1;
+                                }
                               });
                             }
                             // Si la respuesta es de opción múltiple
                             else {
                               setState(() {
-                                actualpage++;
-                                respuestas.add(snapshot.data.paginas[actualpage]
-                                    .opciones[actualresp].calificacion);
-                                actualresp = -1;
+                                // Verificar que no se haya respuesto la pregunta
+                                // En caso de serlo, sobre escribir la respuesta anterior
+                                if (respuestas.length - actualpage < 1)
+                                  respuestas.add(snapshot
+                                      .data
+                                      .paginas[actualpage]
+                                      .opciones[actualresp]
+                                      .calificacion);
+                                else
+                                  respuestas[actualpage] = snapshot
+                                      .data
+                                      .paginas[actualpage]
+                                      .opciones[actualresp]
+                                      .calificacion;
+                                // Marcar como respondida y avanzar de pagina
+                                if (actualpage + 1 <
+                                    snapshot.data.paginas.length) {
+                                  actualpage++;
+                                  actualresp = -1;
+                                }
                               });
                             }
-                          } else {
+                          }
+                          if (respuestas.length ==
+                              snapshot.data.paginas.length) {
                             int resp;
                             // setState(() async {
                             // Si la respuesta es de opción múltiple pero no es la última
-                            respuestas.add(snapshot.data.paginas[actualpage]
-                                .opciones[actualresp].calificacion);
+                            // if(snapshot.data.paginas[actualpage].tipo == "opcion multiple")
+                            // respuestas.add(snapshot.data.paginas[actualpage]
+                            //     .opciones[actualresp].calificacion);
                             RespuestaEncuestaModel r = RespuestaEncuestaModel(
                                 estado: "respondida", respuestas: respuestas);
                             String datajson = respuestaEncuestaModelToJson(r);
@@ -189,6 +219,8 @@ class _EncuestaState extends State<Encuesta> {
                   //mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     // Text('$respuestas'),
+                    // Text('$actualresp'),
+                    // Text('$actualpage'),
                     SizedBox(height: 45),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -228,6 +260,7 @@ class _EncuestaState extends State<Encuesta> {
                                     onChanged: (text) {
                                       setState(() {
                                         preguntabiertaResp = text;
+                                        print(preguntabiertaResp);
                                         actualresp = 1;
                                       });
                                     },
@@ -335,8 +368,7 @@ class _EncuestaState extends State<Encuesta> {
                                             });
                                           },
                                           icon: Image.network(
-                                            '$apiURLImages/${snapshot.data.paginas[actualpage].opciones[index].icon}'
-                                          ),
+                                              '$apiURLImages/${snapshot.data.paginas[actualpage].opciones[index].icon}'),
                                         ),
                                       );
                                     },
@@ -386,6 +418,7 @@ class _EncuestaState extends State<Encuesta> {
       String textButton) {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
