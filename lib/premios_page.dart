@@ -432,7 +432,7 @@ class _PremiosScrollViewState extends State<PremiosScrollView> {
           );
         } else if (snapshot.hasError) {
           print('Snapshot Error: ${snapshot.error}');
-          return CircularProgressIndicator();
+          return Container();
         }
         return Center(
             child: CircularProgressIndicator(
