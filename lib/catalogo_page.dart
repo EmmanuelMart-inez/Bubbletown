@@ -276,36 +276,40 @@ class BebidasScrollCatalogo extends StatelessWidget {
       future: requestCatalogoBebidas,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            children: List.generate(snapshot.data.catalogo.length, (index) {
-              return Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Image.network(
-                          '${apiURLImages}/${snapshot.data.catalogo[index].imagen}',
-                          scale: 1),
-                    ),
-                    SizedBox(height: 10),
-                    Text('${snapshot.data.catalogo[index].titulo}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15)),
-                    SizedBox(height: 3),
-                    Container(
-                      width: 120,
-                      child: Text(
-                        '${snapshot.data.catalogo[index].descripcion}',
-                        style: TextStyle(fontSize: 12),
-                        textAlign: TextAlign.center,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+            child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 0.8,
+              children: List.generate(snapshot.data.catalogo.length, (index) {
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Image.network(
+                            '${apiURLImages}/${snapshot.data.catalogo[index].imagen}',
+                            scale: 1),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                      SizedBox(height: 10),
+                      Text('${snapshot.data.catalogo[index].titulo}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15)),
+                      SizedBox(height: 3),
+                      Container(
+                        width: 120,
+                        child: Text(
+                          '${snapshot.data.catalogo[index].descripcion}',
+                          style: TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                    ],
+                  ),
+                );
+              }),
+            ),
           );
         } else if (snapshot.hasError) {
           print(snapshot.error);
@@ -354,36 +358,40 @@ class AlimentosScrollCatalogo extends StatelessWidget {
       future: requestCatalogoAlimentos,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            children: List.generate(snapshot.data.catalogo.length, (index) {
-              return Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Image.network(
-                          '${apiURLImages}/${this.changeImageFormatToUpper(snapshot.data.catalogo[index].imagen)}',
-                          scale: 1),
-                    ),
-                    SizedBox(height: 10),
-                    Text('${snapshot.data.catalogo[index].titulo}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15)),
-                    SizedBox(height: 3),
-                    Container(
-                      width: 120,
-                      child: Text(
-                        '${snapshot.data.catalogo[index].descripcion}',
-                        style: TextStyle(fontSize: 12),
-                        textAlign: TextAlign.center,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+            child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 0.8,
+              children: List.generate(snapshot.data.catalogo.length, (index) {
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Image.network(
+                            '${apiURLImages}/${snapshot.data.catalogo[index].imagen}',
+                            scale: 1),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                      SizedBox(height: 10),
+                      Text('${snapshot.data.catalogo[index].titulo}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15)),
+                      SizedBox(height: 3),
+                      Container(
+                        width: 120,
+                        child: Text(
+                          '${snapshot.data.catalogo[index].descripcion}',
+                          style: TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                    ],
+                  ),
+                );
+              }),
+            ),
           );
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
@@ -403,6 +411,20 @@ class AlimentosScrollCatalogo extends StatelessWidget {
     String newString;
     if (st.substring(st.length - 3).compareTo('PNG') > 0) {
       format = "PNG";
+      start = st.substring(0, st.length - 3);
+      newString = '$start$format';
+      // print(newString);
+      return newString;
+    } else
+      return st;
+  }
+ 
+  String changeImageFormatToLower(String st) {
+    String start;
+    String format;
+    String newString;
+    if (st.substring(st.length - 3).compareTo(st.substring(st.length - 3).toUpperCase()) > 0) {
+      format = st.substring(st.length - 3).toLowerCase();
       start = st.substring(0, st.length - 3);
       newString = '$start$format';
       // print(newString);

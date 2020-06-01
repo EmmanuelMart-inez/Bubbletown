@@ -342,13 +342,13 @@ class NotificacionCard extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          padding: EdgeInsets.only(left: 25, right: 25, bottom: 15),
           child: Text(
             // "Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida? Como estuvo tu bebida?",
             "${this.body}",
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
-            maxLines: 3,
+            maxLines: 4,
             style: TextStyle(fontSize: 14, height: 0.8),
           ),
         ),

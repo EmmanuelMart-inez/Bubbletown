@@ -58,7 +58,8 @@ class _HomePageState extends State<HomePage> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(40.0),
             child: AppBar(
-              automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
+              automaticallyImplyLeading:
+                  false, // Used for removing back buttoon "<".
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [
@@ -225,7 +226,8 @@ class ExpiredTokenWidget extends StatelessWidget {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
-            automaticallyImplyLeading: false, // Used for removing back buttoon "<". 
+            automaticallyImplyLeading:
+                false, // Used for removing back buttoon "<".
             elevation: 0,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -402,9 +404,9 @@ class PagarWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(' Redimir puntos', style: TextStyle(fontSize: 15)),
+                      Text(' Conseguir puntos', style: TextStyle(fontSize: 15)),
                       SizedBox(height: 7),
-                      Text(' Pagar', style: TextStyle(fontSize: 28)),
+                      Text(' Escanear', style: TextStyle(fontSize: 26)),
                       SizedBox(height: 7),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -521,7 +523,6 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
   void initState() {
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
-      
       vsync: this,
     );
     super.initState();
@@ -536,7 +537,6 @@ class _BubbleCardSellosWidgetState extends State<BubbleCardSellosWidget>
         RotationTransitionOnY(
             alignment: Alignment(0.15, -1),
             turns: Tween(begin: 0.0, end: -0.5).animate(
-
                 _controller.drive(CurveTween(curve: Curves.slowMiddle))),
             child: Container(
               height: 150,
@@ -758,6 +758,7 @@ class TarjetaSellosBackWidget extends StatelessWidget {
       "Por cada 8 estrellas recibe una bebida gratis de nuestra seleción de bubbleTeas de temporada";
   final fecha_finCard = "Mayo 2020";
   final producto_card = "Bebida caliente";
+  // final producto_card = "Sujeto a cambios";
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -774,9 +775,23 @@ class TarjetaSellosBackWidget extends StatelessWidget {
                   future: requestWelcome,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Text(
-                        '${snapshot.data.tarjetaSellos.descripcion}',
-                        textAlign: TextAlign.center,
+                      return Column(
+                        children: <Widget>[
+                          Text(
+                            '${snapshot.data.tarjetaSellos.descripcion}',
+                            textAlign: TextAlign.center,
+                          ),
+                          // Text(
+                          //   'Vigencia: ${snapshot.data.tarjetaSellos.fechaFin.toString().substring(0, 10) ?? ""}',
+                          //   style: TextStyle(fontSize: 10),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          // Text(
+                          //   'Premios posibles: ${snapshot.data.tarjetaSellos.producto  ?? ""}',
+                          //   style: TextStyle(fontSize: 10),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                        ],
                       );
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
